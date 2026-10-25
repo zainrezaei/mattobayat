@@ -7,6 +7,7 @@ import { getDictionary, hasLocale, t } from "@/i18n";
 import { getCategories, getProducts, getSettings } from "@/lib/data";
 import { mapsLink, telLink, whatsappLink } from "@/lib/utils";
 import ProductCard from "@/components/ProductCard";
+import ArrowIcon from "@/components/ArrowIcon";
 
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -84,7 +85,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             >
               <Link href={`/${lang}/products`} className="btn btn--gold btn--lg">
                 <span>{dict.home.ctaShop}</span>
-                <span className="flip-rtl">→</span>
+                <ArrowIcon direction="forward" />
               </Link>
               <a
                 href={mapsLink(settings)}
@@ -257,10 +258,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             </div>
             <Link href={`/${lang}/products`} className="link-arrow">
               <span>{dict.common.viewAll}</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
+              <ArrowIcon direction="forward" />
             </Link>
           </div>
 
@@ -324,8 +322,12 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
                     <h3 style={{ fontSize: "1.35rem", fontWeight: 600, color: "#fff", marginBottom: "0.25rem" }}>
                       {t(cat.name, lang)}
                     </h3>
-                    <span style={{ fontSize: "0.85rem", color: "var(--gold-soft)", fontWeight: 500 }}>
-                      {dict.common.viewAll} →
+                    <span
+                      className="link-arrow"
+                      style={{ fontSize: "0.85rem", color: "var(--gold-soft)", fontWeight: 500 }}
+                    >
+                      <span>{dict.common.viewAll}</span>
+                      <ArrowIcon direction="forward" size={15} />
                     </span>
                   </div>
                 </Link>
@@ -665,7 +667,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <Link href={`/${lang}/guide`} className="btn btn--gold btn--lg">
                 <span>{dict.guide.seeMatching}</span>
-                <span className="flip-rtl">→</span>
+                <ArrowIcon direction="forward" />
               </Link>
             </div>
           </div>

@@ -8,6 +8,7 @@ import { formatPrice, getDictionary } from "@/i18n";
 import { useCart } from "@/context/CartContext";
 import { submitReservation } from "@/lib/actions";
 import { mapsLink } from "@/lib/utils";
+import ArrowIcon from "@/components/ArrowIcon";
 
 export default function ReservationForm({
   lang,
@@ -323,8 +324,10 @@ export default function ReservationForm({
             type="submit"
             disabled={isPending}
             className="btn btn--gold btn--lg btn--block"
+            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
           >
-            {isPending ? dict.reservation.sending : dict.reservation.submit} →
+            <span>{isPending ? dict.reservation.sending : dict.reservation.submit}</span>
+            <ArrowIcon direction="forward" />
           </button>
         </form>
       </div>

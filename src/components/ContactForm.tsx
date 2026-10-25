@@ -4,6 +4,7 @@ import React, { useState, useTransition } from "react";
 import type { Locale } from "@/lib/types";
 import { getDictionary } from "@/i18n";
 import { submitContactMessage } from "@/lib/actions";
+import ArrowIcon from "@/components/ArrowIcon";
 
 export default function ContactForm({ lang }: { lang: Locale }) {
   const dict = getDictionary(lang);
@@ -129,9 +130,10 @@ export default function ContactForm({ lang }: { lang: Locale }) {
           type="submit"
           disabled={isPending}
           className="btn btn--gold btn--lg"
-          style={{ alignSelf: "flex-start" }}
+          style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
         >
-          {isPending ? dict.contact.sending : dict.contact.send} →
+          <span>{isPending ? dict.contact.sending : dict.contact.send}</span>
+          <ArrowIcon direction="forward" />
         </button>
       </form>
     </div>

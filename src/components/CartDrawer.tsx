@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import type { Locale } from "@/lib/types";
 import { formatPrice, getDictionary, fill } from "@/i18n";
+import ArrowIcon from "@/components/ArrowIcon";
 
 export default function CartDrawer({
   lang,
@@ -407,8 +408,10 @@ export default function CartDrawer({
               href={`/${lang}/reservation`}
               onClick={closeCart}
               className="btn btn--block btn--gold btn--lg"
+              style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
             >
-              {dict.cart.checkout} →
+              <span>{dict.cart.checkout}</span>
+              <ArrowIcon direction="forward" />
             </Link>
 
             <button

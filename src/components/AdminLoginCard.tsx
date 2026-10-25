@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { Locale } from "@/lib/types";
 import { getDictionary } from "@/i18n";
 import { adminSignIn, type ActionState } from "@/lib/actions";
+import ArrowIcon from "@/components/ArrowIcon";
 
 export default function AdminLoginCard({
   lang,
@@ -171,9 +172,13 @@ export default function AdminLoginCard({
               color: "var(--muted)",
               fontSize: "0.88rem",
               textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.4rem",
             }}
           >
-            ← {dict.admin.viewSite}
+            <ArrowIcon direction="back" size={14} />
+            <span>{dict.admin.viewSite}</span>
           </Link>
         </div>
       </div>

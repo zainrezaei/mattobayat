@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import type { Locale } from "@/lib/types";
 import { getDictionary } from "@/i18n";
+import ArrowIcon from "@/components/ArrowIcon";
 
 export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
   const dict = getDictionary(lang);
@@ -174,8 +175,13 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
             </p>
           </div>
 
-          <Link href={`/${lang}/products`} className="btn btn--gold">
-            {dict.guide.seeMatching} →
+          <Link
+            href={`/${lang}/products`}
+            className="btn btn--gold"
+            style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
+          >
+            <span>{dict.guide.seeMatching}</span>
+            <ArrowIcon direction="forward" />
           </Link>
         </div>
 

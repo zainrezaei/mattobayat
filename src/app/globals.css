@@ -349,21 +349,48 @@ html[lang="fa"] .eyebrow {
   gap: 0.5rem;
   font-weight: 600;
   color: var(--plum);
-  svg {
-    inline-size: 18px;
-    transition: translate 0.25s var(--ease);
-  }
-  &:hover svg {
-    translate: 4px 0;
-  }
+  text-decoration: none;
+}
+.link-arrow svg,
+.arrow-icon {
+  inline-size: 18px;
+  block-size: 18px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+  transition: transform 0.25s var(--ease);
+}
+.link-arrow:hover svg,
+.link-arrow:hover .arrow-icon--forward,
+.btn:hover .arrow-icon--forward {
+  transform: translateX(4px);
+}
+.link-back:hover svg,
+.link-back:hover .arrow-icon--back,
+.btn:hover .arrow-icon--back {
+  transform: translateX(-4px);
+}
+.flip-rtl {
+  display: inline-block;
+  transition: transform 0.25s var(--ease);
 }
 [dir="rtl"] .link-arrow svg,
+[dir="rtl"] .arrow-icon--forward,
+[dir="rtl"] .arrow-icon--back,
 [dir="rtl"] .flip-rtl {
-  scale: -1 1;
+  transform: scaleX(-1);
 }
-[dir="rtl"] .link-arrow:hover svg {
-  translate: -4px 0;
+[dir="rtl"] .link-arrow:hover svg,
+[dir="rtl"] .link-arrow:hover .arrow-icon--forward,
+[dir="rtl"] .btn:hover .arrow-icon--forward {
+  transform: scaleX(-1) translateX(4px);
 }
+[dir="rtl"] .link-back:hover svg,
+[dir="rtl"] .link-back:hover .arrow-icon--back,
+[dir="rtl"] .btn:hover .arrow-icon--back {
+  transform: scaleX(-1) translateX(-4px);
+}
+
 
 /* ---------- Forms ---------- */
 .field {

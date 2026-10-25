@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale } from "@/i18n";
 import RoomSizeCalculator from "@/components/RoomSizeCalculator";
+import ArrowIcon from "@/components/ArrowIcon";
 
 export async function generateMetadata({
   params,
@@ -171,8 +172,13 @@ export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) 
               </div>
 
               <div style={{ marginTop: "2rem" }}>
-                <Link href={`/${lang}/products`} className="btn btn--gold">
-                  {dict.guide.seeMatching} →
+                <Link
+                  href={`/${lang}/products`}
+                  className="btn btn--gold"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
+                >
+                  <span>{dict.guide.seeMatching}</span>
+                  <ArrowIcon direction="forward" />
                 </Link>
               </div>
             </div>

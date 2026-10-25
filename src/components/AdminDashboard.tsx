@@ -7,6 +7,7 @@ import type { Category, Locale, Message, Product, Reservation, ReservationStatus
 import { formatPrice, formatSize, getDictionary, t, formatDate } from "@/i18n";
 import { adminSignOut, deleteProduct, saveProduct, saveSettings, toggleMessageHandled, updateReservationStatus } from "@/lib/actions";
 import { telLink } from "@/lib/utils";
+import ArrowIcon from "@/components/ArrowIcon";
 
 export default function AdminDashboard({
   lang,
@@ -108,8 +109,13 @@ export default function AdminDashboard({
           </div>
 
           <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-            <Link href={`/${lang}`} className="btn btn--outline btn--sm">
-              ← {dict.admin.viewSite}
+            <Link
+              href={`/${lang}`}
+              className="btn btn--outline btn--sm"
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+            >
+              <ArrowIcon direction="back" size={14} />
+              <span>{dict.admin.viewSite}</span>
             </Link>
             {!isDemo && (
               <button
