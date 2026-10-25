@@ -269,18 +269,15 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <rect x="1" y="3" width="15" height="13" />
-                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                <circle cx="5.5" cy="18.5" r="2.5" />
-                <circle cx="18.5" cy="18.5" r="2.5" />
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
             </div>
             <div>
               <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)", fontWeight: 600 }}>
-                {lang === "fi" ? "Ilmainen toimitus" : lang === "fa" ? "ارسال رایگان" : "Free Delivery"}
+                {lang === "fi" ? "Aito villa & silkki" : lang === "fa" ? "پشم و ابریشم خالص" : "Pure Wool & Silk"}
               </strong>
               <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
-                {lang === "fi" ? "Helsingissä yli 200 €" : lang === "fa" ? "در هلسینکی بالای ۲۰۰ یورو" : "In Helsinki over 200 €"}
+                {lang === "fi" ? "100 % luonnonmateriaalit" : lang === "fa" ? "۱۰۰٪ الیاف طبیعی و بادوام" : "100% natural materials"}
               </span>
             </div>
           </div>

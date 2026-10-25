@@ -182,7 +182,7 @@ const en: Dictionary = {
     faq: [
       { q: "Can I pay online?", a: "We don't take online payments. You reserve online and pay in store by cash or card." },
       { q: "How long is a reservation held?", a: "Reservations are held for 3 days after we confirm them. We can agree on a longer time if needed." },
-      { q: "Do you deliver?", a: "Yes. We deliver in the Helsinki region, and orders over {amount} € are delivered free within Helsinki. Delivery elsewhere in Finland by agreement." },
+      { q: "Do you deliver?", a: "Yes. We arrange delivery in the Helsinki metropolitan area and across Finland upon agreement. Delivery details are confirmed when finalizing your reservation." },
       { q: "Do you sell wholesale?", a: "Yes, we are also a wholesaler. Contact us for wholesale prices." },
       { q: "Can I try a rug at home?", a: "Ask us – we can often arrange for you to see a rug in your own space." },
     ],

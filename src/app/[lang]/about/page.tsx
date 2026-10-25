@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { Locale } from "@/lib/types";
-import { fill, getDictionary, hasLocale } from "@/i18n";
+import { getDictionary, hasLocale } from "@/i18n";
 import { getSettings } from "@/lib/data";
 import { mapsLink, whatsappLink } from "@/lib/utils";
 
@@ -290,7 +290,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
                     marginBottom: 0,
                   }}
                 >
-                  {fill(item.a, { amount: settings.free_delivery_threshold })}
+                  {item.a}
                 </p>
               </details>
             ))}

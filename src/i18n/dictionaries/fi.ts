@@ -180,7 +180,7 @@ const fi = {
     faq: [
       { q: "Voinko maksaa verkossa?", a: "Emme ota verkkomaksuja. Varaat tuotteet verkossa ja maksat liikkeessä käteisellä tai kortilla." },
       { q: "Kuinka kauan varaus on voimassa?", a: "Varaus on voimassa 3 päivää siitä, kun olemme vahvistaneet sen. Tarvittaessa voimme sopia pidemmästä ajasta." },
-      { q: "Toimitatteko kotiin?", a: "Kyllä. Toimitamme pääkaupunkiseudulle, ja yli {amount} € tilaukset toimitetaan Helsingissä ilmaiseksi. Muualle Suomeen sovitaan erikseen." },
+      { q: "Toimitatteko kotiin?", a: "Kyllä. Toimitamme pääkaupunkiseudulle ja muualle Suomeen sopimuksen mukaan. Toimitustapa ja mahdollinen toimitusmaksu sovitaan varauksen vahvistuksen yhteydessä." },
       { q: "Myyttekö myös tukkuna?", a: "Kyllä, olemme myös tukkuliike. Ota yhteyttä, niin kerromme tukkuhinnoista." },
       { q: "Voinko kokeilla mattoa kotona?", a: "Kysy meiltä – sovimme usein mahdollisuudesta katsoa mattoa omassa tilassa." },
     ],

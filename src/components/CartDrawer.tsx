@@ -5,15 +5,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import type { Locale } from "@/lib/types";
-import { formatPrice, getDictionary, fill } from "@/i18n";
+import { formatPrice, getDictionary } from "@/i18n";
 import ArrowIcon from "@/components/ArrowIcon";
 
 export default function CartDrawer({
   lang,
-  freeDeliveryThreshold,
 }: {
   lang: Locale;
-  freeDeliveryThreshold: number;
+  freeDeliveryThreshold?: number;
 }) {
   const { items, isOpen, closeCart, updateQty, removeItem, totalPrice, totalCount } = useCart();
   const dict = getDictionary(lang);
@@ -39,9 +38,6 @@ export default function CartDrawer({
       document.body.style.overflow = "";
     };
   }, [isOpen]);
-
-  const remainingForFreeDelivery = Math.max(0, freeDeliveryThreshold - totalPrice);
-  const progressPercent = Math.min(100, Math.round((totalPrice / freeDeliveryThreshold) * 100));
 
   return (
     <>
@@ -116,61 +112,6 @@ export default function CartDrawer({
             </svg>
           </button>
         </div>
-
-        {/* Free Delivery Bar */}
-        {totalPrice > 0 && (
-          <div
-            style={{
-              padding: "0.85rem 1.5rem",
-              backgroundColor: "var(--bg-alt)",
-              borderBottom: "1px solid var(--line)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                fontSize: "0.82rem",
-                marginBottom: "0.4rem",
-              }}
-            >
-              {remainingForFreeDelivery === 0 ? (
-                <span style={{ color: "var(--success)", fontWeight: 600 }}>
-                  ✓ {dict.product.freeDelivery.replace("{amount}", String(freeDeliveryThreshold))}
-                </span>
-              ) : (
-                <span>
-                  {fill(
-                    lang === "fi"
-                      ? "Lisää {amount} € saadaksesi ilmaisen toimituksen!"
-                      : lang === "fa"
-                      ? "برای ارسال رایگان {amount} یورو دیگر اضافه کنید!"
-                      : "Add {amount} € more for free delivery!",
-                    { amount: remainingForFreeDelivery.toFixed(0) }
-                  )}
-                </span>
-              )}
-            </div>
-            <div
-              style={{
-                height: "6px",
-                width: "100%",
-                backgroundColor: "var(--line)",
-                borderRadius: "999px",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  height: "100%",
-                  width: `${progressPercent}%`,
-                  backgroundColor: remainingForFreeDelivery === 0 ? "var(--success)" : "var(--gold)",
-                  transition: "width 0.3s ease",
-                }}
-              />
-            </div>
-          </div>
-        )}
 
         {/* Items List */}
         <div

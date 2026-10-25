@@ -293,32 +293,6 @@ export default async function ProductDetailPage({
                   }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="1" y="3" width="15" height="13" />
-                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                    <circle cx="5.5" cy="18.5" r="2.5" />
-                    <circle cx="18.5" cy="18.5" r="2.5" />
-                  </svg>
-                </div>
-                <div>
-                  <strong>{dict.product.freeDelivery.replace("{amount}", String(settings.free_delivery_threshold))}</strong>
-                </div>
-              </div>
-
-              <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
-                <div
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "var(--radius-sm)",
-                    backgroundColor: "var(--gold-50)",
-                    display: "grid",
-                    placeItems: "center",
-                    color: "var(--gold)",
-                    flexShrink: 0,
-                    marginTop: "2px",
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
