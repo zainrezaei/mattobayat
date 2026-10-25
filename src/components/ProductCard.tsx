@@ -73,41 +73,33 @@ export default function ProductCard({
           className="product-card-img"
         />
 
-        {/* Badges Overlay */}
-        <div
-          style={{
-            position: "absolute",
-            top: "0.75rem",
-            insetInlineStart: "0.75rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.35rem",
-            zIndex: 2,
-          }}
-        >
-          {product.compare_at_price && product.price && (
-            <span className="badge badge--danger">
+        {/* Single Refined Priority Badge */}
+        {(product.compare_at_price && product.price) ? (
+          <div style={{ position: "absolute", top: "0.85rem", insetInlineStart: "0.85rem", zIndex: 2 }}>
+            <span className="badge badge--danger" style={{ fontSize: "0.72rem", padding: "0.25rem 0.65rem", letterSpacing: "0.06em" }}>
               {dict.common.sale}
             </span>
-          )}
-          {product.featured && (
-            <span className="badge badge--gold">
-              ✦ {lang === "fa" ? "ویژه" : lang === "fi" ? "Suosittelemme" : "Featured"}
+          </div>
+        ) : product.featured ? (
+          <div style={{ position: "absolute", top: "0.85rem", insetInlineStart: "0.85rem", zIndex: 2 }}>
+            <span className="badge badge--gold" style={{ fontSize: "0.72rem", padding: "0.25rem 0.65rem" }}>
+              ✦ {lang === "fa" ? "ویژه" : lang === "fi" ? "Valikoitu" : "Featured"}
             </span>
-          )}
-          {product.stock <= 2 && product.stock > 0 && (
-            <span className="badge badge--warning">
+          </div>
+        ) : (product.stock <= 2 && product.stock > 0) ? (
+          <div style={{ position: "absolute", top: "0.85rem", insetInlineStart: "0.85rem", zIndex: 2 }}>
+            <span className="badge badge--warning" style={{ fontSize: "0.72rem", padding: "0.25rem 0.65rem" }}>
               {dict.common.lowStock}
             </span>
-          )}
-        </div>
+          </div>
+        ) : null}
 
         {/* Origin tag */}
         <div
           style={{
             position: "absolute",
-            bottom: "0.75rem",
-            insetInlineEnd: "0.75rem",
+            bottom: "0.85rem",
+            insetInlineEnd: "0.85rem",
             zIndex: 2,
           }}
         >
@@ -115,12 +107,13 @@ export default function ProductCard({
             style={{
               fontSize: "0.72rem",
               fontWeight: 600,
-              backgroundColor: "rgba(255, 255, 255, 0.9)",
-              backdropFilter: "blur(4px)",
+              backgroundColor: "rgba(255, 255, 255, 0.94)",
+              backdropFilter: "blur(6px)",
               color: "var(--ink)",
-              padding: "0.2rem 0.6rem",
-              borderRadius: "999px",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+              padding: "0.2rem 0.65rem",
+              borderRadius: "var(--radius-sm)",
+              border: "1px solid rgba(0,0,0,0.06)",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
             }}
           >
             {originText}
@@ -131,28 +124,34 @@ export default function ProductCard({
       {/* Content */}
       <div
         style={{
-          padding: "1.15rem 1.25rem",
+          padding: "1.25rem",
           display: "flex",
           flexDirection: "column",
           flex: 1,
-          gap: "0.6rem",
+          gap: "0.5rem",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "0.5rem" }}>
-          <span style={{ fontSize: "0.8rem", color: "var(--muted)", fontWeight: 500 }}>
-            {materialText} {sizeText ? `· ${sizeText}` : ""}
-          </span>
+        <div style={{ fontSize: "0.78rem", color: "var(--muted)", fontWeight: 500, letterSpacing: "0.02em" }}>
+          {materialText} {sizeText ? `· ${sizeText}` : ""}
         </div>
 
-        <h3 style={{ fontSize: "1.15rem", margin: 0, fontWeight: 600, lineHeight: 1.25 }}>
+        <h3
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "1.28rem",
+            margin: 0,
+            fontWeight: 500,
+            lineHeight: 1.25,
+            color: "var(--ink)",
+          }}
+        >
           <Link
             href={`/${lang}/products/${product.slug}`}
             style={{
-              color: "var(--ink)",
+              color: "inherit",
               textDecoration: "none",
               transition: "color 0.2s",
             }}
-            className="hover:underline"
           >
             {title}
           </Link>

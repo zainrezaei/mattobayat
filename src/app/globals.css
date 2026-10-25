@@ -5,44 +5,44 @@
    ========================================================== */
 
 :root {
-  --bg: #faf7f2;
-  --bg-alt: #f3ece2;
+  --bg: #fcfaf7;
+  --bg-alt: #f6f1e8;
   --surface: #ffffff;
-  --ink: #241a26;
-  --ink-soft: #54485a;
-  --muted: #8a7f8c;
+  --ink: #1c181b;
+  --ink-soft: #52474f;
+  --muted: #887b85;
   --line: #e8dfd3;
-  --line-strong: #d8ccbd;
+  --line-strong: #d4c7b8;
 
-  --plum: #5b2559;
-  --plum-600: #6e3270;
-  --plum-800: #3d173d;
-  --plum-50: #f6eff6;
-  --plum-100: #ecdeec;
+  --plum: #3e163b;
+  --plum-600: #551f51;
+  --plum-800: #290d27;
+  --plum-50: #f7f1f6;
+  --plum-100: #eedee9;
 
-  --gold: #b0883f;
-  --gold-600: #96712f;
-  --gold-soft: #ecdfc2;
-  --gold-50: #faf4e7;
+  --gold: #a67f3a;
+  --gold-600: #8c6a2e;
+  --gold-soft: #eddcc0;
+  --gold-50: #faf4e9;
 
-  --success: #2f7a55;
-  --success-50: #e8f4ed;
-  --danger: #b0383b;
-  --danger-50: #fbeaea;
-  --warning: #a26a12;
-  --warning-50: #fbf1de;
+  --success: #286d4c;
+  --success-50: #eaf4ee;
+  --danger: #a43336;
+  --danger-50: #faebeb;
+  --warning: #945f0f;
+  --warning-50: #faf1dd;
 
-  --radius-sm: 10px;
-  --radius: 16px;
-  --radius-lg: 28px;
-  --radius-arch: 999px 999px var(--radius) var(--radius);
+  --radius-sm: 6px;
+  --radius-btn: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
 
-  --shadow-sm: 0 1px 2px rgb(36 26 38 / 0.05), 0 2px 8px rgb(36 26 38 / 0.04);
-  --shadow: 0 2px 6px rgb(36 26 38 / 0.04), 0 12px 32px rgb(36 26 38 / 0.08);
-  --shadow-lg: 0 8px 24px rgb(36 26 38 / 0.08), 0 32px 64px rgb(36 26 38 / 0.12);
+  --shadow-sm: 0 1px 3px rgb(28 24 27 / 0.04), 0 2px 8px rgb(28 24 27 / 0.03);
+  --shadow: 0 4px 14px rgb(28 24 27 / 0.05), 0 12px 30px rgb(28 24 27 / 0.06);
+  --shadow-lg: 0 10px 30px rgb(28 24 27 / 0.08), 0 30px 60px rgb(28 24 27 / 0.1);
 
   --container: 1240px;
-  --gutter: clamp(1.1rem, 4vw, 2.5rem);
+  --gutter: clamp(1.25rem, 4vw, 2.75rem);
   --header-h: 76px;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -225,9 +225,9 @@ html[lang="fa"] .eyebrow {
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  min-block-size: 48px;
-  padding: 0.75rem 1.5rem;
-  border-radius: 999px;
+  min-block-size: 46px;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--radius-btn);
   border: 1.5px solid var(--btn-bd);
   background: var(--btn-bg);
   color: var(--btn-fg);
@@ -419,9 +419,9 @@ html[lang="fa"] .eyebrow {
 .select,
 .textarea {
   inline-size: 100%;
-  min-block-size: 50px;
+  min-block-size: 48px;
   padding: 0.75rem 1rem;
-  border-radius: 12px;
+  border-radius: var(--radius-btn);
   border: 1.5px solid var(--line-strong);
   background: var(--surface);
   font-size: 1rem;

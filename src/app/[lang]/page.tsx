@@ -93,7 +93,10 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
                 rel="noopener noreferrer"
                 className="btn btn--outline btn--lg"
               >
-                <span>📍</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
                 <span>{dict.home.ctaVisit}</span>
               </a>
             </div>
@@ -186,7 +189,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         style={{
           backgroundColor: "var(--surface)",
           borderBlock: "1px solid var(--line)",
-          paddingBlock: "1.5rem",
+          paddingBlock: "1.75rem",
         }}
       >
         <div
@@ -194,26 +197,29 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "1.5rem",
+            gap: "1.5rem 2rem",
             alignItems: "center",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-            <span style={{ fontSize: "1.5rem", color: "var(--gold-600)" }}>🚚</span>
-            <div>
-              <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)" }}>
-                {lang === "fi" ? "Ilmainen toimitus" : lang === "fa" ? "ارسال رایگان" : "Free Delivery"}
-              </strong>
-              <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
-                {lang === "fi" ? "Helsingissä yli 200 €" : lang === "fa" ? "در هلسینکی بالای ۲۰۰ یورو" : "In Helsinki over 200 €"}
-              </span>
+            <div
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "var(--radius-sm)",
+                backgroundColor: "var(--gold-50)",
+                display: "grid",
+                placeItems: "center",
+                color: "var(--gold)",
+                flexShrink: 0,
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
             </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-            <span style={{ fontSize: "1.5rem", color: "var(--gold-600)" }}>✨</span>
             <div>
-              <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)" }}>
+              <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)", fontWeight: 600 }}>
                 {lang === "fi" ? "Aito alkuperä" : lang === "fa" ? "اصالت تضمین‌شده" : "Authentic Origin"}
               </strong>
               <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
@@ -223,9 +229,24 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-            <span style={{ fontSize: "1.5rem", color: "var(--gold-600)" }}>🛡️</span>
+            <div
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "var(--radius-sm)",
+                backgroundColor: "var(--gold-50)",
+                display: "grid",
+                placeItems: "center",
+                color: "var(--gold)",
+                flexShrink: 0,
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
             <div>
-              <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)" }}>
+              <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)", fontWeight: 600 }}>
                 {lang === "fi" ? "Varaa ilman riskiä" : lang === "fa" ? "رزرو بدون ریسک" : "Zero-Risk Reservation"}
               </strong>
               <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
@@ -235,10 +256,57 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-            <span style={{ fontSize: "1.5rem", color: "var(--gold-600)" }}>💬</span>
+            <div
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "var(--radius-sm)",
+                backgroundColor: "var(--gold-50)",
+                display: "grid",
+                placeItems: "center",
+                color: "var(--gold)",
+                flexShrink: 0,
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <rect x="1" y="3" width="15" height="13" />
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                <circle cx="5.5" cy="18.5" r="2.5" />
+                <circle cx="18.5" cy="18.5" r="2.5" />
+              </svg>
+            </div>
             <div>
-              <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)" }}>
-                {lang === "fi" ? "4 kielen palvelu" : lang === "fa" ? "خدمات به ۴ زبان" : "Service in 4 Languages"}
+              <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)", fontWeight: 600 }}>
+                {lang === "fi" ? "Ilmainen toimitus" : lang === "fa" ? "ارسال رایگان" : "Free Delivery"}
+              </strong>
+              <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
+                {lang === "fi" ? "Helsingissä yli 200 €" : lang === "fa" ? "در هلسینکی بالای ۲۰۰ یورو" : "In Helsinki over 200 €"}
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
+            <div
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "var(--radius-sm)",
+                backgroundColor: "var(--gold-50)",
+                display: "grid",
+                placeItems: "center",
+                color: "var(--gold)",
+                flexShrink: 0,
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+            </div>
+            <div>
+              <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)", fontWeight: 600 }}>
+                {lang === "fi" ? "Palvelu 4 kielellä" : lang === "fa" ? "خدمات به ۴ زبان" : "Service in 4 Languages"}
               </strong>
               <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
                 Suomi, English, فارسی, دری
@@ -364,147 +432,14 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         </div>
       </section>
 
-      {/* 5. How It Works (Online Reservation flow) */}
-      <section className="section">
-        <div className="container">
-          <div className="section-head section-head--center" style={{ marginBottom: "3.5rem" }}>
-            <span className="eyebrow">{dict.home.howLabel}</span>
-            <h2>{dict.home.howTitle}</h2>
-            <p>
-              {lang === "fi"
-                ? "Emme veloita ennakkomaksua verkossa. Näin prosessi toimii:"
-                : lang === "fa"
-                ? "پرداخت آنلاین لازم نیست. مراحل کار بسیار ساده است:"
-                : "No advance payment online. Here is how the process works:"}
-            </p>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
-              gap: "2rem",
-            }}
-          >
-            {/* Step 1 */}
-            <div
-              style={{
-                backgroundColor: "var(--surface)",
-                padding: "2rem",
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--line)",
-                boxShadow: "var(--shadow-sm)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.85rem",
-              }}
-            >
-              <div
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--plum-50)",
-                  color: "var(--plum)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "1.2rem",
-                  fontWeight: 700,
-                }}
-              >
-                1
-              </div>
-              <h3 style={{ fontSize: "1.25rem", color: "var(--plum)", margin: 0 }}>
-                {dict.home.how1Title}
-              </h3>
-              <p style={{ color: "var(--ink-soft)", fontSize: "0.92rem", lineHeight: 1.6, margin: 0 }}>
-                {dict.home.how1Text}
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div
-              style={{
-                backgroundColor: "var(--surface)",
-                padding: "2rem",
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--line)",
-                boxShadow: "var(--shadow-sm)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.85rem",
-              }}
-            >
-              <div
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--gold-50)",
-                  color: "var(--gold-600)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "1.2rem",
-                  fontWeight: 700,
-                }}
-              >
-                2
-              </div>
-              <h3 style={{ fontSize: "1.25rem", color: "var(--plum)", margin: 0 }}>
-                {dict.home.how2Title}
-              </h3>
-              <p style={{ color: "var(--ink-soft)", fontSize: "0.92rem", lineHeight: 1.6, margin: 0 }}>
-                {dict.home.how2Text}
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div
-              style={{
-                backgroundColor: "var(--surface)",
-                padding: "2rem",
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--line)",
-                boxShadow: "var(--shadow-sm)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.85rem",
-              }}
-            >
-              <div
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--success-50)",
-                  color: "var(--success)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "1.2rem",
-                  fontWeight: 700,
-                }}
-              >
-                3
-              </div>
-              <h3 style={{ fontSize: "1.25rem", color: "var(--plum)", margin: 0 }}>
-                {dict.home.how3Title}
-              </h3>
-              <p style={{ color: "var(--ink-soft)", fontSize: "0.92rem", lineHeight: 1.6, margin: 0 }}>
-                {dict.home.how3Text}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Showroom Highlight with Real Google Maps Photos */}
+      {/* 5. Showroom & Atelier Highlight */}
       <section className="section section--alt">
         <div className="container">
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(min(400px, 100%), 1fr))",
-              gap: "3rem",
+              gap: "clamp(2rem, 5vw, 4rem)",
               alignItems: "center",
             }}
           >
@@ -578,35 +513,48 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
                 {dict.home.showroomText}
               </p>
 
-              {/* Hours & Address quick card */}
+              {/* Refined Address & Transit Card */}
               <div
                 style={{
-                  padding: "1.5rem",
+                  padding: "1.25rem 1.5rem",
                   borderRadius: "var(--radius)",
                   backgroundColor: "var(--surface)",
-                  border: "1px solid var(--line)",
+                  border: "1px solid var(--line-strong)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "0.75rem",
-                  marginTop: "0.5rem",
+                  gap: "0.6rem",
+                  marginTop: "0.25rem",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "baseline", gap: "0.6rem" }}>
-                  <span style={{ fontSize: "1.2rem" }}>📍</span>
-                  <div>
-                    <strong style={{ color: "var(--ink)" }}>{settings.address}, {settings.postal} {settings.city}</strong>
-                    <div style={{ fontSize: "0.82rem", color: "var(--muted)" }}>
-                      {lang === "fi" ? "Vartiokylä · 400 m Siilitien metrosta · Ilmainen asiakaspysäköinti" : lang === "fa" ? "وارتیوکیلا · ۴۰۰ متری ایستگاه متروی Siilitie · پارکینگ رایگان" : "Vartiokylä · 400m from Siilitie metro · Free customer parking"}
-                    </div>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+                  <div
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "var(--radius-sm)",
+                      backgroundColor: "var(--gold-50)",
+                      display: "grid",
+                      placeItems: "center",
+                      color: "var(--gold)",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
                   </div>
-                </div>
-
-                <div style={{ display: "flex", alignItems: "baseline", gap: "0.6rem" }}>
-                  <span style={{ fontSize: "1.2rem" }}>🕐</span>
-                  <div style={{ fontSize: "0.9rem", color: "var(--ink-soft)" }}>
-                    <strong>{dict.hours.monFri}:</strong> {settings.hours.mon_fri.open}–{settings.hours.mon_fri.close} ·{" "}
-                    <strong>{dict.hours.sat}:</strong> {settings.hours.sat.open}–{settings.hours.sat.close} ·{" "}
-                    <strong>{dict.hours.sun}:</strong> {settings.hours.sun.open}–{settings.hours.sun.close}
+                  <div>
+                    <strong style={{ color: "var(--ink)", display: "block", fontSize: "0.95rem" }}>
+                      {settings.address}, {settings.postal} {settings.city}
+                    </strong>
+                    <div style={{ fontSize: "0.82rem", color: "var(--muted)", marginTop: "2px" }}>
+                      {lang === "fi"
+                        ? "Siilitien metro 400 m · Maksuton asiakaspysäköinti suoraan oven edessä"
+                        : lang === "fa"
+                        ? "وارتیوکیلا · ۴۰۰ متری ایستگاه متروی Siilitie · پارکینگ رایگان اختصاصی"
+                        : "Vartiokylä · 400m from Siilitie metro · Free dedicated customer parking"}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -619,8 +567,13 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
                   rel="noopener noreferrer"
                   className="btn btn--gold"
                 >
-                  <span>🗺️</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+                    <line x1="8" y1="2" x2="8" y2="18" />
+                    <line x1="16" y1="6" x2="16" y2="22" />
+                  </svg>
                   <span>{dict.common.directions}</span>
+                  <ArrowIcon direction="forward" />
                 </a>
                 <a
                   href={whatsappLink(settings.whatsapp, "Hei! Haluaisin tulla käymään myymälässä.")}
@@ -628,7 +581,9 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
                   rel="noopener noreferrer"
                   className="btn btn--whatsapp"
                 >
-                  <span>💬</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                  </svg>
                   <span>WhatsApp</span>
                 </a>
               </div>
@@ -637,34 +592,94 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         </div>
       </section>
 
-      {/* 7. Interactive Room Size Guide Banner */}
+      {/* 6. Interactive Room Size Guide Banner (Refined Scandinavian Aesthetic) */}
       <section className="section">
         <div className="container">
           <div
             style={{
               padding: "clamp(2rem, 5vw, 3.5rem)",
               borderRadius: "var(--radius-lg)",
-              backgroundColor: "var(--plum)",
-              color: "#fff",
+              backgroundColor: "var(--bg-alt)",
+              border: "1px solid var(--line-strong)",
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))",
-              gap: "2rem",
+              gap: "2.5rem",
               alignItems: "center",
-              boxShadow: "var(--shadow-lg)",
+              boxShadow: "var(--shadow-sm)",
             }}
           >
             <div>
-              <span style={{ color: "var(--gold-soft)", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                ✦ {dict.guide.title}
+              <span className="eyebrow" style={{ color: "var(--gold-600)" }}>
+                {dict.guide.title}
               </span>
-              <h2 style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", color: "#fff", marginBlock: "0.5rem 1rem" }}>
+              <h2
+                style={{
+                  fontSize: "clamp(1.9rem, 3.6vw, 2.7rem)",
+                  color: "var(--plum)",
+                  marginBlock: "0.6rem 1rem",
+                }}
+              >
                 {dict.guide.sizeTitle}
               </h2>
-              <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: "44ch" }}>
+              <p
+                style={{
+                  color: "var(--ink-soft)",
+                  fontSize: "1.05rem",
+                  lineHeight: 1.65,
+                  maxWidth: "46ch",
+                }}
+              >
                 {dict.guide.sizeText}
               </p>
             </div>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: "1.25rem",
+                justifySelf: "end",
+              }}
+            >
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.85rem",
+                  padding: "0.75rem 1.25rem",
+                  borderRadius: "var(--radius)",
+                  backgroundColor: "var(--surface)",
+                  border: "1px solid var(--line)",
+                  boxShadow: "var(--shadow-sm)",
+                }}
+              >
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "var(--radius-sm)",
+                    backgroundColor: "var(--gold-50)",
+                    display: "grid",
+                    placeItems: "center",
+                    color: "var(--gold)",
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <path d="M3 9h18M9 21V9" />
+                  </svg>
+                </div>
+                <div>
+                  <strong style={{ fontSize: "0.95rem", color: "var(--plum)", display: "block" }}>
+                    200 × 300 cm / 250 × 350 cm
+                  </strong>
+                  <span style={{ fontSize: "0.78rem", color: "var(--muted)" }}>
+                    {lang === "fi" ? "Laske mittasuhde huoneellesi" : lang === "fa" ? "محاسبه نسبت طلایی برای فضا" : "Calculate proportions for your space"}
+                  </span>
+                </div>
+              </div>
+
               <Link href={`/${lang}/guide`} className="btn btn--gold btn--lg">
                 <span>{dict.guide.seeMatching}</span>
                 <ArrowIcon direction="forward" />

@@ -76,7 +76,29 @@ export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) 
             }}
           >
             {dict.guide.rooms.map((room, idx) => {
-              const icons = ["🛋️", "🍽️", "🛏️", "🚪"];
+              const icons = [
+                // Sofa (Living Room)
+                <svg key="living" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M20 9V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2" />
+                  <path d="M2 11a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5z" />
+                  <path d="M4 18v2M20 18v2M6 11v3M18 11v3" />
+                </svg>,
+                // Dining Table
+                <svg key="dining" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M4 10h16M6 10v10M18 10v10" />
+                  <rect x="2" y="6" width="20" height="4" rx="1" />
+                </svg>,
+                // Bed (Bedroom)
+                <svg key="bed" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v-2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2" />
+                </svg>,
+                // Hallway / Door
+                <svg key="hall" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14" />
+                  <path d="M2 20h20" />
+                  <circle cx="14" cy="12" r="1" fill="currentColor" />
+                </svg>,
+              ];
               return (
                 <div
                   key={idx}
@@ -88,10 +110,22 @@ export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) 
                     boxShadow: "var(--shadow-sm)",
                     display: "flex",
                     flexDirection: "column",
-                    gap: "0.75rem",
+                    gap: "0.85rem",
                   }}
                 >
-                  <div style={{ fontSize: "2rem" }}>{icons[idx]}</div>
+                  <div
+                    style={{
+                      width: "44px",
+                      height: "44px",
+                      borderRadius: "var(--radius-sm)",
+                      backgroundColor: "var(--gold-50)",
+                      display: "grid",
+                      placeItems: "center",
+                      color: "var(--gold)",
+                    }}
+                  >
+                    {icons[idx]}
+                  </div>
                   <h3 style={{ fontSize: "1.3rem", color: "var(--plum)", margin: 0 }}>
                     {room.title}
                   </h3>

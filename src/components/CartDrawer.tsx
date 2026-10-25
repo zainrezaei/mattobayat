@@ -304,7 +304,7 @@ export default function CartDrawer({
                         display: "inline-flex",
                         alignItems: "center",
                         border: "1px solid var(--line-strong)",
-                        borderRadius: "999px",
+                        borderRadius: "var(--radius-sm)",
                         backgroundColor: "var(--bg)",
                         padding: "2px",
                       }}

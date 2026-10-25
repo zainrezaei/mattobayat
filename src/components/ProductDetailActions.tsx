@@ -47,14 +47,15 @@ export default function ProductDetailActions({
             display: "inline-flex",
             alignItems: "center",
             border: "1.5px solid var(--line-strong)",
-            borderRadius: "999px",
+            borderRadius: "var(--radius-btn)",
             backgroundColor: "var(--surface)",
             padding: "4px",
+            height: "56px",
           }}
         >
           <button
             onClick={() => setQty(Math.max(1, qty - 1))}
-            style={{ width: "36px", height: "36px", fontSize: "1.2rem", color: "var(--ink-soft)" }}
+            style={{ width: "38px", height: "100%", fontSize: "1.2rem", color: "var(--ink-soft)" }}
             aria-label="Decrease quantity"
           >
             −
@@ -64,7 +65,7 @@ export default function ProductDetailActions({
           </span>
           <button
             onClick={() => setQty(qty + 1)}
-            style={{ width: "36px", height: "36px", fontSize: "1.2rem", color: "var(--ink-soft)" }}
+            style={{ width: "38px", height: "100%", fontSize: "1.2rem", color: "var(--ink-soft)" }}
             aria-label="Increase quantity"
           >
             +
@@ -87,7 +88,9 @@ export default function ProductDetailActions({
         rel="noopener noreferrer"
         className="btn btn--whatsapp btn--lg btn--block"
       >
-        <span>💬</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+        </svg>
         <span>{dict.product.askWhatsapp}</span>
       </a>
     </div>

@@ -94,7 +94,13 @@ export default function ReservationForm({
             marginBottom: "2rem",
           }}
         >
-          <strong>📍 {lang === "fi" ? "Nouto-osoite & aukioloajat:" : lang === "fa" ? "آدرس و ساعات تحویل:" : "Pickup location & hours:"}</strong>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontWeight: 700, marginBottom: "0.35rem" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span>{lang === "fi" ? "Nouto-osoite & aukioloajat:" : lang === "fa" ? "آدرس و ساعات تحویل:" : "Pickup location & hours:"}</span>
+          </div>
           <div>{settings.address}, {settings.postal} {settings.city}</div>
           <div style={{ marginTop: "0.25rem" }}>
             {dict.hours.monFri}: {settings.hours.mon_fri.open}–{settings.hours.mon_fri.close} · {dict.hours.sat}: {settings.hours.sat.open}–{settings.hours.sat.close}
@@ -114,7 +120,11 @@ export default function ReservationForm({
             rel="noopener noreferrer"
             className="btn btn--outline"
           >
-            <span>🗺️</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+              <line x1="8" y1="2" x2="8" y2="18" />
+              <line x1="16" y1="6" x2="16" y2="22" />
+            </svg>
             <span>{dict.common.directions}</span>
           </a>
         </div>
@@ -132,7 +142,25 @@ export default function ReservationForm({
           paddingBlock: "4rem",
         }}
       >
-        <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🛍️</div>
+        <div
+          style={{
+            width: "64px",
+            height: "64px",
+            borderRadius: "50%",
+            backgroundColor: "var(--plum-50)",
+            color: "var(--plum)",
+            display: "grid",
+            placeItems: "center",
+            marginInline: "auto",
+            marginBottom: "1.25rem",
+          }}
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
+        </div>
         <h2 style={{ fontSize: "1.85rem", color: "var(--plum)", marginBottom: "0.5rem" }}>
           {dict.cart.empty}
         </h2>

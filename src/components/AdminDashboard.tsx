@@ -293,21 +293,35 @@ export default function AdminDashboard({
                       <a
                         href={telLink(res.phone)}
                         className="btn btn--sm btn--gold"
-                        style={{ display: "inline-flex", marginTop: "0.25rem" }}
+                        style={{ display: "inline-flex", marginTop: "0.25rem", gap: "0.4rem" }}
                       >
-                        📞 {dict.admin.call}: {res.phone}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                        </svg>
+                        <span>{dict.admin.call}: {res.phone}</span>
                       </a>
                     </div>
 
                     {res.email && (
-                      <div style={{ fontSize: "0.85rem", color: "var(--muted)", marginTop: "0.4rem" }}>
-                        ✉️ {res.email}
+                      <div style={{ fontSize: "0.85rem", color: "var(--muted)", marginTop: "0.4rem", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                          <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                        <span>{res.email}</span>
                       </div>
                     )}
 
-                    <div style={{ fontSize: "0.85rem", color: "var(--ink-soft)", marginTop: "0.4rem" }}>
-                      📦 <strong>{res.fulfilment === "delivery" ? dict.reservation.delivery : dict.reservation.pickup}</strong>
-                      {res.address && <div style={{ color: "var(--muted)" }}>{res.address}</div>}
+                    <div style={{ fontSize: "0.85rem", color: "var(--ink-soft)", marginTop: "0.4rem", display: "flex", alignItems: "flex-start", gap: "0.4rem" }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: "2px" }}>
+                        <polyline points="21 8 21 21 3 21 3 8" />
+                        <rect x="1" y="3" width="22" height="5" />
+                        <line x1="10" y1="12" x2="14" y2="12" />
+                      </svg>
+                      <div>
+                        <strong>{res.fulfilment === "delivery" ? dict.reservation.delivery : dict.reservation.pickup}</strong>
+                        {res.address && <div style={{ color: "var(--muted)" }}>{res.address}</div>}
+                      </div>
                     </div>
 
                     {res.message && (

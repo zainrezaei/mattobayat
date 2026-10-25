@@ -143,7 +143,23 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
                 boxShadow: "var(--shadow-sm)",
               }}
             >
-              <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>💎</div>
+              <div
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "var(--radius-sm)",
+                  backgroundColor: "var(--gold-50)",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "var(--gold)",
+                  marginBottom: "1rem",
+                }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
+                  <path d="M2 9h20M10 3l-4 6 6 12 6-12-4-6" />
+                </svg>
+              </div>
               <h3 style={{ fontSize: "1.3rem", color: "var(--plum)", marginBottom: "0.5rem" }}>
                 {dict.home.promise1Title}
               </h3>
@@ -161,7 +177,23 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
                 boxShadow: "var(--shadow-sm)",
               }}
             >
-              <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>🏷️</div>
+              <div
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "var(--radius-sm)",
+                  backgroundColor: "var(--gold-50)",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "var(--gold)",
+                  marginBottom: "1rem",
+                }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                  <line x1="7" y1="7" x2="7.01" y2="7" />
+                </svg>
+              </div>
               <h3 style={{ fontSize: "1.3rem", color: "var(--plum)", marginBottom: "0.5rem" }}>
                 {dict.home.promise2Title}
               </h3>
@@ -179,7 +211,25 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
                 boxShadow: "var(--shadow-sm)",
               }}
             >
-              <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>🤝</div>
+              <div
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "var(--radius-sm)",
+                  backgroundColor: "var(--gold-50)",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "var(--gold)",
+                  marginBottom: "1rem",
+                }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
               <h3 style={{ fontSize: "1.3rem", color: "var(--plum)", marginBottom: "0.5rem" }}>
                 {dict.home.promise3Title}
               </h3>
@@ -281,7 +331,9 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
                 rel="noopener noreferrer"
                 className="btn btn--whatsapp"
               >
-                <span>💬</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>
                 <span>WhatsApp</span>
               </a>
             </div>
