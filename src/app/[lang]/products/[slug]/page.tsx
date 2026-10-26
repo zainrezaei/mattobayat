@@ -50,7 +50,7 @@ export default async function ProductDetailPage({
   const sizeText = formatSize(product.width_cm, product.length_cm, lang);
 
   return (
-    <div className="section" style={{ paddingTop: "clamp(1.5rem, 3vw, 3rem)" }}>
+    <div className="section product-detail-section" style={{ paddingTop: "clamp(1.5rem, 3vw, 3rem)" }}>
       <div className="container">
         {/* Breadcrumb */}
         <nav
@@ -325,6 +325,13 @@ export default async function ProductDetailPage({
           </div>
         )}
       </div>
+      <style>{`
+        @media (max-width: 768px) {
+          .product-detail-section {
+            padding-bottom: 5.5rem !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

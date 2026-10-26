@@ -103,6 +103,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
             {/* Fast Stats */}
             <div
+              className="hero-fast-stats"
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(3, 1fr)",
@@ -689,6 +690,18 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <style>{`
         .cat-card:hover .cat-card-img {
           transform: scale(1.06);
+        }
+        @media (max-width: 440px) {
+          .hero-fast-stats {
+            gap: 0.5rem !important;
+          }
+          .hero-fast-stats > div > div:first-child {
+            font-size: 1.45rem !important;
+          }
+          .hero-fast-stats > div > div:last-child {
+            font-size: 0.74rem !important;
+            line-height: 1.25;
+          }
         }
       `}</style>
     </div>

@@ -285,7 +285,6 @@ export async function saveSettings(
   const instagram = String(formData.get("instagram") || "");
   const facebook = String(formData.get("facebook") || "");
   const tiktok = String(formData.get("tiktok") || "");
-  const free_delivery_threshold = Number(formData.get("free_delivery_threshold") || 200);
 
   const announcementFi = String(formData.get("announcement_fi") || "");
   const announcementEn = String(formData.get("announcement_en") || "");
@@ -310,7 +309,6 @@ export async function saveSettings(
     instagram,
     facebook,
     tiktok,
-    free_delivery_threshold,
     announcement: { fi: announcementFi, en: announcementEn, fa: announcementFa },
     announcement_active,
     hours: {

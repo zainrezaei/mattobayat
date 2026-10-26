@@ -951,16 +951,6 @@ export default function AdminDashboard({
                 <input name="announcement_fa" defaultValue={settings.announcement.fa} dir="rtl" className="input" />
               </div>
 
-              <div className="field">
-                <label className="label">{dict.admin.freeDelivery}</label>
-                <input
-                  name="free_delivery_threshold"
-                  type="number"
-                  defaultValue={settings.free_delivery_threshold}
-                  className="input"
-                />
-              </div>
-
               <button type="submit" disabled={isPending} className="btn btn--gold btn--lg" style={{ alignSelf: "flex-start" }}>
                 {isPending ? dict.admin.saving : dict.admin.save}
               </button>

@@ -15,12 +15,11 @@ export const DEFAULT_SETTINGS: Settings = {
   business_id: "2873455-9",
   instagram: "https://www.instagram.com/explore/search/keyword/?q=matto%20bayat",
   facebook: "https://www.facebook.com/search/top?q=matto%20bayat",
-  tiktok: "https://www.tiktok.com/search?q=matto%20bayat",
-  free_delivery_threshold: 200,
+  tiktok: "https://www.tiktok.com/@mattobayat",
   announcement: {
-    fi: "Ilmainen kotiinkuljetus Helsingissä yli 200 € tilauksiin · Varaa verkossa, maksa liikkeessä",
-    en: "Free home delivery in Helsinki on orders over 200 € · Reserve online, pay in store",
-    fa: "ارسال رایگان در هلسینکی برای سفارش‌های بالای ۲۰۰ یورو · آنلاین رزرو کنید، در فروشگاه بپردازید",
+    fi: "Aitoja itämaisia mattoja Putkitiellä · Varaa verkossa, maksa ja tutustu myymälässä",
+    en: "Authentic oriental rugs at Putkitie 6 · Reserve online, inspect and pay in store",
+    fa: "فرش‌های اصیل شرقی در هلسینکی · آنلاین رزرو کنید، در فروشگاه مشاهده و پرداخت کنید",
   },
   announcement_active: true,
   hours: {

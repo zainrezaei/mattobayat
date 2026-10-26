@@ -120,11 +120,38 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
             </div>
           </div>
 
+          {/* Quick Room Size Presets */}
+          <div style={{ marginBottom: "1.25rem" }}>
+            <span style={{ fontSize: "0.82rem", color: "var(--muted)", display: "block", marginBottom: "0.4rem" }}>
+              {lang === "fi" ? "Huoneen koko" : lang === "fa" ? "اندازه تقریبی اتاق" : "Approximate room size"}
+            </span>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+              {[
+                { label: lang === "fi" ? "Kompakti (3×4 m)" : lang === "fa" ? "کوچک (۳×۴ م)" : "Compact (3×4 m)", w: 300, l: 400 },
+                { label: lang === "fi" ? "Normaali (4×5 m)" : lang === "fa" ? "متوسط (۴×۵ م)" : "Standard (4×5 m)", w: 380, l: 480 },
+                { label: lang === "fi" ? "Tilava (5×6 m)" : lang === "fa" ? "بزرگ (۵×۶ م)" : "Spacious (5×6 m)", w: 500, l: 600 },
+              ].map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  onClick={() => {
+                    setRoomWidth(preset.w);
+                    setRoomLength(preset.l);
+                  }}
+                  className={`chip ${roomWidth === preset.w && roomLength === preset.l ? "active" : ""}`}
+                  style={{ fontSize: "0.8rem", padding: "0.3rem 0.75rem", minHeight: "34px" }}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Room Dimensions Inputs */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem" }}>
             <div className="field">
-              <label htmlFor="room-w" className="label">
-                {dict.guide.roomWidth}
+              <label htmlFor="room-w" className="label" style={{ fontSize: "0.82rem" }}>
+                {dict.guide.roomWidth} (cm)
               </label>
               <input
                 id="room-w"
@@ -138,8 +165,8 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
               />
             </div>
             <div className="field">
-              <label htmlFor="room-l" className="label">
-                {dict.guide.roomLength}
+              <label htmlFor="room-l" className="label" style={{ fontSize: "0.82rem" }}>
+                {dict.guide.roomLength} (cm)
               </label>
               <input
                 id="room-l"
@@ -170,23 +197,24 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
             <div style={{ fontSize: "1.75rem", fontWeight: 700, color: "var(--plum)", marginBlock: "0.2rem" }}>
               {recWidth} × {recLength} cm
             </div>
-            <p style={{ fontSize: "0.88rem", color: "var(--ink-soft)", margin: 0 }}>
+            <p style={{ fontSize: "0.88rem", color: "var(--ink-soft)", margin: 0, lineHeight: 1.5 }}>
               {tipText}
             </p>
           </div>
 
           <Link
             href={`/${lang}/products`}
-            className="btn btn--gold"
-            style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
+            className="btn btn--gold btn--block-mobile"
+            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
           >
             <span>{dict.guide.seeMatching}</span>
             <ArrowIcon direction="forward" />
           </Link>
         </div>
 
-        {/* Visual 2D diagram */}
+        {/* Visual 2D diagram - hidden on mobile to keep experience clean & fast */}
         <div
+          className="calc-diagram"
           style={{
             backgroundColor: "var(--bg-alt)",
             borderRadius: "var(--radius)",
@@ -259,6 +287,17 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .calc-diagram {
+            display: none !important;
+          }
+          .btn--block-mobile {
+            width: 100% !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

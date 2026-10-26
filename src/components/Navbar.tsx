@@ -42,6 +42,18 @@ export default function Navbar({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Prevent background scrolling when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   // Compute equivalent URL for a given locale
   const getLocaleUrl = (targetLocale: Locale) => {
     const segments = pathname.split("/").filter(Boolean);
@@ -229,6 +241,7 @@ export default function Navbar({
 
           {/* Language Switcher */}
           <div
+            className="header-lang-switcher"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -343,8 +356,37 @@ export default function Navbar({
             overflowY: "auto",
             zIndex: 90,
             boxShadow: "var(--shadow-lg)",
+            animation: "fadeIn 0.2s ease",
           }}
         >
+          {/* Mobile Dedicated Language Selector */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.5rem" }}>
+            {LANGUAGES.map((item) => {
+              const active = item.code === lang;
+              return (
+                <Link
+                  key={item.code}
+                  href={getLocaleUrl(item.code)}
+                  onClick={() => setMobileOpen(false)}
+                  style={{
+                    textAlign: "center",
+                    padding: "0.65rem 0.4rem",
+                    borderRadius: "var(--radius-sm)",
+                    fontSize: "0.85rem",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    backgroundColor: active ? "var(--plum)" : "var(--bg-alt)",
+                    color: active ? "#ffffff" : "var(--ink-soft)",
+                    border: `1.5px solid ${active ? "var(--plum)" : "var(--line)"}`,
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
+          </div>
+
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {navLinks.map((link) => (
               <Link
@@ -409,6 +451,11 @@ export default function Navbar({
             display: inline-grid !important;
           }
           .store-status-pill {
+            display: none !important;
+          }
+        }
+        @media (max-width: 520px) {
+          .header-lang-switcher {
             display: none !important;
           }
         }

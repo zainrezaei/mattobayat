@@ -95,7 +95,7 @@ export default async function RootLayout({
             {children}
           </main>
 
-          <CartDrawer lang={lang} freeDeliveryThreshold={settings.free_delivery_threshold} />
+          <CartDrawer lang={lang} />
           <Footer lang={lang} settings={settings} />
         </CartProvider>
       </body>

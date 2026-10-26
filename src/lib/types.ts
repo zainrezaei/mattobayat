@@ -114,7 +114,6 @@ export type Settings = {
   instagram: string;
   facebook: string;
   tiktok: string;
-  free_delivery_threshold: number;
   announcement: Localized;
   announcement_active: boolean;
   hours: {

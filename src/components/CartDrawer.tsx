@@ -12,7 +12,6 @@ export default function CartDrawer({
   lang,
 }: {
   lang: Locale;
-  freeDeliveryThreshold?: number;
 }) {
   const { items, isOpen, closeCart, updateQty, removeItem, totalPrice, totalCount } = useCart();
   const dict = getDictionary(lang);
