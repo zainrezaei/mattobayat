@@ -5,7 +5,6 @@ import { LOCALES } from "@/lib/types";
 import { dirOf, getDictionary, hasLocale } from "@/i18n";
 import { getSettings } from "@/lib/data";
 import { CartProvider } from "@/context/CartContext";
-import AnnouncementBar from "@/components/AnnouncementBar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
@@ -88,7 +87,6 @@ export default async function RootLayout({
             {dict.nav.skip}
           </a>
 
-          <AnnouncementBar settings={settings} lang={lang} />
           <Navbar lang={lang} settings={settings} />
 
           <main id="main-content">
