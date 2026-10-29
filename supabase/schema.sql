@@ -137,20 +137,24 @@ drop policy if exists "settings admin write" on public.settings;
 create policy "settings admin write" on public.settings for all using (public.is_admin()) with check (public.is_admin());
 
 -- ============================================================
--- Storage bucket for product images (public read, admin write)
+-- Storage buckets for images (public read, admin write)
 -- ============================================================
 insert into storage.buckets (id, name, public)
 values ('products', 'products', true)
 on conflict (id) do update set public = true;
 
+insert into storage.buckets (id, name, public)
+values ('site', 'site', true)
+on conflict (id) do update set public = true;
+
 drop policy if exists "product images public read" on storage.objects;
-create policy "product images public read" on storage.objects for select using (bucket_id = 'products');
+create policy "product images public read" on storage.objects for select using (bucket_id in ('products', 'site'));
 drop policy if exists "product images admin insert" on storage.objects;
-create policy "product images admin insert" on storage.objects for insert with check (bucket_id = 'products' and public.is_admin());
+create policy "product images admin insert" on storage.objects for insert with check (bucket_id in ('products', 'site') and public.is_admin());
 drop policy if exists "product images admin update" on storage.objects;
-create policy "product images admin update" on storage.objects for update using (bucket_id = 'products' and public.is_admin());
+create policy "product images admin update" on storage.objects for update using (bucket_id in ('products', 'site') and public.is_admin());
 drop policy if exists "product images admin delete" on storage.objects;
-create policy "product images admin delete" on storage.objects for delete using (bucket_id = 'products' and public.is_admin());
+create policy "product images admin delete" on storage.objects for delete using (bucket_id in ('products', 'site') and public.is_admin());
 
 -- ============================================================
 -- Make the shop owner an admin.

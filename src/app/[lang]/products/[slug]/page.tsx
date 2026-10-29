@@ -8,6 +8,7 @@ import { formatPrice, formatSize, getDictionary, hasLocale, t } from "@/i18n";
 import { getProductBySlug, getProducts, getSettings } from "@/lib/data";
 import ProductDetailActions from "@/components/ProductDetailActions";
 import ProductCard from "@/components/ProductCard";
+import ProductImageGallery from "@/components/ProductImageGallery";
 
 export async function generateMetadata({
   params,
@@ -86,58 +87,12 @@ export default async function ProductDetailPage({
           }}
         >
           {/* Images Gallery */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <div
-              style={{
-                position: "relative",
-                aspectRatio: "3 / 4",
-                borderRadius: "var(--radius-lg)",
-                overflow: "hidden",
-                backgroundColor: "var(--bg-alt)",
-                boxShadow: "var(--shadow)",
-                border: "1px solid var(--line)",
-              }}
-            >
-              <Image
-                src={product.images[0] || "/images/products/tabriz-red.jpg"}
-                alt={title}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-                style={{ objectFit: "cover" }}
-              />
-
-              {product.compare_at_price && (
-                <div style={{ position: "absolute", top: "1rem", insetInlineStart: "1rem" }}>
-                  <span className="badge badge--danger" style={{ fontSize: "0.85rem", padding: "0.4rem 0.8rem" }}>
-                    {dict.common.sale}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Thumbnail row if multiple images */}
-            {product.images.length > 1 && (
-              <div style={{ display: "flex", gap: "0.75rem", overflowX: "auto" }}>
-                {product.images.map((img, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      position: "relative",
-                      width: "80px",
-                      height: "100px",
-                      borderRadius: "var(--radius-sm)",
-                      overflow: "hidden",
-                      border: idx === 0 ? "2px solid var(--plum)" : "1px solid var(--line)",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Image src={img} alt={`${title} ${idx + 1}`} fill sizes="80px" style={{ objectFit: "cover" }} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <ProductImageGallery
+            images={product.images}
+            title={title}
+            hasDiscount={Boolean(product.compare_at_price)}
+            saleLabel={dict.common.sale}
+          />
 
           {/* Product Info & Actions */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>

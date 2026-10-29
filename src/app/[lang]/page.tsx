@@ -8,6 +8,7 @@ import { getCategories, getProducts, getSettings } from "@/lib/data";
 import { mapsLink, telLink, whatsappLink } from "@/lib/utils";
 import ProductCard from "@/components/ProductCard";
 import ArrowIcon from "@/components/ArrowIcon";
+import GoogleReviewsAndMap from "@/components/GoogleReviewsAndMap";
 
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -153,7 +154,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             }}
           >
             <Image
-              src="/images/site/hero.jpg"
+              src={settings.site_images?.hero || "/images/site/hero.jpg"}
               alt="Matto Bayat Persian rugs in bright living room"
               fill
               priority
@@ -430,165 +431,9 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         </div>
       </section>
 
-      {/* 5. Showroom & Atelier Highlight */}
-      <section className="section section--alt">
-        <div className="container">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(min(400px, 100%), 1fr))",
-              gap: "clamp(2rem, 5vw, 4rem)",
-              alignItems: "center",
-            }}
-          >
-            {/* Showroom Photos Grid */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "1rem",
-              }}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  borderRadius: "var(--radius)",
-                  overflow: "hidden",
-                  aspectRatio: "4 / 3",
-                  gridColumn: "1 / -1",
-                  boxShadow: "var(--shadow)",
-                }}
-              >
-                <Image
-                  src="/images/site/showroom.jpg"
-                  alt="Matto Bayat Showroom Putkitie 6 Helsinki"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <div
-                style={{
-                  position: "relative",
-                  borderRadius: "var(--radius)",
-                  overflow: "hidden",
-                  aspectRatio: "1 / 1",
-                }}
-              >
-                <Image
-                  src="/images/site/rolls.jpg"
-                  alt="Carpet rolls display Matto Bayat"
-                  fill
-                  sizes="25vw"
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <div
-                style={{
-                  position: "relative",
-                  borderRadius: "var(--radius)",
-                  overflow: "hidden",
-                  aspectRatio: "1 / 1",
-                }}
-              >
-                <Image
-                  src="/images/site/detail.jpg"
-                  alt="Hand-knotted rug texture detail"
-                  fill
-                  sizes="25vw"
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-            </div>
+      {/* 5. What People Say About Us (Google Reviews Carousel) & Google Maps Showroom */}
+      <GoogleReviewsAndMap settings={settings} lang={lang} dict={dict} />
 
-            {/* Showroom Details */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-              <span className="eyebrow">{dict.home.showroomLabel}</span>
-              <h2 style={{ fontSize: "clamp(2rem, 3.8vw, 2.8rem)", color: "var(--plum)" }}>
-                {dict.home.showroomTitle}
-              </h2>
-              <p style={{ color: "var(--ink-soft)", fontSize: "1.05rem", lineHeight: 1.65 }}>
-                {dict.home.showroomText}
-              </p>
-
-              {/* Refined Address & Transit Card */}
-              <div
-                style={{
-                  padding: "1.25rem 1.5rem",
-                  borderRadius: "var(--radius)",
-                  backgroundColor: "var(--surface)",
-                  border: "1px solid var(--line-strong)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.6rem",
-                  marginTop: "0.25rem",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-                  <div
-                    style={{
-                      width: "36px",
-                      height: "36px",
-                      borderRadius: "var(--radius-sm)",
-                      backgroundColor: "var(--gold-50)",
-                      display: "grid",
-                      placeItems: "center",
-                      color: "var(--gold)",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                  </div>
-                  <div>
-                    <strong style={{ color: "var(--ink)", display: "block", fontSize: "0.95rem" }}>
-                      {settings.address}, {settings.postal} {settings.city}
-                    </strong>
-                    <div style={{ fontSize: "0.82rem", color: "var(--muted)", marginTop: "2px" }}>
-                      {lang === "fi"
-                        ? "Siilitien metro 400 m · Maksuton asiakaspysäköinti suoraan oven edessä"
-                        : lang === "fa"
-                        ? "وارتیوکیلا · ۴۰۰ متری ایستگاه متروی Siilitie · پارکینگ رایگان اختصاصی"
-                        : "Vartiokylä · 400m from Siilitie metro · Free dedicated customer parking"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action buttons */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "0.5rem" }}>
-                <a
-                  href={mapsLink(settings)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn--gold"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
-                    <line x1="8" y1="2" x2="8" y2="18" />
-                    <line x1="16" y1="6" x2="16" y2="22" />
-                  </svg>
-                  <span>{dict.common.directions}</span>
-                  <ArrowIcon direction="forward" />
-                </a>
-                <a
-                  href={whatsappLink(settings.whatsapp, "Hei! Haluaisin tulla käymään myymälässä.")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn--whatsapp"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                  </svg>
-                  <span>WhatsApp</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* 6. Interactive Room Size Guide Banner (Refined Scandinavian Aesthetic) */}
       <section className="section">

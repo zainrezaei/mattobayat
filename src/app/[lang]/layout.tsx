@@ -40,6 +40,8 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = getDictionary(lang);
+  const settings = await getSettings();
+  const ogImage = settings.site_images?.hero || "/images/site/hero.jpg";
   return {
     metadataBase: new URL(SITE_URL),
     title: { default: dict.meta.title, template: `%s · Matto Bayat` },
@@ -54,7 +56,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
       title: dict.meta.title,
       description: dict.meta.description,
       locale: lang === "fa" ? "fa_IR" : lang === "en" ? "en_GB" : "fi_FI",
-      images: [{ url: "/images/site/hero.jpg", width: 1376, height: 768 }],
+      images: [{ url: ogImage, width: 1376, height: 768 }],
     },
     icons: { icon: "/icon.svg" },
   };

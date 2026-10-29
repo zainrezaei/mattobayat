@@ -11,6 +11,8 @@ function mergeSettings(data: Partial<Settings> | null | undefined): Settings {
     ...data,
     announcement: { ...DEFAULT_SETTINGS.announcement, ...(data.announcement ?? {}) },
     hours: { ...DEFAULT_SETTINGS.hours, ...(data.hours ?? {}) },
+    site_images: { ...DEFAULT_SETTINGS.site_images, ...(data.site_images ?? {}) },
+    reviews: data.reviews && data.reviews.length > 0 ? data.reviews : DEFAULT_SETTINGS.reviews,
   };
 }
 

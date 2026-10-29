@@ -223,7 +223,19 @@ export async function saveProduct(
   const featured = formData.get("featured") === "on";
   const active = formData.get("active") === "on";
 
-  const imagesRaw = formData.getAll("images").map(String).filter(Boolean);
+  let imagesList: string[] = [];
+  const imagesJson = formData.get("images_json");
+  if (imagesJson) {
+    try {
+      const parsed = JSON.parse(String(imagesJson));
+      if (Array.isArray(parsed)) {
+        imagesList = parsed.map(String).map((s) => s.trim()).filter(Boolean);
+      }
+    } catch {}
+  }
+  if (imagesList.length === 0) {
+    imagesList = formData.getAll("images").map(String).map((s) => s.trim()).filter(Boolean);
+  }
 
   if (!slug || (!nameFi && !nameEn && !nameFa)) {
     return { error: "Slug and at least one language name are required" };
@@ -245,7 +257,7 @@ export async function saveProduct(
     stock,
     featured,
     active,
-    images: imagesRaw.length > 0 ? imagesRaw : ["/images/products/tabriz-red.jpg"],
+    images: imagesList.length > 0 ? imagesList : ["/images/products/tabriz-red.jpg"],
     updated_at: new Date().toISOString(),
   };
 
@@ -265,7 +277,7 @@ export async function saveProduct(
   return { success: true };
 }
 
-// 7. Admin: save settings
+// 7. Admin: save settings (including opening hours and site images)
 export async function saveSettings(
   prevState: ActionState,
   formData: FormData
@@ -291,14 +303,45 @@ export async function saveSettings(
   const announcementFa = String(formData.get("announcement_fa") || "");
   const announcement_active = formData.get("announcement_active") === "on";
 
-  const mon_fri_open = String(formData.get("mon_fri_open") || "10:00");
-  const mon_fri_close = String(formData.get("mon_fri_close") || "19:00");
-  const sat_open = String(formData.get("sat_open") || "10:00");
-  const sat_close = String(formData.get("sat_close") || "19:00");
-  const sun_open = String(formData.get("sun_open") || "11:00");
-  const sun_close = String(formData.get("sun_close") || "18:00");
+  const mon_fri_open = String(formData.get("mon_fri_open") || "10:00").trim();
+  const mon_fri_close = String(formData.get("mon_fri_close") || "19:00").trim();
+  const mon_fri_closed = formData.get("mon_fri_closed") === "on" || formData.get("mon_fri_closed") === "true";
 
-  const settingsData = {
+  const sat_open = String(formData.get("sat_open") || "10:00").trim();
+  const sat_close = String(formData.get("sat_close") || "19:00").trim();
+  const sat_closed = formData.get("sat_closed") === "on" || formData.get("sat_closed") === "true";
+
+  const sun_open = String(formData.get("sun_open") || "11:00").trim();
+  const sun_close = String(formData.get("sun_close") || "18:00").trim();
+  const sun_closed = formData.get("sun_closed") === "on" || formData.get("sun_closed") === "true";
+
+  // Parse site images
+  let siteImages: Record<string, string> = {};
+  const siteImagesJson = formData.get("site_images_json");
+  if (siteImagesJson) {
+    try {
+      siteImages = JSON.parse(String(siteImagesJson));
+    } catch {}
+  }
+
+  const slotKeys = ["hero", "showroom", "rolls", "detail", "boutique", "about_banner", "contact_banner"];
+  for (const k of slotKeys) {
+    const val = formData.get(`site_image_${k}`);
+    if (val !== null && val !== undefined) {
+      siteImages[k] = String(val).trim();
+    }
+  }
+
+  // Parse reviews
+  let reviews: unknown = undefined;
+  const reviewsJson = formData.get("reviews_json");
+  if (reviewsJson) {
+    try {
+      reviews = JSON.parse(String(reviewsJson));
+    } catch {}
+  }
+
+  const settingsData: Record<string, unknown> = {
     phone,
     whatsapp,
     email,
@@ -312,10 +355,12 @@ export async function saveSettings(
     announcement: { fi: announcementFi, en: announcementEn, fa: announcementFa },
     announcement_active,
     hours: {
-      mon_fri: { open: mon_fri_open, close: mon_fri_close, closed: false },
-      sat: { open: sat_open, close: sat_close, closed: false },
-      sun: { open: sun_open, close: sun_close, closed: false },
+      mon_fri: { open: mon_fri_open, close: mon_fri_close, closed: mon_fri_closed },
+      sat: { open: sat_open, close: sat_close, closed: sat_closed },
+      sun: { open: sun_open, close: sun_close, closed: sun_closed },
     },
+    site_images: siteImages,
+    ...(reviews ? { reviews } : {}),
   };
 
   if (isSupabaseConfigured) {
@@ -327,6 +372,10 @@ export async function saveSettings(
   }
 
   revalidatePath("/[lang]", "layout");
+  revalidatePath("/[lang]/about", "layout");
+  revalidatePath("/[lang]/guide", "layout");
+  revalidatePath("/[lang]/contact", "layout");
+  revalidatePath("/[lang]/admin", "layout");
   return { success: true };
 }
 

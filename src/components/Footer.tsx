@@ -140,20 +140,20 @@ export default function Footer({
             <div style={{ display: "grid", gap: "0.5rem", fontSize: "0.9rem", color: "var(--ink-soft)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
                 <span>{dict.hours.monFri}:</span>
-                <strong style={{ color: "var(--ink)" }}>
-                  {settings.hours.mon_fri.open} – {settings.hours.mon_fri.close}
+                <strong style={{ color: settings.hours.mon_fri.closed ? "var(--muted)" : "var(--ink)" }}>
+                  {settings.hours.mon_fri.closed ? dict.hours.closed : `${settings.hours.mon_fri.open} – ${settings.hours.mon_fri.close}`}
                 </strong>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
                 <span>{dict.hours.sat}:</span>
-                <strong style={{ color: "var(--ink)" }}>
-                  {settings.hours.sat.open} – {settings.hours.sat.close}
+                <strong style={{ color: settings.hours.sat.closed ? "var(--muted)" : "var(--ink)" }}>
+                  {settings.hours.sat.closed ? dict.hours.closed : `${settings.hours.sat.open} – ${settings.hours.sat.close}`}
                 </strong>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
                 <span>{dict.hours.sun}:</span>
-                <strong style={{ color: "var(--ink)" }}>
-                  {settings.hours.sun.open} – {settings.hours.sun.close}
+                <strong style={{ color: settings.hours.sun.closed ? "var(--muted)" : "var(--ink)" }}>
+                  {settings.hours.sun.closed ? dict.hours.closed : `${settings.hours.sun.open} – ${settings.hours.sun.close}`}
                 </strong>
               </div>
               <p style={{ fontSize: "0.78rem", color: "var(--muted)", marginTop: "0.5rem", display: "flex", alignItems: "center", gap: "0.4rem" }}>

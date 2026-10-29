@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale } from "@/i18n";
+import { getSettings } from "@/lib/data";
 import RoomSizeCalculator from "@/components/RoomSizeCalculator";
 import ArrowIcon from "@/components/ArrowIcon";
 
@@ -25,6 +26,7 @@ export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) 
   if (!hasLocale(lang)) notFound();
 
   const dict = getDictionary(lang);
+  const settings = await getSettings();
 
   return (
     <div>
@@ -160,7 +162,7 @@ export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) 
               }}
             >
               <Image
-                src="/images/site/detail.jpg"
+                src={settings.site_images?.detail || "/images/site/detail.jpg"}
                 alt="Persian rug wool knots and craft detail"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"

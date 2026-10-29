@@ -225,15 +225,21 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
                     <div style={{ display: "grid", gap: "0.25rem", fontSize: "0.88rem", marginTop: "0.35rem", maxWidth: "290px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <span style={{ color: "var(--ink-soft)" }}>{dict.hours.monFri}:</span>
-                        <strong style={{ color: "var(--plum)" }}>{settings.hours.mon_fri.open} – {settings.hours.mon_fri.close}</strong>
+                        <strong style={{ color: settings.hours.mon_fri.closed ? "var(--muted)" : "var(--plum)" }}>
+                          {settings.hours.mon_fri.closed ? dict.hours.closed : `${settings.hours.mon_fri.open} – ${settings.hours.mon_fri.close}`}
+                        </strong>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <span style={{ color: "var(--ink-soft)" }}>{dict.hours.sat}:</span>
-                        <strong style={{ color: "var(--plum)" }}>{settings.hours.sat.open} – {settings.hours.sat.close}</strong>
+                        <strong style={{ color: settings.hours.sat.closed ? "var(--muted)" : "var(--plum)" }}>
+                          {settings.hours.sat.closed ? dict.hours.closed : `${settings.hours.sat.open} – ${settings.hours.sat.close}`}
+                        </strong>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <span style={{ color: "var(--ink-soft)" }}>{dict.hours.sun}:</span>
-                        <strong style={{ color: "var(--plum)" }}>{settings.hours.sun.open} – {settings.hours.sun.close}</strong>
+                        <strong style={{ color: settings.hours.sun.closed ? "var(--muted)" : "var(--plum)" }}>
+                          {settings.hours.sun.closed ? dict.hours.closed : `${settings.hours.sun.open} – ${settings.hours.sun.close}`}
+                        </strong>
                       </div>
                     </div>
                   </div>

@@ -420,7 +420,7 @@ export default function Navbar({
               {settings.address}, {settings.postal} {settings.city}
             </div>
             <div style={{ fontSize: "0.85rem", color: "var(--ink-soft)" }}>
-              {dict.hours.monFri}: {settings.hours.mon_fri.open}–{settings.hours.mon_fri.close}
+              {dict.hours.monFri}: {settings.hours.mon_fri.closed ? dict.hours.closed : `${settings.hours.mon_fri.open}–${settings.hours.mon_fri.close}`}
             </div>
             <a
               href={telLink(settings.phone)}

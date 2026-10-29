@@ -1,9 +1,117 @@
-import type { Category, Message, Product, Reservation, Settings } from "./types";
+import type { Category, Message, Product, Reservation, Review, Settings } from "./types";
 
 /**
  * Sample content used until Supabase is connected (and as seed data for the
  * database – see supabase/seed.sql).
  */
+
+export const DEMO_REVIEWS: Review[] = [
+  {
+    id: "rev-1",
+    author: "Mikko Korhonen",
+    rating: 5,
+    date: {
+      fi: "2 viikkoa sitten",
+      en: "2 weeks ago",
+      fa: "۲ هفته پیش",
+    },
+    highlight: {
+      fi: "Upea valikoima ja erittäin asiantunteva palvelu",
+      en: "Stunning selection and highly expert service",
+      fa: "تنوع فوق‌العاده و راهنمایی بسیار حرفه‌ای",
+    },
+    text: {
+      fi: "Upea valikoima aitoja persialaisia mattoja ja erittäin asiantunteva ja ystävällinen palvelu. Löysimme täydellisen olohuoneen villamaton huomattavasti edullisemmin kuin keskustan liikkeistä. Suosittelen lämpimästi!",
+      en: "Stunning selection of authentic Persian rugs and very knowledgeable, friendly service. We found the perfect wool rug for our living room at a much better price than downtown shops. Highly recommended!",
+      fa: "مجموعه‌ای بی‌نظیر از فرش‌های اصیل ایرانی و برخورد بسیار محترمانه و حرفه‌ای. فرشی بسیار باکیفیت برای نشیمن با قیمتی بسیار منصفانه‌تر از فروشگاه‌های مرکز شهر خریدیم. به شدت توصیه می‌کنم!",
+    },
+    source: "google",
+  },
+  {
+    id: "rev-2",
+    author: "Johanna & Antti L.",
+    rating: 5,
+    date: {
+      fi: "Kuukausi sitten",
+      en: "A month ago",
+      fa: "یک ماه پیش",
+    },
+    highlight: {
+      fi: "Reilu kauppias ja helppo asiointi",
+      en: "Honest owner and effortless experience",
+      fa: "صداقت، راهنمایی عالی و دسترسی آسان",
+    },
+    text: {
+      fi: "Loistava palvelu Putkitiellä! Kauppias auttoi kärsivällisesti vertailemaan eri kokoja ja värejä. Matto näyttää kotona vielä paremmalta kuin liikkeessä. Helppo tulla autolla ja ilmainen pysäköinti oven edessä.",
+      en: "Great service at Putkitie! The owner patiently helped us compare different sizes and colors. The rug looks even better at home than in the store. Easy to visit by car with free parking right at the door.",
+      fa: "خدمات عالی در شعبه پوتکی‌تیه! صاحب فروشگاه با صبوری تمام ما را در مقایسه ابعاد و رنگ‌ها راهنمایی کردند. فرش در منزل حتی زیباتر از مغازه جلوه می‌کند. دسترسی با ماشین بسیار راحت و پارکینگ رایگان جلوی درب.",
+    },
+    source: "google",
+  },
+  {
+    id: "rev-3",
+    author: "Reza M.",
+    rating: 5,
+    date: {
+      fi: "3 viikkoa sitten",
+      en: "3 weeks ago",
+      fa: "۳ هفته پیش",
+    },
+    highlight: {
+      fi: "Aitoa perinteistä käsityötä",
+      en: "Authentic traditional handcraft",
+      fa: "اصالت فرش دستباف ایرانی",
+    },
+    text: {
+      fi: "Parasta laatua ja aitoja perinteisiä käsityömattoja. Hintataso on todella reilu ja asiakasta kunnioitetaan. Matto Bayat on Helsingin luotettavin mattokauppa.",
+      en: "Top quality and authentic traditional handcrafted carpets. Truly fair prices and respectful customer service. Matto Bayat is the most reliable carpet shop in Helsinki.",
+      fa: "بالاترین کیفیت و زیباترین فرش‌های دستباف اصیل سنتی. قیمت‌ها واقعاً منصفانه است و مشتری‌مداری در بهترین شکل ممکن رعایت می‌شود. مطمئن‌ترین فروشگاه فرش در هلسینکی.",
+    },
+    source: "google",
+  },
+  {
+    id: "rev-4",
+    author: "Eeva Rantanen",
+    rating: 5,
+    date: {
+      fi: "2 kuukautta sitten",
+      en: "2 months ago",
+      fa: "۲ ماه پیش",
+    },
+    highlight: {
+      fi: "Täydellinen käytävämatto",
+      en: "Perfect runner rug",
+      fa: "کناره بسیار زیبا و باکیفیت",
+    },
+    text: {
+      fi: "Etsin pitkään sopivaa käytävämattoa ja täältä löytyi heti upea yksilö. Laatu on priimaa ja asiointi oli mutkatonta. Lämmin kiitos erinomaisesta asiakaspalvelusta!",
+      en: "I searched for a long time for a suitable hallway runner and found a gorgeous piece here immediately. Premium quality and straightforward service. Warm thanks for the great customer service!",
+      fa: "مدت‌ها دنبال یک کناره مناسب برای راهرو بودم و اینجا در اولین نگاه فرشی فوق‌العاده پیدا کردم. کیفیت فوق‌العاده و برخورد عالی. سپاس از خدمات کم‌نظیرتان!",
+    },
+    source: "google",
+  },
+  {
+    id: "rev-5",
+    author: "David S.",
+    rating: 5,
+    date: {
+      fi: "3 kuukautta sitten",
+      en: "3 months ago",
+      fa: "۳ ماه پیش",
+    },
+    highlight: {
+      fi: "Rehellistä neuvontaa ja huippulaatua",
+      en: "Honest advice and top quality",
+      fa: "مشاوره صادقانه و کیفیت ممتاز",
+    },
+    text: {
+      fi: "Fantastinen kokemus! Aitoja itämaisia mattoja, läpinäkyvä hinnoittelu ja rehellisiä neuvoja. Kauppias kertoo mielellään tarinan jokaisen maton taustalta.",
+      en: "Fantastic experience! Authentic oriental rugs, transparent pricing, and honest advice. The owner gladly shares the background story behind each carpet.",
+      fa: "تجربه‌ای واقعاً عالی! فرش‌های اصیل شرقی، قیمت‌های کاملاً شفاف و مشاوره‌ای صادقانه. برای هر فرش وقت می‌گذارند و تاریخچه و خاستگاه بافت آن را توضیح می‌دهند.",
+    },
+    source: "google",
+  },
+];
 
 export const DEFAULT_SETTINGS: Settings = {
   phone: "+358 44 971 5631",
@@ -27,6 +135,14 @@ export const DEFAULT_SETTINGS: Settings = {
     sat: { open: "10:00", close: "19:00", closed: false },
     sun: { open: "11:00", close: "18:00", closed: false },
   },
+  site_images: {
+    hero: "/images/site/hero.jpg",
+    showroom: "/images/site/showroom.jpg",
+    rolls: "/images/site/rolls.jpg",
+    detail: "/images/site/detail.jpg",
+    boutique: "/images/site/boutique.jpg",
+  },
+  reviews: DEMO_REVIEWS,
 };
 
 export const DEMO_CATEGORIES: Category[] = [
@@ -63,7 +179,11 @@ export const DEMO_PRODUCTS: Product[] = [
     stock: 3,
     featured: true,
     active: true,
-    images: ["/images/products/kashan-plum.jpg"],
+    images: [
+      "/images/products/kashan-plum.jpg",
+      "/images/site/detail.jpg",
+      "/images/site/rolls.jpg"
+    ],
     created_at: daysAgo(2),
   },
   {
@@ -88,7 +208,11 @@ export const DEMO_PRODUCTS: Product[] = [
     stock: 1,
     featured: true,
     active: true,
-    images: ["/images/products/tabriz-red.jpg"],
+    images: [
+      "/images/products/tabriz-red.jpg",
+      "/images/products/medallion-red.jpg",
+      "/images/site/detail.jpg"
+    ],
     created_at: daysAgo(10),
   },
   {

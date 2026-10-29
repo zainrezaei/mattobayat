@@ -73,6 +73,35 @@ export default function ProductCard({
           className="product-card-img"
         />
 
+        {/* Multi-image count indicator */}
+        {product.images.length > 1 && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "0.65rem",
+              insetInlineEnd: "0.65rem",
+              backgroundColor: "rgba(20, 20, 20, 0.65)",
+              backdropFilter: "blur(4px)",
+              color: "#fff",
+              fontSize: "0.72rem",
+              fontWeight: 600,
+              padding: "2px 7px",
+              borderRadius: "999px",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              zIndex: 2,
+            }}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+            <span>{product.images.length}</span>
+          </div>
+        )}
+
         {/* Single Refined Priority Badge */}
         {(product.compare_at_price && product.price) ? (
           <div style={{ position: "absolute", top: "0.85rem", insetInlineStart: "0.85rem", zIndex: 2 }}>

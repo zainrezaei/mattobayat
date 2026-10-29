@@ -103,7 +103,7 @@ export default function ReservationForm({
           </div>
           <div>{settings.address}, {settings.postal} {settings.city}</div>
           <div style={{ marginTop: "0.25rem" }}>
-            {dict.hours.monFri}: {settings.hours.mon_fri.open}–{settings.hours.mon_fri.close} · {dict.hours.sat}: {settings.hours.sat.open}–{settings.hours.sat.close}
+            {dict.hours.monFri}: {settings.hours.mon_fri.closed ? dict.hours.closed : `${settings.hours.mon_fri.open}–${settings.hours.mon_fri.close}`} · {dict.hours.sat}: {settings.hours.sat.closed ? dict.hours.closed : `${settings.hours.sat.open}–${settings.hours.sat.close}`}
           </div>
           <div style={{ marginTop: "0.5rem", fontSize: "0.82rem", color: "var(--gold-600)" }}>
             ✦ {dict.product.payInStore}

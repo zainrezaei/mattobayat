@@ -8,6 +8,9 @@ import { formatPrice, formatSize, getDictionary, t, formatDate } from "@/i18n";
 import { adminSignOut, deleteProduct, saveProduct, saveSettings, toggleMessageHandled, updateReservationStatus } from "@/lib/actions";
 import { telLink } from "@/lib/utils";
 import ArrowIcon from "@/components/ArrowIcon";
+import AdminProductImageManager from "@/components/AdminProductImageManager";
+import AdminSiteImagesManager from "@/components/AdminSiteImagesManager";
+import AdminReviewsManager from "@/components/AdminReviewsManager";
 
 export default function AdminDashboard({
   lang,
@@ -27,12 +30,17 @@ export default function AdminDashboard({
   isDemo: boolean;
 }) {
   const dict = getDictionary(lang);
-  const [tab, setTab] = useState<"reservations" | "products" | "messages" | "settings">("reservations");
+  const [tab, setTab] = useState<"reservations" | "products" | "messages" | "settings" | "media" | "reviews">("reservations");
   const [isPending, startTransition] = useTransition();
 
   // Product modal
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isNewProduct, setIsNewProduct] = useState(false);
+
+  // Opening hours state
+  const [monFriClosed, setMonFriClosed] = useState(settings.hours.mon_fri.closed ?? false);
+  const [satClosed, setSatClosed] = useState(settings.hours.sat.closed ?? false);
+  const [sunClosed, setSunClosed] = useState(settings.hours.sun.closed ?? false);
 
   // Stats
   const newReservationsCount = reservations.filter((r) => r.status === "new").length;
@@ -232,6 +240,8 @@ export default function AdminDashboard({
             { id: "products", label: `${dict.admin.products} (${products.length})` },
             { id: "messages", label: `${dict.admin.messages} (${messages.length})` },
             { id: "settings", label: dict.admin.settings },
+            { id: "media", label: lang === "fa" ? "تصاویر سایت" : lang === "en" ? "Site Pictures" : "Sivuston kuvat" },
+            { id: "reviews", label: lang === "fa" ? "نظرات مشتریان" : lang === "en" ? "Reviews" : "Arvostelut" },
           ].map((item) => (
             <button
               key={item.id}
@@ -621,19 +631,13 @@ export default function AdminDashboard({
                     </div>
                   </div>
 
-                  {/* Image path */}
+                  {/* Multiple Product Images Manager */}
                   <div className="field">
-                    <label className="label">{dict.admin.images}</label>
-                    <input
-                      name="images"
-                      type="text"
-                      defaultValue={editingProduct?.images[0] || "/images/products/tabriz-red.jpg"}
-                      className="input"
-                      placeholder="/images/products/your-carpet.jpg"
+                    <AdminProductImageManager
+                      key={editingProduct?.id || (isNewProduct ? "new" : "none")}
+                      initialImages={editingProduct?.images || []}
+                      lang={lang}
                     />
-                    <span className="hint">
-                      Kuvatiedoston polku tai ladattu Supabase Storage -osoite.
-                    </span>
                   </div>
 
                   {/* Stock & Switches */}
@@ -719,6 +723,24 @@ export default function AdminDashboard({
                         <td style={{ padding: "0.75rem 1rem", width: "64px" }}>
                           <div style={{ position: "relative", width: "48px", height: "60px", borderRadius: "6px", overflow: "hidden", backgroundColor: "var(--bg-alt)" }}>
                             <Image src={p.images[0] || "/images/products/tabriz-red.jpg"} alt={t(p.name, lang)} fill sizes="48px" style={{ objectFit: "cover" }} />
+                            {p.images.length > 1 && (
+                              <span
+                                style={{
+                                  position: "absolute",
+                                  bottom: "2px",
+                                  insetInlineEnd: "2px",
+                                  backgroundColor: "rgba(0,0,0,0.75)",
+                                  color: "#fff",
+                                  fontSize: "0.62rem",
+                                  fontWeight: 700,
+                                  padding: "1px 4px",
+                                  borderRadius: "3px",
+                                  lineHeight: 1.1,
+                                }}
+                              >
+                                {p.images.length}
+                              </span>
+                            )}
                           </div>
                         </td>
                         <td style={{ padding: "0.75rem 1rem" }}>
@@ -900,27 +922,140 @@ export default function AdminDashboard({
                 {dict.admin.openingHours}
               </h3>
 
-              <div className="field-row">
-                <div className="field">
-                  <label className="label">{dict.hours.monFri} ({dict.admin.open} - {dict.admin.close})</label>
-                  <div style={{ display: "flex", gap: "0.5rem" }}>
-                    <input name="mon_fri_open" defaultValue={settings.hours.mon_fri.open} className="input" />
-                    <input name="mon_fri_close" defaultValue={settings.hours.mon_fri.close} className="input" />
+              <div style={{ display: "grid", gap: "1.25rem" }}>
+                {/* Mon - Fri */}
+                <div
+                  style={{
+                    padding: "1rem",
+                    borderRadius: "var(--radius-sm)",
+                    backgroundColor: monFriClosed ? "var(--bg-alt)" : "var(--surface)",
+                    border: "1px solid var(--line)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.6rem",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <strong style={{ fontSize: "0.95rem", color: "var(--ink)" }}>{dict.hours.monFri}</strong>
+                    <label className="choice" style={{ cursor: "pointer", margin: 0 }}>
+                      <input
+                        type="checkbox"
+                        name="mon_fri_closed"
+                        checked={monFriClosed}
+                        onChange={(e) => setMonFriClosed(e.target.checked)}
+                        className="checkbox"
+                      />
+                      <span style={{ fontSize: "0.85rem", color: monFriClosed ? "var(--danger)" : "var(--ink-soft)", fontWeight: monFriClosed ? 700 : 500 }}>
+                        {dict.hours.closed}
+                      </span>
+                    </label>
                   </div>
+                  {!monFriClosed ? (
+                    <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--muted)", display: "block" }}>{dict.admin.open}</span>
+                        <input name="mon_fri_open" defaultValue={settings.hours.mon_fri.open} className="input" placeholder="10:00" />
+                      </div>
+                      <span style={{ color: "var(--muted)", marginTop: "1rem" }}>–</span>
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--muted)", display: "block" }}>{dict.admin.close}</span>
+                        <input name="mon_fri_close" defaultValue={settings.hours.mon_fri.close} className="input" placeholder="19:00" />
+                      </div>
+                    </div>
+                  ) : (
+                    <input type="hidden" name="mon_fri_open" value={settings.hours.mon_fri.open} />
+                  )}
+                  {monFriClosed && <input type="hidden" name="mon_fri_close" value={settings.hours.mon_fri.close} />}
                 </div>
-                <div className="field">
-                  <label className="label">{dict.hours.sat} ({dict.admin.open} - {dict.admin.close})</label>
-                  <div style={{ display: "flex", gap: "0.5rem" }}>
-                    <input name="sat_open" defaultValue={settings.hours.sat.open} className="input" />
-                    <input name="sat_close" defaultValue={settings.hours.sat.close} className="input" />
+
+                {/* Saturday */}
+                <div
+                  style={{
+                    padding: "1rem",
+                    borderRadius: "var(--radius-sm)",
+                    backgroundColor: satClosed ? "var(--bg-alt)" : "var(--surface)",
+                    border: "1px solid var(--line)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.6rem",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <strong style={{ fontSize: "0.95rem", color: "var(--ink)" }}>{dict.hours.sat}</strong>
+                    <label className="choice" style={{ cursor: "pointer", margin: 0 }}>
+                      <input
+                        type="checkbox"
+                        name="sat_closed"
+                        checked={satClosed}
+                        onChange={(e) => setSatClosed(e.target.checked)}
+                        className="checkbox"
+                      />
+                      <span style={{ fontSize: "0.85rem", color: satClosed ? "var(--danger)" : "var(--ink-soft)", fontWeight: satClosed ? 700 : 500 }}>
+                        {dict.hours.closed}
+                      </span>
+                    </label>
                   </div>
+                  {!satClosed ? (
+                    <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--muted)", display: "block" }}>{dict.admin.open}</span>
+                        <input name="sat_open" defaultValue={settings.hours.sat.open} className="input" placeholder="10:00" />
+                      </div>
+                      <span style={{ color: "var(--muted)", marginTop: "1rem" }}>–</span>
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--muted)", display: "block" }}>{dict.admin.close}</span>
+                        <input name="sat_close" defaultValue={settings.hours.sat.close} className="input" placeholder="19:00" />
+                      </div>
+                    </div>
+                  ) : (
+                    <input type="hidden" name="sat_open" value={settings.hours.sat.open} />
+                  )}
+                  {satClosed && <input type="hidden" name="sat_close" value={settings.hours.sat.close} />}
                 </div>
-                <div className="field">
-                  <label className="label">{dict.hours.sun} ({dict.admin.open} - {dict.admin.close})</label>
-                  <div style={{ display: "flex", gap: "0.5rem" }}>
-                    <input name="sun_open" defaultValue={settings.hours.sun.open} className="input" />
-                    <input name="sun_close" defaultValue={settings.hours.sun.close} className="input" />
+
+                {/* Sunday */}
+                <div
+                  style={{
+                    padding: "1rem",
+                    borderRadius: "var(--radius-sm)",
+                    backgroundColor: sunClosed ? "var(--bg-alt)" : "var(--surface)",
+                    border: "1px solid var(--line)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.6rem",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <strong style={{ fontSize: "0.95rem", color: "var(--ink)" }}>{dict.hours.sun}</strong>
+                    <label className="choice" style={{ cursor: "pointer", margin: 0 }}>
+                      <input
+                        type="checkbox"
+                        name="sun_closed"
+                        checked={sunClosed}
+                        onChange={(e) => setSunClosed(e.target.checked)}
+                        className="checkbox"
+                      />
+                      <span style={{ fontSize: "0.85rem", color: sunClosed ? "var(--danger)" : "var(--ink-soft)", fontWeight: sunClosed ? 700 : 500 }}>
+                        {dict.hours.closed}
+                      </span>
+                    </label>
                   </div>
+                  {!sunClosed ? (
+                    <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--muted)", display: "block" }}>{dict.admin.open}</span>
+                        <input name="sun_open" defaultValue={settings.hours.sun.open} className="input" placeholder="11:00" />
+                      </div>
+                      <span style={{ color: "var(--muted)", marginTop: "1rem" }}>–</span>
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--muted)", display: "block" }}>{dict.admin.close}</span>
+                        <input name="sun_close" defaultValue={settings.hours.sun.close} className="input" placeholder="18:00" />
+                      </div>
+                    </div>
+                  ) : (
+                    <input type="hidden" name="sun_open" value={settings.hours.sun.open} />
+                  )}
+                  {sunClosed && <input type="hidden" name="sun_close" value={settings.hours.sun.close} />}
                 </div>
               </div>
 
@@ -956,6 +1091,16 @@ export default function AdminDashboard({
               </button>
             </form>
           </div>
+        )}
+
+        {/* TAB 5: MEDIA / SITE PICTURES */}
+        {tab === "media" && (
+          <AdminSiteImagesManager settings={settings} lang={lang} />
+        )}
+
+        {/* TAB 6: CUSTOMER & GOOGLE REVIEWS */}
+        {tab === "reviews" && (
+          <AdminReviewsManager settings={settings} lang={lang} />
         )}
       </div>
     </div>

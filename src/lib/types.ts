@@ -103,6 +103,25 @@ export type Message = {
 
 export type DayHours = { open: string; close: string; closed: boolean };
 
+export type SiteImages = {
+  hero?: string;
+  showroom?: string;
+  rolls?: string;
+  detail?: string;
+  boutique?: string;
+  [key: string]: string | undefined;
+};
+
+export type Review = {
+  id: string;
+  author: string;
+  rating: number; // 1-5
+  date: Localized;
+  text: Localized;
+  highlight?: Localized;
+  source?: "google" | "direct";
+};
+
 export type Settings = {
   phone: string;
   whatsapp: string;
@@ -121,4 +140,6 @@ export type Settings = {
     sat: DayHours;
     sun: DayHours;
   };
+  site_images?: SiteImages;
+  reviews?: Review[];
 };

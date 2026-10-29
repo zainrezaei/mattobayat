@@ -106,7 +106,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
               }}
             >
               <Image
-                src="/images/site/showroom.jpg"
+                src={settings.site_images?.showroom || "/images/site/showroom.jpg"}
                 alt="Matto Bayat Showroom Helsinki"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
