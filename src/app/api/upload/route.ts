@@ -43,8 +43,8 @@ export async function POST(req: NextRequest) {
     // 1. Live Supabase Storage mode
     if (isSupabaseConfigured) {
       const supabase = await createSupabaseServer();
-      const storagePath = bucket === "site" ? `site/${fileName}` : `products/${fileName}`;
-      const bucketName = "products"; // Products bucket exists in schema.sql
+      const storagePath = fileName;
+      const bucketName = bucket === "site" ? "site" : "products";
 
       const { error: uploadError } = await supabase.storage
         .from(bucketName)

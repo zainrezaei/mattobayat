@@ -27,7 +27,7 @@ export const getCategories = cache(async (): Promise<Category[]> => {
   if (!isSupabaseConfigured) return DEMO_CATEGORIES;
   const supabase = await createSupabaseServer();
   const { data } = await supabase.from("categories").select("*").order("sort_order", { ascending: true });
-  return (data as Category[]) ?? [];
+  return data && data.length > 0 ? (data as Category[]) : DEMO_CATEGORIES;
 });
 
 export const getProducts = cache(async (opts?: { includeHidden?: boolean }): Promise<Product[]> => {
