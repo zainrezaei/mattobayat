@@ -328,5 +328,5 @@ set data = public.settings.data || excluded.data,
 -- 2) Then run (change the email if needed):
 -- ============================================================
 insert into public.admins (user_id)
-select id from auth.users where email = 'egbayat@gmail.com'
+select id from auth.users where email in ('rezaeizain@gmail.com', 'egbayat@gmail.com')
 on conflict do nothing;

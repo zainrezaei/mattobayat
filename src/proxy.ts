@@ -39,7 +39,10 @@ export async function proxy(request: NextRequest) {
 
   // 2) Keep the admin's Supabase session fresh
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (url && key && pathname.split("/")[2] === "admin") {
     const supabase = createServerClient(url, key, {
       cookies: {
