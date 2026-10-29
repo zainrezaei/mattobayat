@@ -42,9 +42,6 @@ export default function CartDrawer({
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-xs z-50 transition-opacity duration-300 ${
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
         onClick={closeCart}
         aria-hidden="true"
         style={{
@@ -252,11 +249,11 @@ export default function CartDrawer({
                       <button
                         onClick={() => updateQty(item.product_id, item.qty - 1)}
                         style={{
-                          width: "26px",
-                          height: "26px",
+                          width: "34px",
+                          height: "34px",
                           display: "grid",
                           placeItems: "center",
-                          fontSize: "1rem",
+                          fontSize: "1.05rem",
                           color: "var(--ink-soft)",
                         }}
                         aria-label="Decrease quantity"
@@ -277,11 +274,11 @@ export default function CartDrawer({
                       <button
                         onClick={() => updateQty(item.product_id, item.qty + 1)}
                         style={{
-                          width: "26px",
-                          height: "26px",
+                          width: "34px",
+                          height: "34px",
                           display: "grid",
                           placeItems: "center",
-                          fontSize: "1rem",
+                          fontSize: "1.05rem",
                           color: "var(--ink-soft)",
                         }}
                         aria-label="Increase quantity"

@@ -5,6 +5,7 @@ import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale } from "@/i18n";
 import { getSettings } from "@/lib/data";
 import { isOpenNow, mapsEmbed, mapsLink, telLink, whatsappLink } from "@/lib/utils";
+import { buildPageMetadata } from "@/lib/seo";
 import ContactForm from "@/components/ContactForm";
 import ArrowIcon from "@/components/ArrowIcon";
 
@@ -14,10 +15,12 @@ export async function generateMetadata({
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = getDictionary(lang);
-  return {
-    title: dict.contact.title,
-    description: dict.contact.lead,
-  };
+  return buildPageMetadata({
+    lang,
+    path: "/contact",
+    title: dict.meta.contactTitle,
+    description: dict.meta.contactDescription,
+  });
 }
 
 export default async function ContactPage({ params }: PageProps<"/[lang]/contact">) {
@@ -29,18 +32,9 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
   const isOpen = isOpenNow(settings);
 
   return (
-    <div className="section" style={{ paddingTop: "clamp(2rem, 4vw, 3.5rem)" }}>
+    <div className="section" style={{ paddingTop: "clamp(1.5rem, 3vw, 2.5rem)" }}>
       <div className="container">
-        {/* Clean Header */}
-        <div style={{ maxWidth: "640px", marginBottom: "2.5rem" }}>
-          <span className="eyebrow">{dict.nav.contact}</span>
-          <h1 style={{ fontSize: "clamp(2.2rem, 4.5vw, 3.2rem)", color: "var(--plum)", marginBlock: "0.35rem 0.5rem", lineHeight: 1.15 }}>
-            {dict.contact.title}
-          </h1>
-          <p style={{ color: "var(--ink-soft)", fontSize: "1.05rem", margin: 0, lineHeight: 1.6 }}>
-            {dict.contact.lead}
-          </p>
-        </div>
+        <h1 className="visually-hidden">{dict.contact.title}</h1>
 
         {/* 2-Column Desktop Grid / Clean Stacked Mobile */}
         <div
@@ -71,9 +65,6 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
               {/* Header with Live Open Status */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
                 <div>
-                  <span className="eyebrow" style={{ marginBottom: "0.2rem" }}>
-                    {lang === "fi" ? "Myymälä & Asiakaspalvelu" : lang === "fa" ? "فروشگاه و پشتیبانی" : "Showroom & Support"}
-                  </span>
                   <h2 style={{ fontSize: "1.45rem", color: "var(--plum)", margin: 0, fontWeight: 700 }}>
                     Matto Bayat Helsinki
                   </h2>
@@ -94,18 +85,12 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
                   }}
                 >
                   <span
+                    className={`dot ${isOpen ? "dot--pulse" : ""}`}
                     style={{
-                      width: "8px",
-                      height: "8px",
-                      borderRadius: "50%",
                       backgroundColor: isOpen ? "var(--success)" : "var(--muted)",
                     }}
                   />
-                  <span>
-                    {isOpen
-                      ? lang === "fi" ? "Avoinna nyt" : lang === "fa" ? "اکنون باز است" : "Open now"
-                      : lang === "fi" ? "Suljettu" : lang === "fa" ? "اکنون بسته است" : "Closed now"}
-                  </span>
+                  <span>{isOpen ? dict.common.openNow : dict.common.closedNow}</span>
                 </span>
               </div>
 
@@ -180,11 +165,11 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
                     <strong style={{ fontSize: "0.88rem", color: "var(--ink)", display: "block" }}>
                       {dict.contact.visit}
                     </strong>
-                    <div style={{ fontSize: "1.02rem", fontWeight: 600, color: "var(--plum)", marginTop: "2px" }}>
+                    <div dir="ltr" style={{ fontSize: "1.02rem", fontWeight: 600, color: "var(--plum)", marginTop: "2px", display: "inline-block" }}>
                       {settings.address}, {settings.postal} {settings.city}
                     </div>
                     <div style={{ fontSize: "0.8rem", color: "var(--muted)", marginTop: "2px" }}>
-                      {lang === "fi" ? "Lähellä Siilitien metroa · Ilmainen pysäköinti liikkeen edessä" : lang === "fa" ? "نزدیک متروی Siilitie · پارکینگ رایگان" : "Near Siilitie metro · Free customer parking"}
+                      {lang === "fi" ? "Lähellä Siilitien metroa · Ilmainen pysäköinti liikkeen edessä" : lang === "fa" ? "نزدیک متروی Siilitie · پارکینگ رایگان پیش روی دکان" : "Near Siilitie metro · Free customer parking"}
                     </div>
                     <a
                       href={mapsLink(settings)}
@@ -226,19 +211,19 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
                       <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <span style={{ color: "var(--ink-soft)" }}>{dict.hours.monFri}:</span>
                         <strong style={{ color: settings.hours.mon_fri.closed ? "var(--muted)" : "var(--plum)" }}>
-                          {settings.hours.mon_fri.closed ? dict.hours.closed : `${settings.hours.mon_fri.open} – ${settings.hours.mon_fri.close}`}
+                          {settings.hours.mon_fri.closed ? dict.hours.closed : <span dir="ltr">{`${settings.hours.mon_fri.open} – ${settings.hours.mon_fri.close}`}</span>}
                         </strong>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <span style={{ color: "var(--ink-soft)" }}>{dict.hours.sat}:</span>
                         <strong style={{ color: settings.hours.sat.closed ? "var(--muted)" : "var(--plum)" }}>
-                          {settings.hours.sat.closed ? dict.hours.closed : `${settings.hours.sat.open} – ${settings.hours.sat.close}`}
+                          {settings.hours.sat.closed ? dict.hours.closed : <span dir="ltr">{`${settings.hours.sat.open} – ${settings.hours.sat.close}`}</span>}
                         </strong>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <span style={{ color: "var(--ink-soft)" }}>{dict.hours.sun}:</span>
                         <strong style={{ color: settings.hours.sun.closed ? "var(--muted)" : "var(--plum)" }}>
-                          {settings.hours.sun.closed ? dict.hours.closed : `${settings.hours.sun.open} – ${settings.hours.sun.close}`}
+                          {settings.hours.sun.closed ? dict.hours.closed : <span dir="ltr">{`${settings.hours.sun.open} – ${settings.hours.sun.close}`}</span>}
                         </strong>
                       </div>
                     </div>

@@ -7,6 +7,7 @@ import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale } from "@/i18n";
 import { getSettings } from "@/lib/data";
 import { mapsLink, whatsappLink } from "@/lib/utils";
+import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -14,10 +15,12 @@ export async function generateMetadata({
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = getDictionary(lang);
-  return {
-    title: dict.about.title,
-    description: dict.about.lead,
-  };
+  return buildPageMetadata({
+    lang,
+    path: "/about",
+    title: dict.meta.aboutTitle,
+    description: dict.meta.aboutDescription,
+  });
 }
 
 export default async function AboutPage({ params }: PageProps<"/[lang]/about">) {
@@ -27,31 +30,29 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
   const dict = getDictionary(lang);
   const settings = await getSettings();
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: dict.about.faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+
   return (
     <div>
-      {/* 1. Header */}
-      <section className="section" style={{ paddingBottom: "2rem" }}>
-        <div className="container">
-          <div style={{ maxWidth: "680px" }}>
-            <span className="eyebrow">{dict.nav.about}</span>
-            <h1
-              style={{
-                fontSize: "clamp(2.5rem, 5vw, 4rem)",
-                color: "var(--plum)",
-                marginBlock: "0.5rem 1rem",
-              }}
-            >
-              {dict.about.title}
-            </h1>
-            <p style={{ fontSize: "1.15rem", color: "var(--ink-soft)", lineHeight: 1.6 }}>
-              {dict.about.lead}
-            </p>
-          </div>
-        </div>
-      </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <h1 className="visually-hidden">{dict.about.title}</h1>
 
-      {/* 2. Story Section with Showroom Image */}
-      <section style={{ paddingBottom: "clamp(3rem, 6vw, 6rem)" }}>
+      {/* 1. Story Section with Showroom Image */}
+      <section style={{ paddingTop: "clamp(1.75rem, 3.5vw, 3rem)", paddingBottom: "clamp(3rem, 6vw, 6rem)" }}>
         <div className="container">
           <div
             style={{
@@ -63,9 +64,8 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
           >
             {/* Story Text */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-              <span className="eyebrow">{dict.about.storyTitle}</span>
               <h2 style={{ fontSize: "2.4rem", color: "var(--plum)" }}>
-                {lang === "fi" ? "Mattoja suurella sydämellä" : lang === "fa" ? "عشق به هنر فرش و اصالت" : "Carpets with a Great Heart"}
+                {lang === "fi" ? "Mattoja suurella sydämellä" : lang === "fa" ? "عشق به هنر و اصالت قالین" : "Carpets with a Great Heart"}
               </h2>
 
               <p style={{ color: "var(--ink-soft)", fontSize: "1.05rem", lineHeight: 1.7 }}>
@@ -121,9 +121,8 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
       <section className="section section--alt">
         <div className="container">
           <div className="section-head section-head--center" style={{ marginBottom: "3.5rem" }}>
-            <span className="eyebrow">{dict.about.valuesTitle}</span>
             <h2>
-              {lang === "fi" ? "Miksi valita Matto Bayat?" : lang === "fa" ? "چرا فرش بیات؟" : "Why Choose Matto Bayat?"}
+              {lang === "fi" ? "Miksi valita Matto Bayat?" : lang === "fa" ? "چرا قالین بیات؟" : "Why Choose Matto Bayat?"}
             </h2>
           </div>
 
@@ -245,9 +244,8 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
       <section className="section">
         <div className="container" style={{ maxWidth: "800px" }}>
           <div className="section-head section-head--center" style={{ marginBottom: "3rem" }}>
-            <span className="eyebrow">{dict.about.faqTitle}</span>
             <h2>
-              {lang === "fi" ? "Usein kysytyt kysymykset" : lang === "fa" ? "پرسش‌های متداول" : "Frequently Asked Questions"}
+              {lang === "fi" ? "Usein kysytyt kysymykset" : lang === "fa" ? "سوالات معمول مشتریان" : "Frequently Asked Questions"}
             </h2>
           </div>
 
@@ -255,6 +253,8 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
             {dict.about.faq.map((item, idx) => (
               <details
                 key={idx}
+                name="faq-accordion"
+                className="faq-item"
                 style={{
                   backgroundColor: "var(--surface)",
                   borderRadius: "var(--radius)",
@@ -276,7 +276,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
                   }}
                 >
                   <span>{item.q}</span>
-                  <span style={{ fontSize: "1.2rem", color: "var(--gold-600)", marginInlineStart: "1rem" }}>+</span>
+                  <span className="faq-icon" style={{ fontSize: "1.25rem", color: "var(--gold-600)", marginInlineStart: "1rem", transition: "transform 0.25s var(--ease)", display: "inline-block", lineHeight: 1 }}>+</span>
                 </summary>
                 <p
                   style={{
@@ -295,6 +295,14 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
               </details>
             ))}
           </div>
+          <style>{`
+            .faq-item summary::-webkit-details-marker {
+              display: none;
+            }
+            .faq-item[open] .faq-icon {
+              transform: rotate(45deg);
+            }
+          `}</style>
 
           {/* CTA Banner */}
           <div
@@ -312,13 +320,13 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
             }}
           >
             <h3 style={{ fontSize: "1.6rem", color: "var(--plum)", margin: 0 }}>
-              {lang === "fi" ? "Haluatko kysyä lisää?" : lang === "fa" ? "سؤالی دارید؟" : "Have More Questions?"}
+              {lang === "fi" ? "Haluatko kysyä lisää?" : lang === "fa" ? "سوالی دارید؟" : "Have More Questions?"}
             </h3>
             <p style={{ color: "var(--ink-soft)", maxWidth: "40ch", margin: 0 }}>
               {lang === "fi"
                 ? "Tule käymään myymälässämme Helsingissä tai ota suoraan yhteyttä WhatsAppissa."
                 : lang === "fa"
-                ? "به فروشگاه ما در هلسینکی بیایید یا مستقیم در واتس‌اپ پیام دهید."
+                ? "به دکان ما در Putkitie 6, 00880 Helsinki بیایید و یا در واتساپ پیام بفرستید."
                 : "Drop by our store in Helsinki or contact us directly on WhatsApp."}
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "0.5rem" }}>

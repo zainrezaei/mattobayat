@@ -218,6 +218,7 @@ export async function saveProduct(
   const material = String(formData.get("material") || "wool");
   const origin = String(formData.get("origin") || "iran");
   const weave = String(formData.get("weave") || "machine-made");
+  const colors = formData.getAll("colors").map(String).map((s) => s.trim()).filter(Boolean);
   const category_id = String(formData.get("category_id") || "") || null;
   const stock = Number(formData.get("stock") || 1);
   const featured = formData.get("featured") === "on";
@@ -253,6 +254,7 @@ export async function saveProduct(
     material,
     origin,
     weave,
+    colors,
     category_id,
     stock,
     featured,

@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale } from "@/i18n";
 import { getSettings } from "@/lib/data";
+import { buildPageMetadata } from "@/lib/seo";
 import RoomSizeCalculator from "@/components/RoomSizeCalculator";
 import ArrowIcon from "@/components/ArrowIcon";
 
@@ -15,10 +16,12 @@ export async function generateMetadata({
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = getDictionary(lang);
-  return {
-    title: dict.guide.title,
-    description: dict.guide.lead,
-  };
+  return buildPageMetadata({
+    lang,
+    path: "/guide",
+    title: dict.meta.guideTitle,
+    description: dict.meta.guideDescription,
+  });
 }
 
 export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) {
@@ -30,29 +33,10 @@ export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) 
 
   return (
     <div>
-      {/* Header */}
-      <section className="section" style={{ paddingBottom: "2rem" }}>
-        <div className="container">
-          <div style={{ maxWidth: "680px" }}>
-            <span className="eyebrow">{dict.nav.guide}</span>
-            <h1
-              style={{
-                fontSize: "clamp(2.5rem, 5vw, 4rem)",
-                color: "var(--plum)",
-                marginBlock: "0.5rem 1rem",
-              }}
-            >
-              {dict.guide.title}
-            </h1>
-            <p style={{ fontSize: "1.15rem", color: "var(--ink-soft)", lineHeight: 1.6 }}>
-              {dict.guide.lead}
-            </p>
-          </div>
-        </div>
-      </section>
+      <h1 className="visually-hidden">{dict.guide.title}</h1>
 
       {/* 1. Interactive Size Calculator */}
-      <section style={{ paddingBottom: "clamp(3rem, 6vw, 6rem)" }}>
+      <section style={{ paddingTop: "clamp(1.5rem, 3vw, 2.5rem)", paddingBottom: "clamp(3rem, 6vw, 6rem)" }}>
         <div className="container">
           <RoomSizeCalculator lang={lang} />
         </div>
@@ -62,11 +46,8 @@ export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) 
       <section className="section section--alt">
         <div className="container">
           <div className="section-head section-head--center" style={{ marginBottom: "3.5rem" }}>
-            <span className="eyebrow">
-              {lang === "fi" ? "Huonekohtainen opas" : lang === "fa" ? "راهنمای فضاها" : "Room by Room"}
-            </span>
             <h2>
-              {lang === "fi" ? "Oikea matto oikeaan huoneeseen" : lang === "fa" ? "فرش مناسب برای هر اتاق" : "The Right Rug for Every Space"}
+              {lang === "fi" ? "Oikea matto oikeaan huoneeseen" : lang === "fa" ? "قالین مناسب برای هر اتاق" : "The Right Rug for Every Space"}
             </h2>
           </div>
 
@@ -171,8 +152,7 @@ export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) 
             </div>
 
             <div>
-              <span className="eyebrow">{lang === "fi" ? "Kestävyys" : lang === "fa" ? "طول عمر و مراقبت" : "Longevity"}</span>
-              <h2 style={{ fontSize: "2.4rem", color: "var(--plum)", marginBlock: "0.5rem 1.5rem" }}>
+              <h2 style={{ fontSize: "2.4rem", color: "var(--plum)", marginBlock: "0 1.5rem" }}>
                 {dict.guide.careTitle}
               </h2>
 

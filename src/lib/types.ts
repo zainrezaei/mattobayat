@@ -60,6 +60,8 @@ export type Product = {
   active: boolean;
   images: string[];
   created_at: string;
+  updated_at?: string;
+  code?: string;
 };
 
 export const RESERVATION_STATUSES = ["new", "confirmed", "ready", "completed", "cancelled"] as const;

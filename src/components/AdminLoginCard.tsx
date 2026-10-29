@@ -63,14 +63,11 @@ export default function AdminLoginCard({
           >
             🔒
           </div>
-          <span className="eyebrow" style={{ color: "var(--gold)" }}>
-            Matto Bayat
-          </span>
           <h1
             style={{
               fontSize: "1.85rem",
               color: "var(--plum)",
-              marginTop: "0.25rem",
+              marginTop: "0",
               marginBottom: "0.5rem",
             }}
           >

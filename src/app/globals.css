@@ -196,15 +196,15 @@ html[lang="fa"] .eyebrow {
 }
 .section-head {
   display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  justify-content: space-between;
-  gap: 1.5rem;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
   margin-block-end: clamp(2rem, 4vw, 3.25rem);
 }
 .section-head h2 {
   font-size: clamp(2rem, 4.4vw, 3.2rem);
-  margin-block-start: 0.6rem;
+  margin-block-start: 0;
 }
 .section-head--center {
   flex-direction: column;
@@ -565,6 +565,7 @@ html[lang="fa"] .badge {
   border-color: #f0dcb4;
 }
 .dot {
+  display: inline-block;
   inline-size: 8px;
   block-size: 8px;
   border-radius: 50%;
@@ -591,6 +592,7 @@ html[lang="fa"] .badge {
 .chip {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.45rem;
   min-block-size: 38px;
   padding: 0.4rem 0.95rem;
@@ -599,14 +601,15 @@ html[lang="fa"] .badge {
   background: var(--surface);
   font-size: 0.875rem;
   font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
   cursor: pointer;
   transition: all 0.2s var(--ease);
   &:hover {
     border-color: var(--plum);
     color: var(--plum);
   }
-  &[aria-pressed="true"],
-  &:has(input:checked) {
+  &:where([aria-pressed="true"], .active, :has(input:checked)) {
     background: var(--plum);
     border-color: var(--plum);
     color: #fff;

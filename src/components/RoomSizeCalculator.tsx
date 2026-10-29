@@ -25,7 +25,7 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
         lang === "fi"
           ? "Isossa olohuoneessa suuri matto (250×350 cm) kokoaa sohvaryhmän yhteen."
           : lang === "fa"
-          ? "در اتاق نشیمن بزرگ، فرش ۲۵۰×۳۵۰ سانتی‌متر مبلمان را یکدست و باشکوه نشان می‌دهد."
+          ? "در صالون کلان، قالین ۲۵۰×۳۵۰ سانتی‌متر کوچ‌ها را منظم و مقبول نشان می‌دهد."
           : "In a spacious living room, a 250×350 cm rug anchors the entire seating area.";
     } else {
       recWidth = 200;
@@ -34,7 +34,7 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
         lang === "fi"
           ? "Klassinen 200×300 cm matto mahtuu useimpiin olohuoneisiin, ja sohvan etujalat asetetaan maton päälle."
           : lang === "fa"
-          ? "فرش کلاسیک ۲۰۰×۳۰۰ سانتی‌متر برای اغلب اتاق‌های نشیمن ایده‌آل است؛ پایه‌های جلوی مبل روی فرش قرار می‌گیرد."
+          ? "قالین ۲۰۰×۳۰۰ سانتی‌متر برای بیشتر صالون‌ها عالی است؛ پایه‌های پیش روی کوچ بالای قالین می‌آید."
           : "A classic 200×300 cm rug fits most living rooms, with sofa front legs placed on the rug.";
     }
   } else if (roomType === "dining") {
@@ -44,7 +44,7 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
       lang === "fi"
         ? "Ruokapöydän alla maton tulee ulottua vähintään 60 cm pöydän reunojen yli, jotta tuolit pysyvät matolla."
         : lang === "fa"
-        ? "زیر میز ناهارخوری، فرش باید حداقل ۶۰ سانتی‌متر از هر طرف میز بزرگ‌تر باشد تا صندلی‌ها بیرون نیفتند."
+        ? "زیر میز نانخوری، قالین باید حداقل ۶۰ سانتی‌متر از هر طرف میز کلان‌تر باشد تا چوکی‌ها از قالین بیرون نشود."
         : "Under a dining table, the rug should extend at least 60 cm past table edges so chairs stay on it.";
   } else if (roomType === "bed") {
     recWidth = 200;
@@ -53,7 +53,7 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
       lang === "fi"
         ? "Sängyn alle asetettu matto pehmentää aamut. Vaihtoehtoisesti käytävämatot sängyn molemmin puolin."
         : lang === "fa"
-        ? "فرش زیر تخت خواب گرما و آرامش صبحگاهی می‌بخشد. راهکار دیگر، استفاده از دو کناره در دو طرف تخت است."
+        ? "قالین زیر تخت خواب، اتاق را گرم و نرم می‌سازد. یا می‌توانید دو سرانداز (کناره) در دو طرف تخت بیندازید."
         : "A rug placed under the bed adds morning warmth. Alternatively, runners on either side.";
   } else {
     recWidth = 80;
@@ -62,7 +62,7 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
       lang === "fi"
         ? "Kapea käytävämatto (esim. 80×300 cm) tuo tilaan akustiikkaa ja suojaa lattiaa kulutukselta."
         : lang === "fa"
-        ? "کناره باریک (مثلاً ۸۰×۳۰۰ سانتی‌متر) زیبایی و محافظت از کف راهرو را فراهم می‌کند."
+        ? "سرانداز باریک (مثلاً ۸۰×۳۰۰ سانتی‌متر) دهلیز را مقبول می‌سازد و از کف خانه محافظت می‌کند."
         : "A long runner (e.g. 80×300 cm) enhances acoustics and protects high-traffic hallway floors.";
   }
 
@@ -86,9 +86,6 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
       >
         {/* Controls */}
         <div>
-          <span className="eyebrow" style={{ marginBottom: "0.5rem" }}>
-            {lang === "fi" ? "Interaktiivinen työkalu" : lang === "fa" ? "ابزار هوشمند" : "Interactive Tool"}
-          </span>
           <h2 style={{ fontSize: "1.85rem", color: "var(--plum)", marginBottom: "0.75rem" }}>
             {dict.guide.sizeTitle}
           </h2>
@@ -99,7 +96,7 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
           {/* Room Type Selector */}
           <div style={{ marginBottom: "1.5rem" }}>
             <label className="label" style={{ marginBottom: "0.6rem", display: "block" }}>
-              {lang === "fi" ? "Huoneen tyyppi" : lang === "fa" ? "نوع فضا" : "Room type"}
+              {lang === "fi" ? "Huoneen tyyppi" : lang === "fa" ? "کدام اتاق؟" : "Room type"}
             </label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
               {[
@@ -121,15 +118,15 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
           </div>
 
           {/* Quick Room Size Presets */}
-          <div style={{ marginBottom: "1.25rem" }}>
-            <span style={{ fontSize: "0.82rem", color: "var(--muted)", display: "block", marginBottom: "0.4rem" }}>
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label className="label" style={{ marginBottom: "0.6rem", display: "block" }}>
               {lang === "fi" ? "Huoneen koko" : lang === "fa" ? "اندازه تقریبی اتاق" : "Approximate room size"}
-            </span>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+            </label>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
               {[
-                { label: lang === "fi" ? "Kompakti (3×4 m)" : lang === "fa" ? "کوچک (۳×۴ م)" : "Compact (3×4 m)", w: 300, l: 400 },
-                { label: lang === "fi" ? "Normaali (4×5 m)" : lang === "fa" ? "متوسط (۴×۵ م)" : "Standard (4×5 m)", w: 380, l: 480 },
-                { label: lang === "fi" ? "Tilava (5×6 m)" : lang === "fa" ? "بزرگ (۵×۶ م)" : "Spacious (5×6 m)", w: 500, l: 600 },
+                { label: lang === "fi" ? "Kompakti (3×4 m)" : lang === "fa" ? "خورد (۳×۴ متر)" : "Compact (3×4 m)", w: 300, l: 400 },
+                { label: lang === "fi" ? "Normaali (4×5 m)" : lang === "fa" ? "متوسط (۴×۵ متر)" : "Standard (4×5 m)", w: 380, l: 480 },
+                { label: lang === "fi" ? "Tilava (5×6 m)" : lang === "fa" ? "کلان (۵×۶ متر)" : "Spacious (5×6 m)", w: 500, l: 600 },
               ].map((preset) => (
                 <button
                   key={preset.label}
@@ -139,45 +136,10 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
                     setRoomLength(preset.l);
                   }}
                   className={`chip ${roomWidth === preset.w && roomLength === preset.l ? "active" : ""}`}
-                  style={{ fontSize: "0.8rem", padding: "0.3rem 0.75rem", minHeight: "34px" }}
                 >
                   {preset.label}
                 </button>
               ))}
-            </div>
-          </div>
-
-          {/* Room Dimensions Inputs */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem" }}>
-            <div className="field">
-              <label htmlFor="room-w" className="label" style={{ fontSize: "0.82rem" }}>
-                {dict.guide.roomWidth} (cm)
-              </label>
-              <input
-                id="room-w"
-                type="number"
-                min="100"
-                max="1000"
-                step="10"
-                value={roomWidth}
-                onChange={(e) => setRoomWidth(Number(e.target.value) || 100)}
-                className="input"
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="room-l" className="label" style={{ fontSize: "0.82rem" }}>
-                {dict.guide.roomLength} (cm)
-              </label>
-              <input
-                id="room-l"
-                type="number"
-                min="100"
-                max="1200"
-                step="10"
-                value={roomLength}
-                onChange={(e) => setRoomLength(Number(e.target.value) || 100)}
-                className="input"
-              />
             </div>
           </div>
 
@@ -203,7 +165,9 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
           </div>
 
           <Link
-            href={`/${lang}/products`}
+            href={`/${lang}/products?size=${
+              recWidth * recLength < 20000 ? "small" : recWidth * recLength <= 50000 ? "medium" : "large"
+            }`}
             className="btn btn--gold btn--block-mobile"
             style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
           >
@@ -212,7 +176,7 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
           </Link>
         </div>
 
-        {/* Visual 2D diagram - hidden on mobile to keep experience clean & fast */}
+        {/* Visual 2D diagram */}
         <div
           className="calc-diagram"
           style={{
@@ -291,7 +255,8 @@ export default function RoomSizeCalculator({ lang }: { lang: Locale }) {
       <style>{`
         @media (max-width: 768px) {
           .calc-diagram {
-            display: none !important;
+            aspect-ratio: 16 / 10 !important;
+            padding: 1.25rem !important;
           }
           .btn--block-mobile {
             width: 100% !important;

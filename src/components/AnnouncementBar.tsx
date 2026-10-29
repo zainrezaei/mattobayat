@@ -20,12 +20,15 @@ export default function AnnouncementBar({
 
   return (
     <div
+      className="announcement-bar"
       style={{
         backgroundColor: "var(--plum)",
         color: "#fff",
         fontSize: "0.82rem",
         fontWeight: 500,
-        padding: "0.45rem var(--gutter)",
+        paddingBlock: "0.45rem",
+        paddingInlineStart: "1.75rem",
+        paddingInlineEnd: "2.25rem",
         textAlign: "center",
         display: "flex",
         alignItems: "center",
@@ -53,6 +56,14 @@ export default function AnnouncementBar({
       >
         ✕
       </button>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .announcement-bar {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

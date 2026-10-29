@@ -2,12 +2,16 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import type { Locale } from "@/lib/types";
+import ArrowIcon from "@/components/ArrowIcon";
 
 interface ProductImageGalleryProps {
   images: string[];
   title: string;
   hasDiscount?: boolean;
   saleLabel?: string;
+  altText?: string;
+  lang?: Locale;
 }
 
 export default function ProductImageGallery({
@@ -15,11 +19,21 @@ export default function ProductImageGallery({
   title,
   hasDiscount,
   saleLabel = "Tarjous",
+  altText,
+  lang = "fi",
 }: ProductImageGalleryProps) {
+  const baseAlt = altText || title;
   const safeImages = images && images.length > 0 ? images : ["/images/products/tabriz-red.jpg"];
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+  const zoomLabel = lang === "fa" ? "بزرگ‌نمایی تصویر" : lang === "en" ? "Open large image" : "Avaa suuri kuva";
+  const prevLabel = lang === "fa" ? "تصویر قبلی" : lang === "en" ? "Previous image" : "Edellinen kuva";
+  const nextLabel = lang === "fa" ? "تصویر بعدی" : lang === "en" ? "Next image" : "Seuraava kuva";
+  const closeLabel = lang === "fa" ? "بستن" : lang === "en" ? "Close" : "Sulje";
+  const prevBtnText = lang === "fa" ? "قبلی" : lang === "en" ? "Previous" : "Edellinen";
+  const nextBtnText = lang === "fa" ? "بعدی" : lang === "en" ? "Next" : "Seuraava";
 
   // Keep index within bounds if images change
   useEffect(() => {
@@ -36,7 +50,7 @@ export default function ProductImageGallery({
     setActiveIndex((prev) => (prev - 1 + safeImages.length) % safeImages.length);
   }, [safeImages.length]);
 
-  // Keyboard navigation
+  // Keyboard navigation & body scroll lock when lightbox is open
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") handleNext();
@@ -46,6 +60,17 @@ export default function ProductImageGallery({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleNext, handlePrev, isLightboxOpen]);
+
+  useEffect(() => {
+    if (isLightboxOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isLightboxOpen]);
 
   // Touch swipe support
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -86,7 +111,7 @@ export default function ProductImageGallery({
       >
         <Image
           src={currentImage}
-          alt={`${title} - ${activeIndex + 1}`}
+          alt={`${baseAlt} - ${activeIndex + 1}`}
           fill
           priority
           sizes="(max-width: 768px) 100vw, 50vw"
@@ -127,7 +152,7 @@ export default function ProductImageGallery({
         {/* Zoom hint icon button */}
         <button
           type="button"
-          aria-label="Avaa suuri kuva"
+          aria-label={zoomLabel}
           onClick={(e) => {
             e.stopPropagation();
             setIsLightboxOpen(true);
@@ -164,7 +189,7 @@ export default function ProductImageGallery({
           <>
             <button
               type="button"
-              aria-label="Edellinen kuva"
+              aria-label={prevLabel}
               onClick={(e) => {
                 e.stopPropagation();
                 handlePrev();
@@ -188,13 +213,11 @@ export default function ProductImageGallery({
                 zIndex: 2,
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
+              <ArrowIcon direction="back" size={18} />
             </button>
             <button
               type="button"
-              aria-label="Seuraava kuva"
+              aria-label={nextLabel}
               onClick={(e) => {
                 e.stopPropagation();
                 handleNext();
@@ -218,9 +241,7 @@ export default function ProductImageGallery({
                 zIndex: 2,
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
+              <ArrowIcon direction="forward" size={18} />
             </button>
           </>
         )}
@@ -256,7 +277,7 @@ export default function ProductImageGallery({
                 transition: "all 0.15s ease",
               }}
             >
-              <Image src={img} alt={`${title} thumbnail ${idx + 1}`} fill sizes="80px" style={{ objectFit: "cover" }} />
+              <Image src={img} alt={`${baseAlt} thumbnail ${idx + 1}`} fill sizes="80px" style={{ objectFit: "cover" }} />
             </button>
           ))}
         </div>
@@ -283,7 +304,7 @@ export default function ProductImageGallery({
           <button
             type="button"
             onClick={() => setIsLightboxOpen(false)}
-            aria-label="Sulje"
+            aria-label={closeLabel}
             style={{
               position: "absolute",
               top: "1.5rem",
@@ -316,7 +337,7 @@ export default function ProductImageGallery({
           >
             <Image
               src={currentImage}
-              alt={`${title} large view`}
+              alt={`${baseAlt} large view`}
               fill
               sizes="90vw"
               style={{ objectFit: "contain" }}
@@ -342,7 +363,8 @@ export default function ProductImageGallery({
                 className="btn btn--outline"
                 style={{ color: "#fff", borderColor: "rgba(255,255,255,0.4)", minHeight: "40px" }}
               >
-                ‹ Edellinen
+                <ArrowIcon direction="back" size={16} />
+                <span>{prevBtnText}</span>
               </button>
               <span style={{ fontSize: "0.95rem", fontWeight: 600 }}>
                 {activeIndex + 1} / {safeImages.length}
@@ -353,7 +375,8 @@ export default function ProductImageGallery({
                 className="btn btn--outline"
                 style={{ color: "#fff", borderColor: "rgba(255,255,255,0.4)", minHeight: "40px" }}
               >
-                Seuraava ›
+                <span>{nextBtnText}</span>
+                <ArrowIcon direction="forward" size={16} />
               </button>
             </div>
           )}

@@ -1,72 +1,88 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import type { Category, Color, Locale, Material, Origin, Product, Shape } from "@/lib/types";
-import { COLOR_SWATCH, COLORS } from "@/lib/types";
+import type { Category, Color, Locale, Product } from "@/lib/types";
+import { COLORS } from "@/lib/types";
 import { getDictionary, t } from "@/i18n";
 import ProductCard from "./ProductCard";
+
+type SizeTier = "all" | "small" | "medium" | "large";
+type PriceTier = "all" | "under300" | "300to700" | "over700";
+type SortOption = "featured" | "newest" | "priceAsc" | "priceDesc";
 
 export default function ProductCatalog({
   initialProducts,
   categories,
   lang,
   initialCategory,
+  initialSize,
 }: {
   initialProducts: Product[];
   categories: Category[];
   lang: Locale;
   initialCategory?: string;
+  initialSize?: string;
 }) {
   const dict = getDictionary(lang);
 
-  const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || "all");
-  const [selectedOrigin, setSelectedOrigin] = useState<Origin | "all">("all");
-  const [selectedMaterial, setSelectedMaterial] = useState<Material | "all">("all");
-  const [selectedShape, setSelectedShape] = useState<Shape | "all">("all");
-  const [selectedColor, setSelectedColor] = useState<Color | "all">("all");
-  const [priceTier, setPriceTier] = useState<"all" | "under300" | "300to700" | "over700">("all");
-  const [sortBy, setSortBy] = useState<"featured" | "newest" | "priceAsc" | "priceDesc">("featured");
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const validInitialSize: SizeTier =
+    initialSize === "small" || initialSize === "medium" || initialSize === "large"
+      ? initialSize
+      : "all";
 
-  // Prevent background scrolling when mobile filter drawer is open
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || "all");
+  const [sizeTier, setSizeTier] = useState<SizeTier>(validInitialSize);
+  const [selectedColor, setSelectedColor] = useState<Color | "all">("all");
+  const [priceTier, setPriceTier] = useState<PriceTier>("all");
+  const [sortBy, setSortBy] = useState<SortOption>("featured");
+
+  // Sync state if URL query props change on navigation
   useEffect(() => {
-    if (mobileFiltersOpen) {
-      document.body.style.overflow = "hidden";
+    setSelectedCategory(initialCategory || "all");
+  }, [initialCategory]);
+
+  useEffect(() => {
+    setSizeTier(validInitialSize);
+  }, [validInitialSize]);
+
+  // Keep URL query params in sync so browser Back button preserves filters
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (selectedCategory && selectedCategory !== "all") {
+      params.set("category", selectedCategory);
     } else {
-      document.body.style.overflow = "";
+      params.delete("category");
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileFiltersOpen]);
+    if (sizeTier && sizeTier !== "all") {
+      params.set("size", sizeTier);
+    } else {
+      params.delete("size");
+    }
+    const qs = params.toString();
+    const nextUrl = `${window.location.pathname}${qs ? `?${qs}` : ""}`;
+    if (nextUrl !== `${window.location.pathname}${window.location.search}`) {
+      window.history.replaceState(null, "", nextUrl);
+    }
+  }, [selectedCategory, sizeTier]);
 
   // Filter & sort logic
   const filteredProducts = useMemo(() => {
     return initialProducts
       .filter((p) => {
-        // Search
-        if (search.trim()) {
-          const q = search.toLowerCase();
-          const name = t(p.name, lang).toLowerCase();
-          const desc = t(p.description, lang).toLowerCase();
-          if (!name.includes(q) && !desc.includes(q)) return false;
-        }
-
         // Category
         if (selectedCategory !== "all") {
           const cat = categories.find((c) => c.slug === selectedCategory);
           if (cat && p.category_id !== cat.id) return false;
         }
 
-        // Origin
-        if (selectedOrigin !== "all" && p.origin !== selectedOrigin) return false;
-
-        // Material
-        if (selectedMaterial !== "all" && p.material !== selectedMaterial) return false;
-
-        // Shape
-        if (selectedShape !== "all" && p.shape !== selectedShape) return false;
+        // Size Tier (area in cm²: < 2 m² = 20000, 2-5 m² = 20000..50000, > 5 m² = > 50000)
+        if (sizeTier !== "all") {
+          const area = (p.width_cm || 0) * (p.length_cm || 0);
+          if (sizeTier === "small" && area >= 20000) return false;
+          if (sizeTier === "medium" && (area < 20000 || area > 50000)) return false;
+          if (sizeTier === "large" && area <= 50000) return false;
+        }
 
         // Color
         if (selectedColor !== "all" && !p.colors.includes(selectedColor)) return false;
@@ -82,57 +98,31 @@ export default function ProductCatalog({
         if (sortBy === "priceAsc") return (a.price || 999999) - (b.price || 999999);
         if (sortBy === "priceDesc") return (b.price || 0) - (a.price || 0);
         if (sortBy === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        // Featured
         return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
       });
-  }, [
-    initialProducts,
-    search,
-    selectedCategory,
-    selectedOrigin,
-    selectedMaterial,
-    selectedShape,
-    selectedColor,
-    priceTier,
-    sortBy,
-    categories,
-    lang,
-  ]);
+  }, [initialProducts, selectedCategory, sizeTier, selectedColor, priceTier, sortBy, categories]);
 
   const activeFiltersCount =
     (selectedCategory !== "all" ? 1 : 0) +
-    (selectedOrigin !== "all" ? 1 : 0) +
-    (selectedMaterial !== "all" ? 1 : 0) +
-    (selectedShape !== "all" ? 1 : 0) +
+    (sizeTier !== "all" ? 1 : 0) +
     (selectedColor !== "all" ? 1 : 0) +
-    (priceTier !== "all" ? 1 : 0) +
-    (search ? 1 : 0);
+    (priceTier !== "all" ? 1 : 0);
 
   const clearAllFilters = () => {
-    setSearch("");
     setSelectedCategory("all");
-    setSelectedOrigin("all");
-    setSelectedMaterial("all");
-    setSelectedShape("all");
+    setSizeTier("all");
     setSelectedColor("all");
     setPriceTier("all");
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-      {/* Category Pills Bar */}
-      <div
-        style={{
-          display: "flex",
-          gap: "0.5rem",
-          overflowX: "auto",
-          paddingBottom: "0.5rem",
-          scrollbarWidth: "none",
-        }}
-      >
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+      {/* 1. Category Pills Strip */}
+      <div className="catalog-scroll-row">
         <button
+          type="button"
           onClick={() => setSelectedCategory("all")}
-          className={`chip ${selectedCategory === "all" ? "active" : ""}`}
+          className={`chip catalog-chip ${selectedCategory === "all" ? "active" : ""}`}
           aria-pressed={selectedCategory === "all"}
         >
           {dict.products.all}
@@ -140,8 +130,9 @@ export default function ProductCatalog({
         {categories.map((cat) => (
           <button
             key={cat.id}
+            type="button"
             onClick={() => setSelectedCategory(cat.slug)}
-            className={`chip ${selectedCategory === cat.slug ? "active" : ""}`}
+            className={`chip catalog-chip ${selectedCategory === cat.slug ? "active" : ""}`}
             aria-pressed={selectedCategory === cat.slug}
           >
             {t(cat.name, lang)}
@@ -149,629 +140,199 @@ export default function ProductCatalog({
         ))}
       </div>
 
-      {/* Search & Top Action Bar */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "1rem",
-        }}
-      >
-        {/* Search */}
-        <div style={{ position: "relative", flex: "1 1 280px", maxWidth: "440px" }}>
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={dict.products.search}
-            className="input"
-            style={{
-              paddingInlineStart: "2.6rem",
-              borderRadius: "var(--radius-btn)",
-              minHeight: "44px",
-            }}
-          />
-          <span
-            style={{
-              position: "absolute",
-              top: "50%",
-              insetInlineStart: "1rem",
-              transform: "translateY(-50%)",
-              color: "var(--muted)",
-              pointerEvents: "none",
-              display: "grid",
-              placeItems: "center",
-            }}
+      {/* 2. Sleek Single-Line Pill Dropdowns Strip */}
+      <div className="catalog-filter-strip">
+        <div className="catalog-scroll-row" style={{ flex: 1 }}>
+          {/* Size Pill Dropdown */}
+          <select
+            value={sizeTier}
+            onChange={(e) => setSizeTier(e.target.value as SizeTier)}
+            aria-label={dict.products.size}
+            className={`select catalog-pill-select ${sizeTier !== "all" ? "is-active" : ""}`}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </span>
-          {search && (
+            <option value="all">{dict.products.size}: {dict.products.all}</option>
+            <option value="small">{dict.products.sizeSmall}</option>
+            <option value="medium">{dict.products.sizeMedium}</option>
+            <option value="large">{dict.products.sizeLarge}</option>
+          </select>
+
+          {/* Color Pill Dropdown */}
+          <select
+            value={selectedColor}
+            onChange={(e) => setSelectedColor(e.target.value as Color | "all")}
+            aria-label={dict.products.color}
+            className={`select catalog-pill-select ${selectedColor !== "all" ? "is-active" : ""}`}
+          >
+            <option value="all">{dict.products.color}: {dict.products.all}</option>
+            {COLORS.map((color) => (
+              <option key={color} value={color}>
+                {dict.attrs.color[color]}
+              </option>
+            ))}
+          </select>
+
+          {/* Price Pill Dropdown */}
+          <select
+            value={priceTier}
+            onChange={(e) => setPriceTier(e.target.value as PriceTier)}
+            aria-label={dict.products.price}
+            className={`select catalog-pill-select ${priceTier !== "all" ? "is-active" : ""}`}
+          >
+            <option value="all">{dict.products.price}: {dict.products.all}</option>
+            <option value="under300">&lt; 300 €</option>
+            <option value="300to700">300 – 700 €</option>
+            <option value="over700">&gt; 700 €</option>
+          </select>
+
+          {/* Sort Pill Dropdown */}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortOption)}
+            aria-label={dict.products.sort}
+            className="select catalog-pill-select"
+          >
+            <option value="featured">{dict.products.sortFeatured}</option>
+            <option value="newest">{dict.products.sortNewest}</option>
+            <option value="priceAsc">{dict.products.sortPriceAsc}</option>
+            <option value="priceDesc">{dict.products.sortPriceDesc}</option>
+          </select>
+
+          {/* Clear Active Filters Pill */}
+          {activeFiltersCount > 0 && (
             <button
-              onClick={() => setSearch("")}
-              style={{
-                position: "absolute",
-                top: "50%",
-                insetInlineEnd: "1rem",
-                transform: "translateY(-50%)",
-                color: "var(--muted)",
-              }}
+              type="button"
+              onClick={clearAllFilters}
+              className="catalog-clear-btn"
             >
-              ✕
+              ✕ {dict.products.clear}
             </button>
           )}
         </div>
 
-        {/* Sort & Mobile Filter Toggle */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <button
-            type="button"
-            onClick={() => setMobileFiltersOpen(true)}
-            className="btn btn--outline btn--sm mobile-filter-btn"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="4" y1="21" x2="4" y2="14" />
-              <line x1="4" y1="10" x2="4" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12" y2="3" />
-              <line x1="20" y1="21" x2="20" y2="16" />
-              <line x1="20" y1="12" x2="20" y2="3" />
-              <line x1="1" y1="14" x2="7" y2="14" />
-              <line x1="9" y1="8" x2="15" y2="8" />
-              <line x1="17" y1="16" x2="23" y2="16" />
-            </svg>
-            <span>{dict.products.filters}</span>
-            {activeFiltersCount > 0 && (
-              <span className="badge badge--plum">{activeFiltersCount}</span>
-            )}
-          </button>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <span style={{ fontSize: "0.85rem", color: "var(--muted)" }}>{dict.products.sort}:</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="select"
-              style={{
-                minHeight: "42px",
-                padding: "0.35rem 2.2rem 0.35rem 0.85rem",
-                borderRadius: "var(--radius-btn)",
-                fontSize: "0.85rem",
-              }}
-            >
-              <option value="featured">{dict.products.sortFeatured}</option>
-              <option value="newest">{dict.products.sortNewest}</option>
-              <option value="priceAsc">{dict.products.sortPriceAsc}</option>
-              <option value="priceDesc">{dict.products.sortPriceDesc}</option>
-            </select>
-          </div>
-        </div>
+        <span className="catalog-count">
+          <strong>{filteredProducts.length}</strong> {dict.products.results}
+        </span>
       </div>
 
-      {/* Main Catalog Layout (Sidebar Filters + Products Grid) */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "260px 1fr",
-          gap: "2.5rem",
-          alignItems: "start",
-        }}
-        className="catalog-grid-layout"
-      >
-        {/* Desktop Sidebar Filters */}
-        <aside
-          className="desktop-filter-sidebar"
+      {/* 3. Full-Width Products Grid */}
+      {filteredProducts.length === 0 ? (
+        <div
           style={{
             backgroundColor: "var(--surface)",
-            padding: "1.5rem",
+            padding: "3.5rem 1.5rem",
             borderRadius: "var(--radius)",
+            textAlign: "center",
             border: "1px solid var(--line)",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1.5rem",
+            marginTop: "0.5rem",
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h3 style={{ fontSize: "1.15rem", margin: 0, color: "var(--plum)" }}>
-              {dict.products.filters}
-            </h3>
-            {activeFiltersCount > 0 && (
-              <button
-                type="button"
-                onClick={clearAllFilters}
-                style={{ fontSize: "0.8rem", color: "var(--danger)", textDecoration: "underline", background: "none", border: "none", cursor: "pointer" }}
-              >
-                {dict.products.clear} ({activeFiltersCount})
-              </button>
-            )}
-          </div>
-
-          {/* Origin filter */}
-          <div>
-            <label className="label" style={{ marginBottom: "0.5rem", display: "block" }}>
-              {dict.products.origin}
-            </label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
-              {(["all", "iran", "turkey", "afghanistan"] as const).map((origin) => (
-                <button
-                  key={origin}
-                  type="button"
-                  onClick={() => setSelectedOrigin(origin)}
-                  className={`chip ${selectedOrigin === origin ? "active" : ""}`}
-                  style={{ fontSize: "0.8rem", padding: "0.25rem 0.7rem", minHeight: "32px" }}
-                >
-                  {origin === "all" ? dict.products.all : dict.attrs.origin[origin]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Shape filter */}
-          <div>
-            <label className="label" style={{ marginBottom: "0.5rem", display: "block" }}>
-              {dict.products.shape}
-            </label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
-              {(["all", "rectangle", "runner", "round"] as const).map((shape) => (
-                <button
-                  key={shape}
-                  type="button"
-                  onClick={() => setSelectedShape(shape)}
-                  className={`chip ${selectedShape === shape ? "active" : ""}`}
-                  style={{ fontSize: "0.8rem", padding: "0.25rem 0.7rem", minHeight: "32px" }}
-                >
-                  {shape === "all" ? dict.products.all : dict.attrs.shape[shape]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Color Swatches */}
-          <div>
-            <label className="label" style={{ marginBottom: "0.5rem", display: "block" }}>
-              {dict.products.color}
-            </label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-              <button
-                type="button"
-                onClick={() => setSelectedColor("all")}
-                style={{
-                  fontSize: "0.78rem",
-                  padding: "0.25rem 0.6rem",
-                  borderRadius: "999px",
-                  border: `1.5px solid ${selectedColor === "all" ? "var(--plum)" : "var(--line)"}`,
-                  backgroundColor: selectedColor === "all" ? "var(--plum)" : "var(--surface)",
-                  color: selectedColor === "all" ? "#fff" : "var(--ink-soft)",
-                  cursor: "pointer",
-                }}
-              >
-                {dict.products.all}
-              </button>
-              {COLORS.map((color) => {
-                const isSelected = selectedColor === color;
-                return (
-                  <button
-                    key={color}
-                    type="button"
-                    onClick={() => setSelectedColor(isSelected ? "all" : color)}
-                    title={dict.attrs.color[color]}
-                    style={{
-                      width: "28px",
-                      height: "28px",
-                      borderRadius: "50%",
-                      background: COLOR_SWATCH[color],
-                      border: isSelected ? "3px solid var(--plum)" : "1.5px solid var(--line-strong)",
-                      outlineOffset: "2px",
-                      boxShadow: isSelected ? "0 0 0 2px var(--plum)" : "none",
-                      transition: "transform 0.15s ease",
-                      cursor: "pointer",
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Price Tiers */}
-          <div>
-            <label className="label" style={{ marginBottom: "0.5rem", display: "block" }}>
-              {dict.products.price}
-            </label>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-              {[
-                { id: "all", label: dict.products.all },
-                { id: "under300", label: "< 300 €" },
-                { id: "300to700", label: "300 € – 700 €" },
-                { id: "over700", label: "> 700 €" },
-              ].map((tier) => (
-                <label key={tier.id} className="choice" style={{ fontSize: "0.85rem", cursor: "pointer" }}>
-                  <input
-                    type="radio"
-                    name="priceTier"
-                    checked={priceTier === tier.id}
-                    onChange={() => setPriceTier(tier.id as any)}
-                    className="radio"
-                  />
-                  <span>{tier.label}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Material */}
-          <div>
-            <label className="label" style={{ marginBottom: "0.5rem", display: "block" }}>
-              {dict.products.material}
-            </label>
-            <select
-              value={selectedMaterial}
-              onChange={(e) => setSelectedMaterial(e.target.value as any)}
-              className="select"
-              style={{ fontSize: "0.85rem", minHeight: "40px" }}
-            >
-              <option value="all">{dict.products.all}</option>
-              <option value="wool">{dict.attrs.material.wool}</option>
-              <option value="silk">{dict.attrs.material.silk}</option>
-              <option value="wool-silk">{dict.attrs.material["wool-silk"]}</option>
-              <option value="cotton">{dict.attrs.material.cotton}</option>
-              <option value="polyester">{dict.attrs.material.polyester}</option>
-            </select>
-          </div>
-        </aside>
-
-        {/* Product Grid */}
-        <div>
-          {/* Results header */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "1.25rem",
-              fontSize: "0.9rem",
-              color: "var(--ink-soft)",
-            }}
-          >
-            <span>
-              <strong>{filteredProducts.length}</strong> {dict.products.results}
-            </span>
-          </div>
-
-          {filteredProducts.length === 0 ? (
-            <div
-              style={{
-                backgroundColor: "var(--surface)",
-                padding: "4rem 2rem",
-                borderRadius: "var(--radius)",
-                textAlign: "center",
-                border: "1px solid var(--line)",
-              }}
-            >
-              <p style={{ fontSize: "1.2rem", color: "var(--ink)", fontWeight: 600, marginBottom: "0.5rem" }}>
-                {dict.products.noResults}
-              </p>
-              <p style={{ fontSize: "0.9rem", color: "var(--muted)", marginBottom: "1.5rem" }}>
-                {lang === "fi"
-                  ? "Kokeile poistaa jokin suodattimista tai hae toisella hakusanalla."
-                  : lang === "fa"
-                  ? "فیلترها را تغییر دهید یا واژه دیگری را جستجو کنید."
-                  : "Try clearing some filters or searching for another term."}
-              </p>
-              <button type="button" onClick={clearAllFilters} className="btn btn--gold btn--sm">
-                {dict.products.clear}
-              </button>
-            </div>
-          ) : (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))",
-                gap: "1.75rem",
-              }}
-            >
-              {filteredProducts.map((p) => (
-                <ProductCard key={p.id} product={p} lang={lang} />
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Mobile Bottom Sheet Filter Drawer */}
-      {mobileFiltersOpen && (
-        <div
-          className="mobile-filter-backdrop"
-          onClick={() => setMobileFiltersOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      <div
-        className={`mobile-filter-sheet ${mobileFiltersOpen ? "open" : ""}`}
-        role="dialog"
-        aria-modal={mobileFiltersOpen}
-        aria-label={dict.products.filters}
-      >
-        <div className="mobile-filter-header">
-          <div className="mobile-filter-handle" />
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <h3 style={{ fontSize: "1.15rem", margin: 0, color: "var(--plum)", fontWeight: 700 }}>
-                {dict.products.filters}
-              </h3>
-              {activeFiltersCount > 0 && (
-                <span className="badge badge--plum">{activeFiltersCount}</span>
-              )}
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              {activeFiltersCount > 0 && (
-                <button
-                  type="button"
-                  onClick={clearAllFilters}
-                  style={{ fontSize: "0.82rem", color: "var(--danger)", textDecoration: "underline", background: "none", border: "none", cursor: "pointer" }}
-                >
-                  {dict.products.clear}
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => setMobileFiltersOpen(false)}
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--bg-alt)",
-                  border: "1px solid var(--line)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "1rem",
-                  color: "var(--ink)",
-                  cursor: "pointer",
-                }}
-                aria-label="Close"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="mobile-filter-content">
-          {/* Origin filter */}
-          <div>
-            <label className="label" style={{ marginBottom: "0.5rem", display: "block" }}>
-              {dict.products.origin}
-            </label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
-              {(["all", "iran", "turkey", "afghanistan"] as const).map((origin) => (
-                <button
-                  key={origin}
-                  type="button"
-                  onClick={() => setSelectedOrigin(origin)}
-                  className={`chip ${selectedOrigin === origin ? "active" : ""}`}
-                  style={{ fontSize: "0.82rem", padding: "0.3rem 0.75rem", minHeight: "34px" }}
-                >
-                  {origin === "all" ? dict.products.all : dict.attrs.origin[origin]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Shape filter */}
-          <div>
-            <label className="label" style={{ marginBottom: "0.5rem", display: "block" }}>
-              {dict.products.shape}
-            </label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
-              {(["all", "rectangle", "runner", "round"] as const).map((shape) => (
-                <button
-                  key={shape}
-                  type="button"
-                  onClick={() => setSelectedShape(shape)}
-                  className={`chip ${selectedShape === shape ? "active" : ""}`}
-                  style={{ fontSize: "0.82rem", padding: "0.3rem 0.75rem", minHeight: "34px" }}
-                >
-                  {shape === "all" ? dict.products.all : dict.attrs.shape[shape]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Color Swatches */}
-          <div>
-            <label className="label" style={{ marginBottom: "0.5rem", display: "block" }}>
-              {dict.products.color}
-            </label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}>
-              <button
-                type="button"
-                onClick={() => setSelectedColor("all")}
-                style={{
-                  fontSize: "0.8rem",
-                  padding: "0.3rem 0.75rem",
-                  borderRadius: "999px",
-                  border: `1.5px solid ${selectedColor === "all" ? "var(--plum)" : "var(--line)"}`,
-                  backgroundColor: selectedColor === "all" ? "var(--plum)" : "var(--surface)",
-                  color: selectedColor === "all" ? "#fff" : "var(--ink-soft)",
-                  cursor: "pointer",
-                }}
-              >
-                {dict.products.all}
-              </button>
-              {COLORS.map((color) => {
-                const isSelected = selectedColor === color;
-                return (
-                  <button
-                    key={color}
-                    type="button"
-                    onClick={() => setSelectedColor(isSelected ? "all" : color)}
-                    title={dict.attrs.color[color]}
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      borderRadius: "50%",
-                      background: COLOR_SWATCH[color],
-                      border: isSelected ? "3px solid var(--plum)" : "1.5px solid var(--line-strong)",
-                      outlineOffset: "2px",
-                      boxShadow: isSelected ? "0 0 0 2px var(--plum)" : "none",
-                      cursor: "pointer",
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Price Tiers */}
-          <div>
-            <label className="label" style={{ marginBottom: "0.5rem", display: "block" }}>
-              {dict.products.price}
-            </label>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              {[
-                { id: "all", label: dict.products.all },
-                { id: "under300", label: "< 300 €" },
-                { id: "300to700", label: "300 € – 700 €" },
-                { id: "over700", label: "> 700 €" },
-              ].map((tier) => (
-                <label key={tier.id} className="choice" style={{ fontSize: "0.9rem", cursor: "pointer" }}>
-                  <input
-                    type="radio"
-                    name="priceTierMobile"
-                    checked={priceTier === tier.id}
-                    onChange={() => setPriceTier(tier.id as any)}
-                    className="radio"
-                  />
-                  <span>{tier.label}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Material */}
-          <div>
-            <label className="label" style={{ marginBottom: "0.5rem", display: "block" }}>
-              {dict.products.material}
-            </label>
-            <select
-              value={selectedMaterial}
-              onChange={(e) => setSelectedMaterial(e.target.value as any)}
-              className="select"
-              style={{ fontSize: "0.9rem", minHeight: "44px" }}
-            >
-              <option value="all">{dict.products.all}</option>
-              <option value="wool">{dict.attrs.material.wool}</option>
-              <option value="silk">{dict.attrs.material.silk}</option>
-              <option value="wool-silk">{dict.attrs.material["wool-silk"]}</option>
-              <option value="cotton">{dict.attrs.material.cotton}</option>
-              <option value="polyester">{dict.attrs.material.polyester}</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="mobile-filter-footer">
-          <button
-            type="button"
-            onClick={() => setMobileFiltersOpen(false)}
-            className="btn btn--gold btn--lg btn--block"
-            style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-          >
-            <span>{lang === "fi" ? "Näytä tulokset" : lang === "fa" ? "مشاهده نتایج" : "Show Results"}</span>
-            <span style={{ backgroundColor: "rgba(0,0,0,0.15)", padding: "2px 8px", borderRadius: "999px", fontSize: "0.85rem" }}>
-              {filteredProducts.length}
-            </span>
+          <p style={{ fontSize: "1.1rem", color: "var(--ink)", fontWeight: 600, marginBottom: "0.5rem" }}>
+            {dict.products.noResults}
+          </p>
+          <button type="button" onClick={clearAllFilters} className="btn btn--gold btn--sm" style={{ marginTop: "0.75rem" }}>
+            {dict.products.clear}
           </button>
         </div>
-      </div>
+      ) : (
+        <div
+          className="catalog-products-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))",
+            gap: "1.75rem",
+            marginTop: "0.25rem",
+          }}
+        >
+          {filteredProducts.map((p) => (
+            <ProductCard key={p.id} product={p} lang={lang} />
+          ))}
+        </div>
+      )}
 
       <style>{`
-        .mobile-filter-btn {
+        .catalog-scroll-row {
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          overflow-x: auto;
+          scrollbar-width: none;
+          -webkit-overflow-scrolling: touch;
+          padding-block: 2px;
+        }
+        .catalog-scroll-row::-webkit-scrollbar {
           display: none;
         }
-        .mobile-filter-backdrop {
-          display: none;
+        .catalog-chip {
+          min-block-size: 36px;
+          padding: 0.35rem 0.9rem;
+          font-size: 0.84rem;
         }
-        .mobile-filter-sheet {
-          display: none;
+        .catalog-filter-strip {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.75rem;
+          padding-bottom: 0.35rem;
+          border-bottom: 1px solid var(--line);
         }
-        @media (max-width: 860px) {
-          .catalog-grid-layout {
-            grid-template-columns: 1fr !important;
+        .catalog-pill-select {
+          width: auto !important;
+          inline-size: auto !important;
+          flex-shrink: 0;
+          min-block-size: 34px !important;
+          padding-block: 0.25rem !important;
+          padding-inline-start: 0.75rem !important;
+          padding-inline-end: 1.85rem !important;
+          border-radius: 999px !important;
+          border: 1px solid var(--line-strong) !important;
+          background-color: var(--surface) !important;
+          background-position: right 0.65rem center !important;
+          font-size: 0.8rem !important;
+          font-weight: 500 !important;
+          color: var(--ink) !important;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+        [dir="rtl"] .catalog-pill-select {
+          background-position: left 0.65rem center !important;
+        }
+        .catalog-pill-select.is-active {
+          border-color: var(--plum) !important;
+          background-color: var(--plum-50) !important;
+          color: var(--plum) !important;
+          font-weight: 600 !important;
+        }
+        .catalog-clear-btn {
+          flex-shrink: 0;
+          min-block-size: 32px;
+          padding: 0.2rem 0.7rem;
+          border-radius: 999px;
+          background: var(--danger-50);
+          color: var(--danger);
+          font-size: 0.78rem;
+          font-weight: 600;
+          white-space: nowrap;
+          cursor: pointer;
+        }
+        .catalog-count {
+          font-size: 0.82rem;
+          color: var(--muted);
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+        @media (max-width: 640px) {
+          .catalog-scroll-row {
+            margin-inline: calc(-1 * var(--gutter));
+            padding-inline: var(--gutter);
           }
-          .desktop-filter-sidebar {
-            display: none !important;
+          .catalog-count {
+            display: none;
           }
-          .mobile-filter-btn {
-            display: inline-flex !important;
-            align-items: center;
-            gap: 0.5rem;
-          }
-          .mobile-filter-backdrop {
-            display: block;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 12, 18, 0.45);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            z-index: 100;
-            animation: filterFadeIn 0.2s ease;
-          }
-          .mobile-filter-sheet {
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-height: 85vh;
-            background: var(--surface);
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            z-index: 101;
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          }
-          .mobile-filter-sheet.open {
-            transform: translateY(0);
-          }
-          .mobile-filter-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.75rem 1.25rem;
-            border-bottom: 1px solid var(--line);
-            flex-shrink: 0;
-          }
-          .mobile-filter-handle {
-            width: 38px;
-            height: 4px;
-            border-radius: 999px;
-            background-color: var(--line-strong);
-          }
-          .mobile-filter-content {
-            padding: 1.25rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            -webkit-overflow-scrolling: touch;
-          }
-          .mobile-filter-footer {
-            padding: 0.85rem 1.25rem;
-            padding-bottom: max(0.85rem, env(safe-area-inset-bottom));
-            border-top: 1px solid var(--line);
-            background: var(--surface);
-            flex-shrink: 0;
-          }
-          @keyframes filterFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        }
+        @media (max-width: 560px) {
+          .catalog-products-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 0.85rem !important;
           }
         }
       `}</style>

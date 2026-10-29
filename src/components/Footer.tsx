@@ -26,11 +26,12 @@ export default function Footer({
     >
       <div className="container">
         <div
+          className="footer-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))",
-            gap: "2.5rem 2rem",
-            marginBottom: "3.5rem",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))",
+            gap: "2.25rem 2rem",
+            marginBottom: "3rem",
           }}
         >
           {/* Brand Col */}
@@ -64,8 +65,8 @@ export default function Footer({
                 >
                   Matto Bayat
                 </div>
-                <div style={{ fontSize: "0.75rem", color: "var(--gold-600)", fontWeight: 600 }}>
-                  {lang === "fa" ? "فرش بیات" : "Helsinki"}
+                <div dir="ltr" style={{ fontSize: "0.75rem", color: "var(--gold-600)", fontWeight: 600 }}>
+                  Putkitie 6 · Helsinki
                 </div>
               </div>
             </div>
@@ -156,13 +157,6 @@ export default function Footer({
                   {settings.hours.sun.closed ? dict.hours.closed : `${settings.hours.sun.open} – ${settings.hours.sun.close}`}
                 </strong>
               </div>
-              <p style={{ fontSize: "0.78rem", color: "var(--muted)", marginTop: "0.5rem", display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-                <span>{lang === "fi" ? "Lähellä Siilitien metroa · Ilmainen pysäköinti" : lang === "fa" ? "نزدیک ایستگاه متروی Siilitie · پارکینگ رایگان" : "Near Siilitie metro · Free customer parking"}</span>
-              </p>
             </div>
           </div>
 
@@ -190,7 +184,7 @@ export default function Footer({
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
-                  <span>{settings.address}, {settings.postal} {settings.city}</span>
+                  <span dir="ltr">{settings.address}, {settings.postal} {settings.city}</span>
                 </a>
               </div>
               <div>
@@ -313,6 +307,18 @@ export default function Footer({
           </div>
         </div>
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .footer-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 1.75rem 1.25rem !important;
+          }
+          .footer-grid > div:first-child,
+          .footer-grid > div:last-child {
+            grid-column: 1 / -1;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

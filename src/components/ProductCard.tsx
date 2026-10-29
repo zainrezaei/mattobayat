@@ -22,6 +22,8 @@ export default function ProductCard({
   const sizeText = formatSize(product.width_cm, product.length_cm, lang);
   const originText = dict.attrs.origin[product.origin] || product.origin;
   const materialText = dict.attrs.material[product.material] || product.material;
+  const weaveText = dict.attrs.weave[product.weave] || product.weave;
+  const imageAlt = `${title} – ${weaveText} ${materialText} (${product.width_cm}×${product.length_cm} ${dict.common.cm}) | Matto Bayat Helsinki`;
 
   const handleAddReservation = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -63,7 +65,7 @@ export default function ProductCard({
       >
         <Image
           src={primaryImage}
-          alt={title}
+          alt={imageAlt}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           style={{
@@ -78,8 +80,8 @@ export default function ProductCard({
           <div
             style={{
               position: "absolute",
-              bottom: "0.65rem",
-              insetInlineEnd: "0.65rem",
+              top: "0.75rem",
+              insetInlineEnd: "0.75rem",
               backgroundColor: "rgba(20, 20, 20, 0.65)",
               backdropFilter: "blur(4px)",
               color: "#fff",
@@ -152,6 +154,7 @@ export default function ProductCard({
 
       {/* Content */}
       <div
+        className="product-card-body"
         style={{
           padding: "1.25rem",
           display: "flex",
@@ -160,11 +163,12 @@ export default function ProductCard({
           gap: "0.5rem",
         }}
       >
-        <div style={{ fontSize: "0.78rem", color: "var(--muted)", fontWeight: 500, letterSpacing: "0.02em" }}>
+        <div className="product-card-meta" style={{ fontSize: "0.78rem", color: "var(--muted)", fontWeight: 500, letterSpacing: "0.02em" }}>
           {materialText} {sizeText ? `· ${sizeText}` : ""}
         </div>
 
         <h3
+          className="product-card-title"
           style={{
             fontFamily: "var(--font-display)",
             fontSize: "1.28rem",
@@ -191,7 +195,8 @@ export default function ProductCard({
           style={{
             display: "flex",
             alignItems: "baseline",
-            gap: "0.6rem",
+            gap: "0.5rem",
+            flexWrap: "wrap",
             marginTop: "auto",
             paddingTop: "0.4rem",
           }}
@@ -199,6 +204,7 @@ export default function ProductCard({
           {product.price ? (
             <>
               <span
+                className="product-card-price"
                 style={{
                   fontSize: "1.25rem",
                   fontWeight: 700,
@@ -210,7 +216,7 @@ export default function ProductCard({
               {product.compare_at_price && (
                 <span
                   style={{
-                    fontSize: "0.9rem",
+                    fontSize: "0.85rem",
                     color: "var(--muted)",
                     textDecoration: "line-through",
                   }}
@@ -220,7 +226,7 @@ export default function ProductCard({
               )}
             </>
           ) : (
-            <span style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--gold-600)" }}>
+            <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--gold-600)" }}>
               {dict.common.priceOnRequest}
             </span>
           )}
@@ -229,7 +235,7 @@ export default function ProductCard({
         {/* Action Button */}
         <button
           onClick={handleAddReservation}
-          className={`btn btn--block btn--sm ${isReserved ? "btn--outline" : "btn--gold"}`}
+          className={`btn btn--block btn--sm product-card-btn ${isReserved ? "btn--outline" : "btn--gold"}`}
           style={{ marginTop: "0.35rem" }}
         >
           {isReserved ? (
@@ -254,6 +260,27 @@ export default function ProductCard({
         }
         .product-card:hover .product-card-img {
           transform: scale(1.04);
+        }
+        @media (max-width: 560px) {
+          .product-card-body {
+            padding: 0.75rem !important;
+            gap: 0.35rem !important;
+          }
+          .product-card-meta {
+            font-size: 0.7rem !important;
+          }
+          .product-card-title {
+            font-size: 1.02rem !important;
+            line-height: 1.2 !important;
+          }
+          .product-card-price {
+            font-size: 1.05rem !important;
+          }
+          .product-card-btn {
+            min-block-size: 34px !important;
+            padding: 0.35rem 0.5rem !important;
+            font-size: 0.75rem !important;
+          }
         }
       `}</style>
     </div>

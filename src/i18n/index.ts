@@ -32,25 +32,26 @@ export function t(value: Localized | null | undefined, locale: Locale): string {
 
 export function formatPrice(amount: number, locale: Locale): string {
   const rounded = Math.round(amount);
-  const formatted = rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   if (locale === "fa") {
     const faDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-    const faNum = formatted.replace(/\d/g, (d) => faDigits[Number(d)]);
+    const withSep = rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "٬");
+    const faNum = withSep.replace(/\d/g, (d) => faDigits[Number(d)]);
     return `${faNum} €`;
   }
+  const formatted = rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   return `${formatted} €`;
 }
 
 export function formatNumber(n: number, locale: Locale): string {
-  const formatted = n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   if (locale === "fa") {
     const faDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-    return formatted.replace(/\d/g, (d) => faDigits[Number(d)]);
+    const withSep = n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "٬");
+    return withSep.replace(/\d/g, (d) => faDigits[Number(d)]);
   }
-  return formatted;
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
-const dateLocaleMap: Record<Locale, string> = { fi: "fi-FI", en: "en-GB", fa: "fa-IR" };
+const dateLocaleMap: Record<Locale, string> = { fi: "fi-FI", en: "en-GB", fa: "fa-AF" };
 
 export function formatDate(iso: string, locale: Locale): string {
   try {

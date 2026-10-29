@@ -15,6 +15,7 @@ export async function generateMetadata({
   return {
     title: dict.reservation.title,
     description: dict.reservation.lead,
+    robots: { index: false, follow: false },
   };
 }
 
@@ -28,17 +29,9 @@ export default async function ReservationPage({
   const settings = await getSettings();
 
   return (
-    <div className="section" style={{ paddingTop: "clamp(2rem, 4vw, 4rem)" }}>
+    <div className="section" style={{ paddingTop: "clamp(1.5rem, 3vw, 2.5rem)" }}>
       <div className="container">
-        <div style={{ maxWidth: "600px", marginBottom: "2.5rem" }}>
-          <span className="eyebrow">{dict.nav.reservation}</span>
-          <h1 style={{ fontSize: "clamp(2.2rem, 4vw, 3rem)", color: "var(--plum)", marginBlock: "0.4rem 0.6rem" }}>
-            {dict.reservation.title}
-          </h1>
-          <p style={{ color: "var(--ink-soft)", fontSize: "1.05rem" }}>
-            {dict.reservation.lead}
-          </p>
-        </div>
+        <h1 className="visually-hidden">{dict.reservation.title}</h1>
 
         <ReservationForm lang={lang} settings={settings} />
       </div>

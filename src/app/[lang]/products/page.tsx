@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale } from "@/i18n";
 import { getCategories, getProducts } from "@/lib/data";
+import { buildPageMetadata } from "@/lib/seo";
 import ProductCatalog from "@/components/ProductCatalog";
 
 export async function generateMetadata({
@@ -12,10 +13,12 @@ export async function generateMetadata({
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = getDictionary(lang);
-  return {
-    title: dict.products.title,
-    description: dict.products.lead,
-  };
+  return buildPageMetadata({
+    lang,
+    path: "/products",
+    title: dict.meta.productsTitle,
+    description: dict.meta.productsDescription,
+  });
 }
 
 export default async function ProductsPage({
@@ -23,10 +26,10 @@ export default async function ProductsPage({
   searchParams,
 }: {
   params: Promise<{ lang: string }>;
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{ category?: string; size?: string }>;
 }) {
   const { lang } = await params;
-  const { category } = await searchParams;
+  const { category, size } = await searchParams;
   if (!hasLocale(lang as Locale)) notFound();
 
   const locale = lang as Locale;
@@ -35,18 +38,9 @@ export default async function ProductsPage({
   const products = await getProducts();
 
   return (
-    <div className="section" style={{ paddingTop: "clamp(2rem, 4vw, 4rem)" }}>
+    <div className="section" style={{ paddingTop: "clamp(1.25rem, 2.5vw, 2rem)" }}>
       <div className="container">
-        {/* Header */}
-        <div style={{ marginBottom: "2.5rem" }}>
-          <span className="eyebrow">{dict.nav.products}</span>
-          <h1 style={{ fontSize: "clamp(2.4rem, 4.5vw, 3.5rem)", color: "var(--plum)", marginBlock: "0.4rem 0.6rem" }}>
-            {dict.products.title}
-          </h1>
-          <p style={{ color: "var(--ink-soft)", fontSize: "1.05rem", maxWidth: "56ch" }}>
-            {dict.products.lead}
-          </p>
-        </div>
+        <h1 className="visually-hidden">{dict.products.title}</h1>
 
         {/* Interactive Catalog */}
         <ProductCatalog
@@ -54,6 +48,7 @@ export default async function ProductsPage({
           categories={categories}
           lang={locale}
           initialCategory={category}
+          initialSize={size}
         />
       </div>
     </div>

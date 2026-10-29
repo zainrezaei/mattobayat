@@ -65,7 +65,7 @@ export default function ContactForm({ lang }: { lang: Locale }) {
             required
             autoComplete="name"
             className="input"
-            placeholder={lang === "fa" ? "نام شما" : "Nimesi"}
+            placeholder={lang === "fa" ? "نام شما" : lang === "en" ? "Your name" : "Nimesi"}
           />
         </div>
 
@@ -95,7 +95,7 @@ export default function ContactForm({ lang }: { lang: Locale }) {
               required
               autoComplete="email"
               className="input"
-              placeholder="sahkoposti@example.com"
+              placeholder={lang === "fi" ? "sahkoposti@example.com" : "name@example.com"}
             />
           </div>
         </div>
@@ -109,7 +109,13 @@ export default function ContactForm({ lang }: { lang: Locale }) {
             name="subject"
             type="text"
             className="input"
-            placeholder={lang === "fa" ? "موضوع پیام (مثلاً استعلام قیمت یا عمده‌فروشی)" : "Esim. Tiedustelu tai tukkuhinnat"}
+            placeholder={
+              lang === "fa"
+                ? "موضوع پیام (مثلاً پرسان قیمت یا قالینهای عمده)"
+                : lang === "en"
+                ? "E.g. Price inquiry or wholesale"
+                : "Esim. Tiedustelu tai tukkuhinnat"
+            }
           />
         </div>
 
@@ -122,7 +128,13 @@ export default function ContactForm({ lang }: { lang: Locale }) {
             name="body"
             required
             className="textarea"
-            placeholder={lang === "fa" ? "پیام شما..." : "Kirjoita viestisi tähän..."}
+            placeholder={
+              lang === "fa"
+                ? "پیام خود را اینجا بنویسید…"
+                : lang === "en"
+                ? "Write your message here..."
+                : "Kirjoita viestisi tähän..."
+            }
           />
         </div>
 

@@ -2,13 +2,27 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale, t } from "@/i18n";
 import { getCategories, getProducts, getSettings } from "@/lib/data";
 import { mapsLink, telLink, whatsappLink } from "@/lib/utils";
+import { buildPageMetadata } from "@/lib/seo";
 import ProductCard from "@/components/ProductCard";
 import ArrowIcon from "@/components/ArrowIcon";
 import GoogleReviewsAndMap from "@/components/GoogleReviewsAndMap";
+
+export async function generateMetadata({ params }: PageProps<"/[lang]">): Promise<Metadata> {
+  const { lang } = await params;
+  if (!hasLocale(lang)) return {};
+  const dict = getDictionary(lang);
+  return buildPageMetadata({
+    lang,
+    path: "",
+    title: dict.meta.title,
+    description: dict.meta.description,
+  });
+}
 
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -45,8 +59,6 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         >
           {/* Hero text */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", zIndex: 2 }}>
-            <span className="eyebrow">{dict.home.eyebrow}</span>
-
             <h1
               style={{
                 fontSize: "clamp(2.8rem, 6.2vw, 4.8rem)",
@@ -77,14 +89,15 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
             {/* CTAs */}
             <div
+              className="hero-ctas"
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                gap: "1rem",
+                gap: "0.85rem",
                 marginTop: "0.5rem",
               }}
             >
-              <Link href={`/${lang}/products`} className="btn btn--gold btn--lg">
+              <Link href={`/${lang}/products`} className="btn btn--gold btn--lg hero-cta-btn">
                 <span>{dict.home.ctaShop}</span>
                 <ArrowIcon direction="forward" />
               </Link>
@@ -92,7 +105,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
                 href={mapsLink(settings)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn--outline btn--lg"
+                className="btn btn--outline btn--lg hero-cta-btn"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
@@ -161,27 +174,6 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               sizes="(max-width: 768px) 100vw, 50vw"
               style={{ objectFit: "cover" }}
             />
-            <div
-              style={{
-                position: "absolute",
-                bottom: "1rem",
-                insetInlineStart: "1rem",
-                backgroundColor: "rgba(255, 255, 255, 0.92)",
-                backdropFilter: "blur(8px)",
-                padding: "0.6rem 1.1rem",
-                borderRadius: "999px",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                fontSize: "0.82rem",
-                fontWeight: 600,
-                color: "var(--plum)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-              }}
-            >
-              <span>✦</span>
-              <span>Putkitie 6, Helsinki</span>
-            </div>
           </div>
         </div>
       </section>
@@ -195,7 +187,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         }}
       >
         <div
-          className="container"
+          className="container trust-bar-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
@@ -222,10 +214,10 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             </div>
             <div>
               <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)", fontWeight: 600 }}>
-                {lang === "fi" ? "Aito alkuperä" : lang === "fa" ? "اصالت تضمین‌شده" : "Authentic Origin"}
+                {lang === "fi" ? "Aito alkuperä" : lang === "fa" ? "قالین‌های اصیل" : "Authentic Origin"}
               </strong>
               <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
-                {lang === "fi" ? "Iran, Turkki & Afganistan" : lang === "fa" ? "ایران، ترکیه و افغانستان" : "Iran, Turkey & Afghanistan"}
+                {lang === "fi" ? "Iran, Turkki & Afganistan" : lang === "fa" ? "افغانستان، ایران و ترکیه" : "Iran, Turkey & Afghanistan"}
               </span>
             </div>
           </div>
@@ -249,10 +241,10 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             </div>
             <div>
               <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)", fontWeight: 600 }}>
-                {lang === "fi" ? "Varaa ilman riskiä" : lang === "fa" ? "رزرو بدون ریسک" : "Zero-Risk Reservation"}
+                {lang === "fi" ? "Varaa ilman riskiä" : lang === "fa" ? "سفارش بدون پیش‌پرداخت" : "Zero-Risk Reservation"}
               </strong>
               <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
-                {lang === "fi" ? "Maksu vasta myymälässä" : lang === "fa" ? "پرداخت هنگام تحویل" : "Pay only upon pickup"}
+                {lang === "fi" ? "Maksu vasta myymälässä" : lang === "fa" ? "پرداخت پول در دکان" : "Pay only upon pickup"}
               </span>
             </div>
           </div>
@@ -271,15 +263,16 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
+                <path d="M2 9h20" />
               </svg>
             </div>
             <div>
               <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)", fontWeight: 600 }}>
-                {lang === "fi" ? "Aito villa & silkki" : lang === "fa" ? "پشم و ابریشم خالص" : "Pure Wool & Silk"}
+                {lang === "fi" ? "Aito villa & silkki" : lang === "fa" ? "پشم و ابریشم طبیعی" : "Pure Wool & Silk"}
               </strong>
               <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
-                {lang === "fi" ? "100 % luonnonmateriaalit" : lang === "fa" ? "۱۰۰٪ الیاف طبیعی و بادوام" : "100% natural materials"}
+                {lang === "fi" ? "100 % luonnonmateriaalit" : lang === "fa" ? "جنس اصل و بادوام" : "100% natural materials"}
               </span>
             </div>
           </div>
@@ -305,10 +298,10 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             </div>
             <div>
               <strong style={{ display: "block", fontSize: "0.92rem", color: "var(--ink)", fontWeight: 600 }}>
-                {lang === "fi" ? "Palvelu 4 kielellä" : lang === "fa" ? "خدمات به ۴ زبان" : "Service in 4 Languages"}
+                {lang === "fi" ? "Palvelu 3 kielellä" : lang === "fa" ? "مشوره به ۳ زبان" : "Service in 3 Languages"}
               </strong>
               <span style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
-                Suomi, English, فارسی, دری
+                Suomi, English, دری
               </span>
             </div>
           </div>
@@ -318,18 +311,12 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       {/* 3. Featured Categories */}
       <section className="section">
         <div className="container">
-          <div className="section-head">
-            <div>
-              <span className="eyebrow">{dict.home.categoriesLabel}</span>
-              <h2>{dict.home.categoriesTitle}</h2>
-            </div>
-            <Link href={`/${lang}/products`} className="link-arrow">
-              <span>{dict.common.viewAll}</span>
-              <ArrowIcon direction="forward" />
-            </Link>
+          <div className="section-head section-head--center">
+            <h2>{dict.home.categoriesTitle}</h2>
           </div>
 
           <div
+            className="categories-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))",
@@ -407,17 +394,12 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       {/* 4. Featured Rugs */}
       <section className="section section--alt">
         <div className="container">
-          <div className="section-head">
-            <div>
-              <span className="eyebrow">{dict.home.featuredLabel}</span>
-              <h2>{dict.home.featuredTitle}</h2>
-            </div>
-            <Link href={`/${lang}/products`} className="btn btn--outline btn--sm">
-              {dict.common.viewAll}
-            </Link>
+          <div className="section-head section-head--center">
+            <h2>{dict.home.featuredTitle}</h2>
           </div>
 
           <div
+            className="featured-products-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(min(270px, 100%), 1fr))",
@@ -427,6 +409,13 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             {featuredProducts.map((p) => (
               <ProductCard key={p.id} product={p} lang={lang} />
             ))}
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: "2.5rem" }}>
+            <Link href={`/${lang}/products`} className="btn btn--outline">
+              <span>{dict.common.viewAll}</span>
+              <ArrowIcon direction="forward" />
+            </Link>
           </div>
         </div>
       </section>
@@ -452,14 +441,11 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             }}
           >
             <div>
-              <span className="eyebrow" style={{ color: "var(--gold-600)" }}>
-                {dict.guide.title}
-              </span>
               <h2
                 style={{
                   fontSize: "clamp(1.9rem, 3.6vw, 2.7rem)",
                   color: "var(--plum)",
-                  marginBlock: "0.6rem 1rem",
+                  marginBlock: "0 1rem",
                 }}
               >
                 {dict.guide.sizeTitle}
@@ -477,12 +463,12 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             </div>
 
             <div
+              className="guide-banner-cta"
               style={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "flex-start",
                 gap: "1.25rem",
-                justifySelf: "end",
               }}
             >
               <div
@@ -518,7 +504,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
                     200 × 300 cm / 250 × 350 cm
                   </strong>
                   <span style={{ fontSize: "0.78rem", color: "var(--muted)" }}>
-                    {lang === "fi" ? "Laske mittasuhde huoneellesi" : lang === "fa" ? "محاسبه نسبت طلایی برای فضا" : "Calculate proportions for your space"}
+                    {lang === "fi" ? "Laske mittasuhde huoneellesi" : lang === "fa" ? "پیدا کردن اندازه مناسب قالین برای اتاق شما" : "Calculate proportions for your space"}
                   </span>
                 </div>
               </div>
@@ -535,6 +521,67 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <style>{`
         .cat-card:hover .cat-card-img {
           transform: scale(1.06);
+        }
+        @media (max-width: 640px) {
+          .hero-ctas {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.6rem !important;
+            width: 100%;
+          }
+          .hero-cta-btn {
+            min-block-size: 46px !important;
+            padding: 0.65rem 0.6rem !important;
+            font-size: 0.85rem !important;
+            gap: 0.4rem !important;
+            white-space: nowrap;
+            width: 100%;
+          }
+          .trust-bar-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 1rem 0.75rem !important;
+            align-items: flex-start !important;
+          }
+          .trust-bar-grid > div {
+            gap: 0.55rem !important;
+            align-items: flex-start !important;
+          }
+          .trust-bar-grid > div > div:first-child {
+            width: 34px !important;
+            height: 34px !important;
+          }
+          .trust-bar-grid strong {
+            font-size: 0.82rem !important;
+            line-height: 1.25;
+          }
+          .trust-bar-grid span {
+            font-size: 0.72rem !important;
+            line-height: 1.25;
+            display: block;
+          }
+          .categories-grid {
+            display: flex !important;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 0.85rem !important;
+            padding-bottom: 0.5rem;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+          }
+          .categories-grid::-webkit-scrollbar {
+            display: none;
+          }
+          .categories-grid .cat-card {
+            flex: 0 0 68vw;
+            max-width: 240px;
+            aspect-ratio: 4 / 5 !important;
+            scroll-snap-align: start;
+            padding: 1.15rem !important;
+          }
+          .featured-products-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 0.85rem !important;
+          }
         }
         @media (max-width: 440px) {
           .hero-fast-stats {

@@ -4,10 +4,13 @@ import { Cormorant_Garamond, Manrope, Vazirmatn } from "next/font/google";
 import { LOCALES } from "@/lib/types";
 import { dirOf, getDictionary, hasLocale } from "@/i18n";
 import { getSettings } from "@/lib/data";
+import { buildAlternates, SITE_URL } from "@/lib/seo";
 import { CartProvider } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import AnnouncementBar from "@/components/AnnouncementBar";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import "../globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -30,8 +33,6 @@ const vazirmatn = Vazirmatn({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://matto-bayat.vercel.app";
-
 export function generateStaticParams() {
   return LOCALES.map((lang) => ({ lang }));
 }
@@ -46,16 +47,13 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
     metadataBase: new URL(SITE_URL),
     title: { default: dict.meta.title, template: `%s · Matto Bayat` },
     description: dict.meta.description,
-    alternates: {
-      canonical: `/${lang}`,
-      languages: { fi: "/fi", en: "/en", fa: "/fa", "x-default": "/fi" },
-    },
+    alternates: buildAlternates(lang),
     openGraph: {
       type: "website",
       siteName: "Matto Bayat",
       title: dict.meta.title,
       description: dict.meta.description,
-      locale: lang === "fa" ? "fa_IR" : lang === "en" ? "en_GB" : "fi_FI",
+      locale: lang === "fa" ? "fa_AF" : lang === "en" ? "en_GB" : "fi_FI",
       images: [{ url: ogImage, width: 1376, height: 768 }],
     },
     icons: { icon: "/icon.svg" },
@@ -76,6 +74,30 @@ export default async function RootLayout({
   const settings = await getSettings();
   const dict = getDictionary(lang);
 
+  const businessSchema = {
+    "@context": "https://schema.org",
+    "@type": "HomeGoodsStore",
+    name: "Matto Bayat",
+    alternateName: ["قالین بیات", "فرش بیات", "Matto Bayat Helsinki"],
+    url: `${SITE_URL}/${lang}`,
+    telephone: settings.phone || "+358449715631",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: settings.address || "Putkitie 6",
+      addressLocality: settings.city || "Helsinki",
+      postalCode: settings.postal || "00880",
+      addressCountry: "FI",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 60.2148,
+      longitude: 25.0592,
+    },
+    areaServed: ["Helsinki", "Espoo", "Vantaa", "Finland"],
+    availableLanguage: ["Finnish", "English", "Dari", "Persian"],
+    priceRange: "€€",
+  };
+
   return (
     <html
       lang={lang}
@@ -83,12 +105,19 @@ export default async function RootLayout({
       data-scroll-behavior="smooth"
       className={`${cormorant.variable} ${manrope.variable} ${vazirmatn.variable}`}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }}
+        />
+      </head>
       <body>
         <CartProvider>
           <a href="#main-content" className="skip-link">
             {dict.nav.skip}
           </a>
 
+          <AnnouncementBar settings={settings} lang={lang} />
           <Navbar lang={lang} settings={settings} />
 
           <main id="main-content">
@@ -96,6 +125,7 @@ export default async function RootLayout({
           </main>
 
           <CartDrawer lang={lang} />
+          <FloatingWhatsApp lang={lang} settings={settings} />
           <Footer lang={lang} settings={settings} />
         </CartProvider>
       </body>

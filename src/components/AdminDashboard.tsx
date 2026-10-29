@@ -4,6 +4,7 @@ import React, { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Category, Locale, Message, Product, Reservation, ReservationStatus, Settings } from "@/lib/types";
+import { COLORS } from "@/lib/types";
 import { formatPrice, formatSize, getDictionary, t, formatDate } from "@/i18n";
 import { adminSignOut, deleteProduct, saveProduct, saveSettings, toggleMessageHandled, updateReservationStatus } from "@/lib/actions";
 import { telLink } from "@/lib/utils";
@@ -110,7 +111,6 @@ export default function AdminDashboard({
           }}
         >
           <div>
-            <span className="eyebrow">{dict.admin.title}</span>
             <h1 style={{ fontSize: "2.2rem", color: "var(--plum)", margin: 0 }}>
               {dict.admin.welcome}
             </h1>
@@ -623,11 +623,51 @@ export default function AdminDashboard({
                     <div className="field">
                       <label className="label">{dict.products.shape}</label>
                       <select name="shape" defaultValue={editingProduct?.shape || "rectangle"} className="select">
-                        <option value="rectangle">Rectangle</option>
-                        <option value="runner">Runner</option>
-                        <option value="round">Round</option>
-                        <option value="square">Square</option>
+                        <option value="rectangle">{dict.attrs.shape.rectangle}</option>
+                        <option value="runner">{dict.attrs.shape.runner}</option>
+                        <option value="round">{dict.attrs.shape.round}</option>
+                        <option value="square">{dict.attrs.shape.square}</option>
                       </select>
+                    </div>
+
+                    <div className="field">
+                      <label className="label">{dict.product.weave}</label>
+                      <select name="weave" defaultValue={editingProduct?.weave || "machine-made"} className="select">
+                        <option value="hand-knotted">{dict.attrs.weave["hand-knotted"]}</option>
+                        <option value="machine-made">{dict.attrs.weave["machine-made"]}</option>
+                        <option value="flatweave">{dict.attrs.weave.flatweave}</option>
+                        <option value="other">{dict.attrs.weave.other}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Colors Selection */}
+                  <div className="field">
+                    <label className="label">{dict.products.color}</label>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                      {COLORS.map((color) => (
+                        <label
+                          key={color}
+                          className="choice"
+                          style={{
+                            padding: "0.35rem 0.75rem",
+                            borderRadius: "999px",
+                            border: "1px solid var(--line-strong)",
+                            backgroundColor: "var(--bg)",
+                            fontSize: "0.82rem",
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="colors"
+                            value={color}
+                            defaultChecked={editingProduct?.colors?.includes(color) ?? false}
+                            className="checkbox"
+                            style={{ width: "15px", height: "15px" }}
+                          />
+                          <span>{dict.attrs.color[color]}</span>
+                        </label>
+                      ))}
                     </div>
                   </div>
 

@@ -11,7 +11,7 @@ import { useCart } from "@/context/CartContext";
 const LANGUAGES: { code: Locale; label: string; name: string }[] = [
   { code: "fi", label: "FI", name: "Suomi" },
   { code: "en", label: "EN", name: "English" },
-  { code: "fa", label: "فا", name: "فارسی" },
+  { code: "fa", label: "دری", name: "دری" },
 ];
 
 export default function Navbar({
@@ -127,6 +127,7 @@ export default function Navbar({
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span
+              className="logo-brand-name"
               style={{
                 fontFamily: "var(--font-display)",
                 fontSize: "1.45rem",
@@ -134,11 +135,14 @@ export default function Navbar({
                 color: "var(--plum)",
                 lineHeight: 1.05,
                 letterSpacing: "-0.01em",
+                whiteSpace: "nowrap",
               }}
             >
               Matto Bayat
             </span>
             <span
+              className="logo-subtitle"
+              dir="ltr"
               style={{
                 fontSize: "0.74rem",
                 color: "var(--gold-600)",
@@ -148,7 +152,7 @@ export default function Navbar({
                 marginTop: "2px",
               }}
             >
-              {lang === "fa" ? "فرش بیات · هلسینکی" : "Helsinki · Putkitie 6"}
+              Putkitie 6 · Helsinki
             </span>
           </div>
         </Link>
@@ -205,8 +209,9 @@ export default function Navbar({
           <div
             className="store-status-pill"
             style={{
+              display: "inline-flex",
               alignItems: "center",
-              gap: "0.4rem",
+              gap: "0.45rem",
               fontSize: "0.76rem",
               fontWeight: 600,
               padding: "0.3rem 0.75rem",
@@ -416,7 +421,7 @@ export default function Navbar({
               gap: "0.5rem",
             }}
           >
-            <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--plum)" }}>
+            <div dir="ltr" style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--plum)" }}>
               {settings.address}, {settings.postal} {settings.city}
             </div>
             <div style={{ fontSize: "0.85rem", color: "var(--ink-soft)" }}>
@@ -455,8 +460,15 @@ export default function Navbar({
           }
         }
         @media (max-width: 520px) {
-          .header-lang-switcher {
+          .logo-brand-name {
+            font-size: 1.25rem !important;
+          }
+          .logo-subtitle {
             display: none !important;
+          }
+          .header-lang-switcher a {
+            padding: 0.2rem 0.42rem !important;
+            font-size: 0.72rem !important;
           }
         }
       `}</style>

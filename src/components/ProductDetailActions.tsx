@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import type { Locale, Product, Settings } from "@/lib/types";
 import { formatPrice, getDictionary, t } from "@/i18n";
 import { useCart } from "@/context/CartContext";
 import { whatsappLink } from "@/lib/utils";
+import { SITE_URL } from "@/lib/seo";
 
 export default function ProductDetailActions({
   product,
@@ -17,9 +18,23 @@ export default function ProductDetailActions({
 }) {
   const dict = getDictionary(lang);
   const { addItem, items } = useCart();
-  const [qty, setQty] = useState(1);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const inlineActionsRef = useRef<HTMLDivElement>(null);
   const title = t(product.name, lang);
   const isReserved = items.some((i) => i.product_id === product.id);
+
+  useEffect(() => {
+    const el = inlineActionsRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const handleAdd = () => {
     addItem(
@@ -30,72 +45,56 @@ export default function ProductDetailActions({
         price: product.price,
         image: product.images[0] || "/images/products/tabriz-red.jpg",
       },
-      qty
+      1
     );
   };
 
   const whatsappMsg = `${dict.product.whatsappText} ${title} (${product.width_cm}x${product.length_cm} cm, ${
     product.price ? formatPrice(product.price, lang) : dict.common.priceOnRequest
-  }) - https://matto-bayat.vercel.app/${lang}/products/${product.slug}`;
+  }) - ${SITE_URL}/${lang}/products/${product.slug}`;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      {/* Quantity & Add to reservation */}
-      <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            border: "1.5px solid var(--line-strong)",
-            borderRadius: "var(--radius-btn)",
-            backgroundColor: "var(--surface)",
-            padding: "4px",
-            height: "56px",
-          }}
-        >
-          <button
-            onClick={() => setQty(Math.max(1, qty - 1))}
-            style={{ width: "38px", height: "100%", fontSize: "1.2rem", color: "var(--ink-soft)" }}
-            aria-label="Decrease quantity"
-          >
-            −
-          </button>
-          <span style={{ minWidth: "32px", textAlign: "center", fontWeight: 700, fontSize: "0.95rem" }}>
-            {qty}
-          </span>
-          <button
-            onClick={() => setQty(qty + 1)}
-            style={{ width: "38px", height: "100%", fontSize: "1.2rem", color: "var(--ink-soft)" }}
-            aria-label="Increase quantity"
-          >
-            +
-          </button>
-        </div>
-
+    <div ref={inlineActionsRef} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      {/* Side-by-side Primary Actions: Reserve + Ask on WhatsApp */}
+      <div className="product-actions-row">
         <button
           onClick={handleAdd}
-          className={`btn btn--lg btn--block ${isReserved ? "btn--outline" : "btn--gold"}`}
-          style={{ flex: 1 }}
+          className={`btn btn--lg product-action-btn ${isReserved ? "btn--outline" : "btn--gold"}`}
         >
-          {isReserved ? dict.product.added : dict.product.addToReservation}
+          <span>{isReserved ? "✓" : "+"}</span>
+          <span>{isReserved ? dict.product.added : dict.product.addToReservation}</span>
         </button>
+
+        <a
+          href={whatsappLink(settings.whatsapp, whatsappMsg)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn--whatsapp btn--lg product-action-btn"
+        >
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+          </svg>
+          <span>{dict.product.askWhatsapp}</span>
+        </a>
       </div>
 
-      {/* Direct WhatsApp enquiry */}
-      <a
-        href={whatsappLink(settings.whatsapp, whatsappMsg)}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn btn--whatsapp btn--lg btn--block"
+      {/* Compact Reassurance Note */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          fontSize: "0.82rem",
+          color: "var(--ink-soft)",
+          paddingInline: "0.25rem",
+        }}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-        </svg>
-        <span>{dict.product.askWhatsapp}</span>
-      </a>
+        <span style={{ color: "var(--gold-600)", fontWeight: 700 }}>✦</span>
+        <span>{dict.product.payInStore}</span>
+      </div>
 
-      {/* Mobile Sticky Bottom Floating Bar (always in reach of user's thumb) */}
-      <div className="product-mobile-bar">
+      {/* Mobile Sticky Bottom Floating Bar (shown when inline actions scroll out of view) */}
+      <div className={`product-mobile-bar ${showStickyBar ? "visible" : ""}`}>
         <div style={{ display: "flex", flexDirection: "column", minWidth: 0, flex: "1 1 auto" }}>
           <span
             style={{
@@ -151,6 +150,18 @@ export default function ProductDetailActions({
       </div>
 
       <style>{`
+        .product-actions-row {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.65rem;
+        }
+        .product-action-btn {
+          width: 100%;
+          min-block-size: 48px !important;
+          padding: 0.65rem 0.75rem !important;
+          font-size: 0.9rem !important;
+          white-space: nowrap;
+        }
         .product-mobile-bar {
           display: none;
         }
@@ -162,7 +173,7 @@ export default function ProductDetailActions({
             left: 0;
             right: 0;
             z-index: 80;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-top: 1px solid var(--line);
@@ -172,6 +183,22 @@ export default function ProductDetailActions({
             justify-content: space-between;
             gap: 0.75rem;
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(100%);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+          }
+          .product-mobile-bar.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+          }
+        }
+        @media (max-width: 420px) {
+          .product-action-btn {
+            font-size: 0.82rem !important;
+            padding: 0.6rem 0.5rem !important;
+            gap: 0.35rem !important;
           }
         }
       `}</style>

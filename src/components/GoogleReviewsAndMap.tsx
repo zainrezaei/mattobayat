@@ -157,11 +157,11 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
         : settings.hours.mon_fri;
 
     if (hours.closed) {
-      return lang === "fa" ? "امروز تعطیل است" : lang === "fi" ? "Suljettu tänään" : "Closed today";
+      return lang === "fa" ? "امروز رخصت / بسته است" : lang === "fi" ? "Suljettu tänään" : "Closed today";
     }
     const openText =
       lang === "fa"
-        ? `امروز: ${hours.open} – ${hours.close}`
+        ? `امروز باز است: ${hours.open} – ${hours.close}`
         : lang === "fi"
         ? `Tänään avoinna ${hours.open} – ${hours.close}`
         : `Open today ${hours.open} – ${hours.close}`;
@@ -192,14 +192,11 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
             marginBottom: "clamp(2rem, 4vw, 3rem)",
           }}
         >
-          <span className="eyebrow" style={{ color: "var(--gold-600)" }}>
-            {dict.home.reviewsLabel || "Asiakkaiden kokemuksia"}
-          </span>
           <h2
             style={{
               fontSize: "clamp(2rem, 3.8vw, 2.9rem)",
               color: "var(--plum)",
-              marginTop: "0.4rem",
+              marginTop: "0",
               marginBottom: "0.8rem",
               lineHeight: 1.15,
             }}
@@ -223,40 +220,35 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: "0.85rem",
-              padding: "0.55rem 1.25rem",
+              gap: "0.65rem",
+              padding: "0.5rem 1.15rem",
               backgroundColor: "var(--surface)",
               borderRadius: "999px",
               border: "1px solid var(--line-strong)",
               boxShadow: "var(--shadow-sm)",
-              marginTop: "1.25rem",
+              marginTop: "1rem",
               flexWrap: "wrap",
               justifyContent: "center",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <GoogleLogo size={20} />
-              <strong style={{ fontSize: "1.05rem", color: "var(--ink)", fontWeight: 800 }}>5.0</strong>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+              <GoogleLogo size={19} />
+              <strong style={{ fontSize: "1rem", color: "var(--ink)", fontWeight: 800 }}>5.0</strong>
               <StarRating rating={5} />
             </div>
-            <span style={{ color: "var(--line-strong)", fontWeight: 300 }}>|</span>
-            <span style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--ink-soft)" }}>
-              {dict.home.googleReviewsBadge || "Google-arvostelut"}
-            </span>
-            <span style={{ color: "var(--line-strong)", fontWeight: 300 }}>•</span>
             <a
               href={googleReviewSearchUrl}
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                fontSize: "0.85rem",
+                fontSize: "0.84rem",
                 color: "var(--gold-600)",
                 fontWeight: 700,
                 textDecoration: "underline",
                 textUnderlineOffset: "3px",
               }}
             >
-              {dict.home.viewOnGoogleMaps || "Avaa Google Mapsissa"} ↗
+              {dict.home.viewOnGoogleMaps || "Google Maps"} ↗
             </a>
           </div>
         </div>
@@ -437,7 +429,7 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
                       key={rev.id}
                       onClick={() => setCurrentIndex(idx)}
                       type="button"
-                      aria-label={`Arvostelu ${idx + 1}`}
+                      aria-label={`${lang === "fi" ? "Arvostelu" : lang === "fa" ? "نظر" : "Review"} ${idx + 1}`}
                       style={{
                         width: idx === currentIndex ? "24px" : "8px",
                         height: "8px",
@@ -461,7 +453,7 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
                 <button
                   type="button"
                   onClick={prevReview}
-                  aria-label="Edellinen arvostelu"
+                  aria-label={lang === "fi" ? "Edellinen arvostelu" : lang === "fa" ? "نظر قبلی" : "Previous review"}
                   style={{
                     width: "40px",
                     height: "40px",
@@ -491,7 +483,7 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
                 <button
                   type="button"
                   onClick={nextReview}
-                  aria-label="Seuraava arvostelu"
+                  aria-label={lang === "fi" ? "Seuraava arvostelu" : lang === "fa" ? "نظر بعدی" : "Next review"}
                   style={{
                     width: "40px",
                     height: "40px",
@@ -517,27 +509,6 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
                 >
                   <ArrowIcon direction="forward" size={16} />
                 </button>
-
-                {/* Write a review button */}
-                <a
-                  href={googleReviewSearchUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn--outline"
-                  style={{
-                    padding: "0.45rem 0.9rem",
-                    fontSize: "0.85rem",
-                    borderRadius: "var(--radius-btn)",
-                    gap: "0.4rem",
-                    marginLeft: "0.25rem",
-                  }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 20h9" />
-                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                  </svg>
-                  <span>{dict.home.writeReview || "Kirjoita Google-arvostelu"}</span>
-                </a>
               </div>
             </div>
           </div>
@@ -581,7 +552,7 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
                 style={{
                   position: "absolute",
                   top: "12px",
-                  right: "12px",
+                  insetInlineEnd: "12px",
                   zIndex: 2,
                   display: "inline-flex",
                   alignItems: "center",
@@ -601,9 +572,9 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
                     width: "8px",
                     height: "8px",
                     borderRadius: "50%",
-                    backgroundColor: openRightNow ? "#22c55e" : "#eab308",
+                    backgroundColor: openRightNow ? "var(--success)" : "var(--warning)",
                     display: "inline-block",
-                    boxShadow: openRightNow ? "0 0 0 3px rgba(34, 197, 94, 0.25)" : "none",
+                    boxShadow: openRightNow ? "0 0 0 3px var(--success-50)" : "none",
                   }}
                 />
                 <span style={{ color: "var(--ink)" }}>{todayHours}</span>
@@ -642,10 +613,10 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
                   </div>
 
                   <div>
-                    <strong style={{ display: "block", fontSize: "1.15rem", color: "var(--plum)", fontWeight: 700 }}>
+                    <strong dir="ltr" style={{ display: "block", fontSize: "1.15rem", color: "var(--plum)", fontWeight: 700 }}>
                       Matto Bayat · {settings.address}
                     </strong>
-                    <div style={{ color: "var(--ink-soft)", fontSize: "0.95rem", marginTop: "2px" }}>
+                    <div dir="ltr" style={{ color: "var(--ink-soft)", fontSize: "0.95rem", marginTop: "2px" }}>
                       {settings.address}, {settings.postal} {settings.city}
                     </div>
                   </div>
@@ -675,7 +646,7 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
                     {lang === "fi"
                       ? "Siilitien metroasema ~400 m · Maksuton asiakaspysäköinti suoraan oven edessä"
                       : lang === "fa"
-                      ? "۴۰۰ متری ایستگاه مترو Siilitie · پارکینگ رایگان اختصاصی مشتریان جلوی درب"
+                      ? "۴۰۰ متر تا متروی Siilitie · پارکینگ رایگان پیش روی دکان"
                       : "400m from Siilitie metro station · Free dedicated customer parking at door"}
                   </div>
                 </div>

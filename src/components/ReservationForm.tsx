@@ -99,9 +99,9 @@ export default function ReservationForm({
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
               <circle cx="12" cy="10" r="3" />
             </svg>
-            <span>{lang === "fi" ? "Nouto-osoite & aukioloajat:" : lang === "fa" ? "آدرس و ساعات تحویل:" : "Pickup location & hours:"}</span>
+            <span>{lang === "fi" ? "Nouto-osoite & aukioloajat:" : lang === "fa" ? "آدرس دکان و ساعات کاری:" : "Pickup location & hours:"}</span>
           </div>
-          <div>{settings.address}, {settings.postal} {settings.city}</div>
+          <div dir="ltr" style={{ display: "inline-block" }}>{settings.address}, {settings.postal} {settings.city}</div>
           <div style={{ marginTop: "0.25rem" }}>
             {dict.hours.monFri}: {settings.hours.mon_fri.closed ? dict.hours.closed : `${settings.hours.mon_fri.open}–${settings.hours.mon_fri.close}`} · {dict.hours.sat}: {settings.hours.sat.closed ? dict.hours.closed : `${settings.hours.sat.open}–${settings.hours.sat.close}`}
           </div>
@@ -234,7 +234,7 @@ export default function ReservationForm({
               required
               autoComplete="name"
               className="input"
-              placeholder={lang === "fa" ? "نام و نام خانوادگی" : "Esim. Matti Meikäläinen"}
+              placeholder={lang === "fa" ? "نام و تخلص شما" : "Esim. Matti Meikäläinen"}
             />
           </div>
 
@@ -255,7 +255,7 @@ export default function ReservationForm({
               {lang === "fi"
                 ? "Vahvistamme varauksen puhelimitse tai tekstiviestillä."
                 : lang === "fa"
-                ? "رزرو را با پیام یا تماس تلفنی با شما تأیید می‌کنیم."
+                ? "سفارش را با پیام یا زنگ تلفون برایتان تأیید می‌کنیم."
                 : "We confirm the reservation by phone or text message."}
             </span>
           </div>
@@ -279,7 +279,7 @@ export default function ReservationForm({
             <label className="label">
               {dict.reservation.fulfilment} <span className="req">*</span>
             </label>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+            <div className="fulfilment-choices" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "0.75rem" }}>
               <label className="choice-card">
                 <input
                   type="radio"
@@ -313,7 +313,7 @@ export default function ReservationForm({
           </div>
 
           {/* Address if delivery selected */}
-          {fulfilment === "delivery" && (
+            {fulfilment === "delivery" && (
             <div className="field">
               <label htmlFor="res-address" className="label">
                 {dict.reservation.address} <span className="req">*</span>
@@ -324,7 +324,7 @@ export default function ReservationForm({
                 required
                 className="textarea"
                 style={{ minHeight: "80px" }}
-                placeholder={lang === "fi" ? "Katuosoite, postinumero, kaupunki" : "Street address, postal code, city"}
+                placeholder="Katuosoite, postinumero, kaupunki (Esim. Putkitie 6, 00880 Helsinki)"
               />
             </div>
           )}

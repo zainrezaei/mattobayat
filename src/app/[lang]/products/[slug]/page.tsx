@@ -9,6 +9,7 @@ import { getProductBySlug, getProducts, getSettings } from "@/lib/data";
 import ProductDetailActions from "@/components/ProductDetailActions";
 import ProductCard from "@/components/ProductCard";
 import ProductImageGallery from "@/components/ProductImageGallery";
+import { buildAlternates, SITE_URL } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -17,15 +18,29 @@ export async function generateMetadata({
   if (!hasLocale(lang)) return {};
   const product = await getProductBySlug(slug);
   if (!product) return {};
-  const title = t(product.name, lang);
-  const description = t(product.description, lang);
+  const dict = getDictionary(lang);
+  const productName = t(product.name, lang);
+  const material = dict.attrs.material[product.material] || product.material;
+  const origin = dict.attrs.origin[product.origin] || product.origin;
+  const weave = dict.attrs.weave[product.weave] || product.weave;
+  const dimensions = `${product.width_cm} × ${product.length_cm} ${dict.common.cm}`;
+  const priceString = product.price ? formatPrice(product.price, lang) : dict.common.priceOnRequest;
+
+  const pageTitle = `${productName} – ${dimensions} | Matto Bayat Helsinki`;
+  const pageDescription = `${productName} (${origin}, ${material}, ${weave}, ${dimensions}) – ${priceString}. Matto Bayat Putkitie 6, Helsinki.`;
+  const primaryImage = product.images[0] || `${SITE_URL}/images/site/hero.jpg`;
+
   return {
-    title,
-    description: description || `${title} - Matto Bayat Helsinki`,
+    title: pageTitle,
+    description: pageDescription,
+    alternates: buildAlternates(lang, `/products/${slug}`),
     openGraph: {
-      title,
-      description,
-      images: product.images[0] ? [{ url: product.images[0] }] : [],
+      type: "website",
+      siteName: "Matto Bayat",
+      title: pageTitle,
+      description: pageDescription,
+      locale: lang === "fa" ? "fa_AF" : lang === "en" ? "en_GB" : "fi_FI",
+      images: [{ url: primaryImage }],
     },
   };
 }
@@ -49,9 +64,44 @@ export default async function ProductDetailPage({
   const title = t(product.name, lang);
   const description = t(product.description, lang);
   const sizeText = formatSize(product.width_cm, product.length_cm, lang);
+  const materialLabel = dict.attrs.material[product.material] || product.material;
+  const originLabel = dict.attrs.origin[product.origin] || product.origin;
+  const weaveLabel = dict.attrs.weave[product.weave] || product.weave;
+  const richAlt = `${title} – ${weaveLabel} ${materialLabel} (${product.width_cm}×${product.length_cm} ${dict.common.cm}) | Matto Bayat Helsinki`;
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: title,
+    description: description || `${title} - Matto Bayat Helsinki`,
+    sku: product.code || product.slug,
+    image: product.images && product.images.length > 0 ? product.images : [`${SITE_URL}/images/site/hero.jpg`],
+    material: materialLabel,
+    countryOfOrigin: originLabel,
+    size: `${product.width_cm} x ${product.length_cm} cm`,
+    ...(product.price
+      ? {
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "EUR",
+            price: product.price,
+            availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            url: `${SITE_URL}/${lang}/products/${product.slug}`,
+            availableDeliveryMethod: [
+              "https://schema.org/OnSitePickup",
+              "https://schema.org/ParcelDelivery",
+            ],
+          },
+        }
+      : {}),
+  };
 
   return (
     <div className="section product-detail-section" style={{ paddingTop: "clamp(1.5rem, 3vw, 3rem)" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
       <div className="container">
         {/* Breadcrumb */}
         <nav
@@ -59,45 +109,58 @@ export default async function ProductDetailPage({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "0.5rem",
-            fontSize: "0.85rem",
+            gap: "0.45rem",
+            fontSize: "0.84rem",
             color: "var(--muted)",
-            marginBottom: "2rem",
+            marginBottom: "1.25rem",
+            overflow: "hidden",
           }}
         >
-          <Link href={`/${lang}`} style={{ color: "inherit" }}>
+          <Link href={`/${lang}`} style={{ color: "inherit", flexShrink: 0 }}>
             {dict.nav.home}
           </Link>
-          <span>/</span>
-          <Link href={`/${lang}/products`} style={{ color: "inherit" }}>
+          <span style={{ flexShrink: 0 }}>/</span>
+          <Link href={`/${lang}/products`} style={{ color: "inherit", flexShrink: 0 }}>
             {dict.nav.products}
           </Link>
-          <span>/</span>
-          <span style={{ color: "var(--ink)", fontWeight: 600 }}>{title}</span>
+          <span style={{ flexShrink: 0 }}>/</span>
+          <span
+            style={{
+              color: "var(--ink)",
+              fontWeight: 600,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {title}
+          </span>
         </nav>
 
         {/* Product Main Grid */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(420px, 100%), 1fr))",
-            gap: "clamp(2rem, 5vw, 4.5rem)",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(400px, 100%), 1fr))",
+            gap: "clamp(1.5rem, 4.5vw, 4rem)",
             alignItems: "start",
-            marginBottom: "5rem",
+            marginBottom: "4rem",
           }}
         >
           {/* Images Gallery */}
           <ProductImageGallery
             images={product.images}
             title={title}
+            altText={richAlt}
             hasDiscount={Boolean(product.compare_at_price)}
             saleLabel={dict.common.sale}
+            lang={lang}
           />
 
           {/* Product Info & Actions */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <div>
-              <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.45rem", marginBottom: "0.6rem" }}>
                 <span className="badge badge--gold">
                   {dict.attrs.origin[product.origin] || product.origin}
                 </span>
@@ -109,25 +172,25 @@ export default async function ProductDetailPage({
                 )}
               </div>
 
-              <h1 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "var(--plum)", lineHeight: 1.15, margin: 0 }}>
+              <h1 style={{ fontSize: "clamp(1.75rem, 3.8vw, 2.75rem)", color: "var(--plum)", lineHeight: 1.15, margin: 0 }}>
                 {title}
               </h1>
 
               {/* Price */}
-              <div style={{ display: "flex", alignItems: "baseline", gap: "1rem", marginTop: "1rem" }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "0.85rem", marginTop: "0.75rem" }}>
                 {product.price ? (
                   <>
-                    <span style={{ fontSize: "2rem", fontWeight: 700, color: "var(--plum)" }}>
+                    <span style={{ fontSize: "1.85rem", fontWeight: 700, color: "var(--plum)" }}>
                       {formatPrice(product.price, lang)}
                     </span>
                     {product.compare_at_price && (
-                      <span style={{ fontSize: "1.2rem", color: "var(--muted)", textDecoration: "line-through" }}>
+                      <span style={{ fontSize: "1.1rem", color: "var(--muted)", textDecoration: "line-through" }}>
                         {formatPrice(product.compare_at_price, lang)}
                       </span>
                     )}
                   </>
                 ) : (
-                  <span style={{ fontSize: "1.4rem", fontWeight: 700, color: "var(--gold-600)" }}>
+                  <span style={{ fontSize: "1.35rem", fontWeight: 700, color: "var(--gold-600)" }}>
                     {dict.common.priceOnRequest}
                   </span>
                 )}
@@ -136,124 +199,48 @@ export default async function ProductDetailPage({
 
             {/* Description */}
             {description && (
-              <p style={{ color: "var(--ink-soft)", fontSize: "1.05rem", lineHeight: 1.7, margin: 0 }}>
+              <p style={{ color: "var(--ink-soft)", fontSize: "0.98rem", lineHeight: 1.65, margin: 0 }}>
                 {description}
               </p>
             )}
 
-            {/* Specifications Table */}
+            {/* Interactive Actions (Add to Reservation, WhatsApp) */}
+            <ProductDetailActions product={product} lang={lang} settings={settings} />
+
+            {/* Compact 2x2 Specifications Grid */}
             <div
               style={{
                 borderRadius: "var(--radius)",
                 backgroundColor: "var(--surface)",
                 border: "1px solid var(--line)",
-                padding: "1.25rem",
+                padding: "1.1rem 1.25rem",
               }}
             >
-              <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--plum)", marginBottom: "0.75rem" }}>
-                {dict.product.specs}
-              </h3>
-              <dl
+              <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "120px 1fr",
-                  gap: "0.6rem 1rem",
-                  fontSize: "0.92rem",
-                  margin: 0,
+                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                  gap: "0.85rem 1rem",
+                  fontSize: "0.88rem",
                 }}
               >
                 {sizeText && (
-                  <>
-                    <dt style={{ color: "var(--muted)" }}>{dict.product.size}:</dt>
-                    <dd style={{ fontWeight: 600, margin: 0 }}>{sizeText}</dd>
-                  </>
-                )}
-                <dt style={{ color: "var(--muted)" }}>{dict.product.material}:</dt>
-                <dd style={{ fontWeight: 600, margin: 0 }}>
-                  {dict.attrs.material[product.material] || product.material}
-                </dd>
-
-                <dt style={{ color: "var(--muted)" }}>{dict.product.origin}:</dt>
-                <dd style={{ fontWeight: 600, margin: 0 }}>
-                  {dict.attrs.origin[product.origin] || product.origin}
-                </dd>
-
-                <dt style={{ color: "var(--muted)" }}>{dict.product.weave}:</dt>
-                <dd style={{ fontWeight: 600, margin: 0 }}>
-                  {dict.attrs.weave[product.weave] || product.weave}
-                </dd>
-
-                <dt style={{ color: "var(--muted)" }}>{dict.product.shape}:</dt>
-                <dd style={{ fontWeight: 600, margin: 0 }}>
-                  {dict.attrs.shape[product.shape] || product.shape}
-                </dd>
-              </dl>
-            </div>
-
-            {/* Interactive Actions (Add to Reservation, WhatsApp) */}
-            <ProductDetailActions product={product} lang={lang} settings={settings} />
-
-            {/* Store Pickup Notice Box */}
-            <div
-              style={{
-                padding: "1.25rem",
-                borderRadius: "var(--radius)",
-                backgroundColor: "var(--bg-alt)",
-                border: "1px solid var(--line-strong)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.6rem",
-                fontSize: "0.88rem",
-                color: "var(--ink-soft)",
-              }}
-            >
-              <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
-                <div
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "var(--radius-sm)",
-                    backgroundColor: "var(--gold-50)",
-                    display: "grid",
-                    placeItems: "center",
-                    color: "var(--gold)",
-                    flexShrink: 0,
-                    marginTop: "2px",
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  </svg>
-                </div>
-                <div>
-                  <strong>{lang === "fi" ? "Maksu vasta myymälässä" : lang === "fa" ? "پرداخت در فروشگاه" : "Pay at store upon pickup"}</strong>
-                  <div style={{ fontSize: "0.82rem", color: "var(--muted)" }}>
-                    {dict.product.payInStore}
+                  <div>
+                    <span style={{ color: "var(--muted)", fontSize: "0.78rem", display: "block" }}>{dict.product.size}</span>
+                    <strong style={{ color: "var(--ink)" }}>{sizeText}</strong>
                   </div>
-                </div>
-              </div>
-
-              <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
-                <div
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "var(--radius-sm)",
-                    backgroundColor: "var(--gold-50)",
-                    display: "grid",
-                    placeItems: "center",
-                    color: "var(--gold)",
-                    flexShrink: 0,
-                    marginTop: "2px",
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
+                )}
+                <div>
+                  <span style={{ color: "var(--muted)", fontSize: "0.78rem", display: "block" }}>{dict.product.material}</span>
+                  <strong style={{ color: "var(--ink)" }}>{dict.attrs.material[product.material] || product.material}</strong>
                 </div>
                 <div>
-                  <strong>{dict.product.visitToSee}</strong>
+                  <span style={{ color: "var(--muted)", fontSize: "0.78rem", display: "block" }}>{dict.product.origin}</span>
+                  <strong style={{ color: "var(--ink)" }}>{dict.attrs.origin[product.origin] || product.origin}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "var(--muted)", fontSize: "0.78rem", display: "block" }}>{dict.product.weave}</span>
+                  <strong style={{ color: "var(--ink)" }}>{dict.attrs.weave[product.weave] || product.weave}</strong>
                 </div>
               </div>
             </div>
@@ -267,6 +254,7 @@ export default async function ProductDetailPage({
               {dict.product.related}
             </h2>
             <div
+              className="related-products-grid"
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))",
@@ -284,6 +272,12 @@ export default async function ProductDetailPage({
         @media (max-width: 768px) {
           .product-detail-section {
             padding-bottom: 5.5rem !important;
+          }
+        }
+        @media (max-width: 560px) {
+          .related-products-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 0.85rem !important;
           }
         }
       `}</style>
