@@ -49,13 +49,11 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
     description: dict.meta.description,
     keywords: SEO_KEYWORDS[lang],
     alternates: buildAlternates(lang),
-    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-      ? {
-          verification: {
-            google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-          },
-        }
-      : {}),
+    verification: {
+      google:
+        process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+        "vgrIuqSA07tZ67S0E2Gs7KlN1EepKPPAOMwFyfU-Gaw",
+    },
     robots: {
       index: true,
       follow: true,
