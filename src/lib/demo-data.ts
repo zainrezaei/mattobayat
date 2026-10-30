@@ -121,9 +121,9 @@ export const DEFAULT_SETTINGS: Settings = {
   postal: "00880",
   city: "Helsinki",
   business_id: "2873455-9",
-  instagram: "https://www.instagram.com/explore/search/keyword/?q=matto%20bayat",
-  facebook: "https://www.facebook.com/search/top?q=matto%20bayat",
-  tiktok: "https://www.tiktok.com/@mattobayat",
+  instagram: "https://www.instagram.com/matto.bayat/",
+  facebook: "https://www.facebook.com/mattobayat/",
+  tiktok: "https://www.tiktok.com/@matto.bayat",
   announcement: {
     fi: "Aitoja itämaisia mattoja Putkitiellä · Varaa verkossa, maksa ja tutustu myymälässä",
     en: "Authentic oriental rugs at Putkitie 6 · Reserve online, inspect and pay in store",

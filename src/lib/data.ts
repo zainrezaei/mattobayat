@@ -9,6 +9,9 @@ function mergeSettings(data: Partial<Settings> | null | undefined): Settings {
   return {
     ...DEFAULT_SETTINGS,
     ...data,
+    instagram: data.instagram || DEFAULT_SETTINGS.instagram,
+    facebook: data.facebook || DEFAULT_SETTINGS.facebook,
+    tiktok: data.tiktok || DEFAULT_SETTINGS.tiktok,
     announcement: { ...DEFAULT_SETTINGS.announcement, ...(data.announcement ?? {}) },
     hours: { ...DEFAULT_SETTINGS.hours, ...(data.hours ?? {}) },
     site_images: { ...DEFAULT_SETTINGS.site_images, ...(data.site_images ?? {}) },
