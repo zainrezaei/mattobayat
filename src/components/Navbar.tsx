@@ -150,6 +150,7 @@ export default function Navbar({
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 marginTop: "2px",
+                whiteSpace: "nowrap",
               }}
             >
               {settings.address} · {settings.city}
@@ -161,7 +162,7 @@ export default function Navbar({
         <nav
           style={{
             display: "none",
-            gap: "1.8rem",
+            gap: "1.5rem",
             alignItems: "center",
           }}
           className="desktop-nav"
@@ -182,6 +183,7 @@ export default function Navbar({
                   position: "relative",
                   paddingBlock: "0.4rem",
                   transition: "color 0.2s ease",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {link.label}
@@ -205,11 +207,11 @@ export default function Navbar({
 
         {/* Actions (Language + Open status + Cart + Mobile burger) */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-          {/* Live store hours indicator (hidden on small mobile) */}
+          {/* Live store hours indicator (shown on wide desktop only) */}
           <div
             className="store-status-pill"
             style={{
-              display: "inline-flex",
+              display: "none",
               alignItems: "center",
               gap: "0.45rem",
               fontSize: "0.76rem",
@@ -219,6 +221,8 @@ export default function Navbar({
               backgroundColor: openState ? "var(--success-50)" : "var(--bg-alt)",
               color: openState ? "var(--success)" : "var(--muted)",
               border: `1px solid ${openState ? "#cfe7d9" : "var(--line)"}`,
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
           >
             <span
@@ -443,20 +447,26 @@ export default function Navbar({
 
       {/* Media query styling for responsive navbar */}
       <style>{`
-        @media (min-width: 860px) {
+        @media (min-width: 960px) {
           .desktop-nav {
             display: flex !important;
+            gap: 1.15rem !important;
+          }
+        }
+        @media (min-width: 1160px) {
+          .desktop-nav {
+            gap: 1.75rem !important;
+          }
+          .store-status-pill {
+            display: inline-flex !important;
           }
           #desktop-phone-btn {
             display: inline-grid !important;
           }
         }
-        @media (max-width: 859px) {
+        @media (max-width: 959px) {
           #mobile-burger {
             display: inline-grid !important;
-          }
-          .store-status-pill {
-            display: none !important;
           }
         }
         @media (max-width: 520px) {

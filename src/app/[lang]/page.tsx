@@ -81,6 +81,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       />
       {/* 1. Hero Section */}
       <section
+        className="hero-section"
         style={{
           position: "relative",
           minHeight: "calc(100dvh - var(--header-h) - 40px)",
@@ -88,20 +89,20 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           alignItems: "center",
           backgroundColor: "var(--bg)",
           overflow: "hidden",
-          paddingBlock: "clamp(3rem, 6vw, 6rem)",
+          paddingBlock: "clamp(2.5rem, 6vw, 6rem)",
         }}
       >
         <div
-          className="container"
+          className="container hero-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(420px, 100%), 1fr))",
-            gap: "clamp(2rem, 5vw, 4rem)",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(380px, 100%), 1fr))",
+            gap: "clamp(2rem, 4.5vw, 4rem)",
             alignItems: "center",
           }}
         >
           {/* Hero text */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", zIndex: 2 }}>
+          <div className="hero-content" style={{ display: "flex", flexDirection: "column", gap: "1.25rem", zIndex: 2 }}>
             <h1
               style={{
                 fontSize: "clamp(2.8rem, 6.2vw, 4.8rem)",
@@ -567,6 +568,38 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <style>{`
         .cat-card:hover .cat-card-img {
           transform: scale(1.06);
+        }
+        @media (max-width: 1024px) {
+          .trust-bar-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 1.25rem 1.5rem !important;
+          }
+        }
+        @media (max-width: 860px) {
+          .hero-section {
+            min-height: auto !important;
+            padding-block: 2rem 3rem !important;
+          }
+          .hero-grid {
+            grid-template-columns: 1fr !important;
+            max-width: 640px;
+            margin-inline: auto;
+          }
+          .hero-content {
+            text-align: center !important;
+            align-items: center !important;
+          }
+          .hero-content p {
+            margin-inline: auto !important;
+          }
+          .hero-ctas {
+            justify-content: center !important;
+            width: 100%;
+          }
+          .hero-fast-stats {
+            width: 100%;
+            text-align: center !important;
+          }
         }
         @media (max-width: 640px) {
           .hero-ctas {

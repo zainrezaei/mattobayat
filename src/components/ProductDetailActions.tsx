@@ -152,15 +152,17 @@ export default function ProductDetailActions({
       <style>{`
         .product-actions-row {
           display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
           gap: 0.65rem;
         }
         .product-action-btn {
           width: 100%;
           min-block-size: 48px !important;
-          padding: 0.65rem 0.75rem !important;
+          padding: 0.65rem 0.85rem !important;
           font-size: 0.9rem !important;
-          white-space: nowrap;
+          white-space: normal !important;
+          text-align: center;
+          line-height: 1.25 !important;
         }
         .product-mobile-bar {
           display: none;
@@ -194,10 +196,13 @@ export default function ProductDetailActions({
             pointer-events: auto;
           }
         }
-        @media (max-width: 420px) {
+        @media (max-width: 560px) {
+          .product-actions-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
           .product-action-btn {
             font-size: 0.82rem !important;
-            padding: 0.6rem 0.5rem !important;
+            padding: 0.55rem 0.5rem !important;
             gap: 0.35rem !important;
           }
         }

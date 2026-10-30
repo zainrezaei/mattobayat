@@ -226,10 +226,11 @@ export default async function ProductDetailPage({
 
         {/* Product Main Grid */}
         <div
+          className="product-detail-main-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(400px, 100%), 1fr))",
-            gap: "clamp(1.5rem, 4.5vw, 4rem)",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(380px, 100%), 1fr))",
+            gap: "clamp(1.5rem, 4vw, 3.5rem)",
             alignItems: "start",
             marginBottom: "4rem",
           }}
@@ -356,6 +357,13 @@ export default async function ProductDetailPage({
         )}
       </div>
       <style>{`
+        @media (max-width: 840px) {
+          .product-detail-main-grid {
+            grid-template-columns: 1fr !important;
+            max-width: 640px;
+            margin-inline: auto;
+          }
+        }
         @media (max-width: 768px) {
           .product-detail-section {
             padding-bottom: 5.5rem !important;
