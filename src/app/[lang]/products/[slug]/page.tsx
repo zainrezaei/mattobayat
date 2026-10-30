@@ -9,7 +9,7 @@ import { getProductBySlug, getProducts, getSettings } from "@/lib/data";
 import ProductDetailActions from "@/components/ProductDetailActions";
 import ProductCard from "@/components/ProductCard";
 import ProductImageGallery from "@/components/ProductImageGallery";
-import { buildAlternates, SITE_URL } from "@/lib/seo";
+import { buildAlternates, SEO_KEYWORDS, SITE_URL, toAbsoluteUrl } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -19,6 +19,7 @@ export async function generateMetadata({
   const product = await getProductBySlug(slug);
   if (!product) return {};
   const dict = getDictionary(lang);
+  const settings = await getSettings();
   const productName = t(product.name, lang);
   const material = dict.attrs.material[product.material] || product.material;
   const origin = dict.attrs.origin[product.origin] || product.origin;
@@ -26,21 +27,46 @@ export async function generateMetadata({
   const dimensions = `${product.width_cm} × ${product.length_cm} ${dict.common.cm}`;
   const priceString = product.price ? formatPrice(product.price, lang) : dict.common.priceOnRequest;
 
-  const pageTitle = `${productName} – ${dimensions} | Matto Bayat Helsinki`;
-  const pageDescription = `${productName} (${origin}, ${material}, ${weave}, ${dimensions}) – ${priceString}. Matto Bayat Putkitie 6, Helsinki.`;
-  const primaryImage = product.images[0] || `${SITE_URL}/images/site/hero.jpg`;
+  const pageTitle = `${productName} – ${dimensions} | Matto Bayat ${settings.city}`;
+  const pageDescription =
+    t(product.description, lang) ||
+    `${productName} (${origin}, ${material}, ${weave}, ${dimensions}) – ${priceString}. Matto Bayat ${settings.address}, ${settings.city}.`;
+  const primaryImage = toAbsoluteUrl(product.images?.[0] || settings.site_images?.hero);
+  const canonicalUrl = `${SITE_URL}/${lang}/products/${slug}`;
 
   return {
     title: pageTitle,
     description: pageDescription,
+    keywords: [
+      productName,
+      origin,
+      material,
+      weave,
+      `${product.width_cm}x${product.length_cm}`,
+      ...(SEO_KEYWORDS[lang] || SEO_KEYWORDS.fi),
+    ],
     alternates: buildAlternates(lang, `/products/${slug}`),
     openGraph: {
       type: "website",
+      url: canonicalUrl,
       siteName: "Matto Bayat",
       title: pageTitle,
       description: pageDescription,
       locale: lang === "fa" ? "fa_AF" : lang === "en" ? "en_GB" : "fi_FI",
-      images: [{ url: primaryImage }],
+      images: [
+        {
+          url: primaryImage,
+          width: 1200,
+          height: 900,
+          alt: `${productName} – Matto Bayat ${settings.city}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: pageTitle,
+      description: pageDescription,
+      images: [primaryImage],
     },
   };
 }
@@ -67,34 +93,95 @@ export default async function ProductDetailPage({
   const materialLabel = dict.attrs.material[product.material] || product.material;
   const originLabel = dict.attrs.origin[product.origin] || product.origin;
   const weaveLabel = dict.attrs.weave[product.weave] || product.weave;
-  const richAlt = `${title} – ${weaveLabel} ${materialLabel} (${product.width_cm}×${product.length_cm} ${dict.common.cm}) | Matto Bayat Helsinki`;
+  const richAlt = `${title} – ${weaveLabel} ${materialLabel} (${product.width_cm}×${product.length_cm} ${dict.common.cm}) | Matto Bayat ${settings.city}`;
 
-  const productSchema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: title,
-    description: description || `${title} - Matto Bayat Helsinki`,
-    sku: product.code || product.slug,
-    image: product.images && product.images.length > 0 ? product.images : [`${SITE_URL}/images/site/hero.jpg`],
-    material: materialLabel,
-    countryOfOrigin: originLabel,
-    size: `${product.width_cm} x ${product.length_cm} cm`,
-    ...(product.price
-      ? {
-          offers: {
-            "@type": "Offer",
-            priceCurrency: "EUR",
-            price: product.price,
-            availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-            url: `${SITE_URL}/${lang}/products/${product.slug}`,
-            availableDeliveryMethod: [
-              "https://schema.org/OnSitePickup",
-              "https://schema.org/ParcelDelivery",
-            ],
-          },
-        }
-      : {}),
-  };
+  const absoluteImages =
+    product.images && product.images.length > 0
+      ? product.images.map((img) => toAbsoluteUrl(img))
+      : [toAbsoluteUrl(settings.site_images?.hero)];
+
+  const productSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "@id": `${SITE_URL}/${lang}/products/${product.slug}#product`,
+      name: title,
+      description: description || `${title} – Matto Bayat ${settings.city}`,
+      sku: product.code || product.slug,
+      image: absoluteImages,
+      brand: {
+        "@type": "Brand",
+        name: "Matto Bayat",
+      },
+      material: materialLabel,
+      countryOfOrigin: originLabel,
+      size: `${product.width_cm} x ${product.length_cm} cm`,
+      ...(product.width_cm && product.width_cm > 0
+        ? {
+            width: {
+              "@type": "QuantitativeValue",
+              value: product.width_cm,
+              unitCode: "CMT",
+            },
+          }
+        : {}),
+      ...(product.length_cm && product.length_cm > 0
+        ? {
+            depth: {
+              "@type": "QuantitativeValue",
+              value: product.length_cm,
+              unitCode: "CMT",
+            },
+          }
+        : {}),
+      ...(product.price
+        ? {
+            offers: {
+              "@type": "Offer",
+              priceCurrency: "EUR",
+              price: product.price,
+              itemCondition: "https://schema.org/NewCondition",
+              availability:
+                product.stock > 0
+                  ? "https://schema.org/InStock"
+                  : "https://schema.org/OutOfStock",
+              url: `${SITE_URL}/${lang}/products/${product.slug}`,
+              seller: {
+                "@id": `${SITE_URL}/#store`,
+              },
+              availableDeliveryMethod: [
+                "https://schema.org/OnSitePickup",
+                "https://schema.org/ParcelDelivery",
+              ],
+            },
+          }
+        : {}),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: dict.nav.home,
+          item: `${SITE_URL}/${lang}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: dict.nav.products,
+          item: `${SITE_URL}/${lang}/products`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: title,
+          item: `${SITE_URL}/${lang}/products/${product.slug}`,
+        },
+      ],
+    },
+  ];
 
   return (
     <div className="section product-detail-section" style={{ paddingTop: "clamp(1.5rem, 3vw, 3rem)" }}>

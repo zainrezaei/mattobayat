@@ -7,7 +7,7 @@ import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale } from "@/i18n";
 import { getSettings } from "@/lib/data";
 import { mapsLink, whatsappLink } from "@/lib/utils";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, SITE_URL } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -15,11 +15,13 @@ export async function generateMetadata({
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = getDictionary(lang);
+  const settings = await getSettings();
   return buildPageMetadata({
     lang,
     path: "/about",
     title: dict.meta.aboutTitle,
     description: dict.meta.aboutDescription,
+    image: settings.site_images?.about_showroom || "/images/site/showroom.jpg",
   });
 }
 
@@ -30,24 +32,44 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
   const dict = getDictionary(lang);
   const settings = await getSettings();
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: dict.about.faq.map((item) => ({
-      "@type": "Question",
-      name: item.q,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.a,
-      },
-    })),
-  };
+  const aboutSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: dict.about.faq.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.a,
+        },
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: dict.nav.home,
+          item: `${SITE_URL}/${lang}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: dict.nav.about,
+          item: `${SITE_URL}/${lang}/about`,
+        },
+      ],
+    },
+  ];
 
   return (
     <div>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema) }}
       />
       <h1 className="visually-hidden">{dict.about.title}</h1>
 
@@ -324,10 +346,10 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
             </h3>
             <p style={{ color: "var(--ink-soft)", maxWidth: "40ch", margin: 0 }}>
               {lang === "fi"
-                ? "Tule käymään myymälässämme Helsingissä tai ota suoraan yhteyttä WhatsAppissa."
+                ? `Tule käymään myymälässämme (${settings.address}, ${settings.postal} ${settings.city}) tai ota suoraan yhteyttä WhatsAppissa.`
                 : lang === "fa"
-                ? "به دکان ما در Putkitie 6, 00880 Helsinki بیایید و یا در واتساپ پیام بفرستید."
-                : "Drop by our store in Helsinki or contact us directly on WhatsApp."}
+                ? `به دکان ما در ${settings.address}, ${settings.postal} ${settings.city} بیایید و یا در واتساپ پیام بفرستید.`
+                : `Drop by our store at ${settings.address}, ${settings.postal} ${settings.city} or contact us directly on WhatsApp.`}
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "0.5rem" }}>
               <Link href={`/${lang}/contact`} className="btn btn--gold">

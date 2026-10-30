@@ -7,7 +7,7 @@ import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale, t } from "@/i18n";
 import { getCategories, getProducts, getSettings } from "@/lib/data";
 import { mapsLink, telLink, whatsappLink } from "@/lib/utils";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, SITE_URL, toAbsoluteUrl } from "@/lib/seo";
 import ProductCard from "@/components/ProductCard";
 import ArrowIcon from "@/components/ArrowIcon";
 import GoogleReviewsAndMap from "@/components/GoogleReviewsAndMap";
@@ -16,11 +16,13 @@ export async function generateMetadata({ params }: PageProps<"/[lang]">): Promis
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = getDictionary(lang);
+  const settings = await getSettings();
   return buildPageMetadata({
     lang,
     path: "",
     title: dict.meta.title,
     description: dict.meta.description,
+    image: settings.site_images?.hero || "/images/site/hero.jpg",
   });
 }
 
@@ -34,8 +36,49 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const allProducts = await getProducts();
   const featuredProducts = allProducts.filter((p) => p.featured).slice(0, 4);
 
+  const yearsActive = Math.max(7, new Date().getFullYear() - 2017);
+  const openDaysCount =
+    (settings.hours?.mon_fri?.closed ? 0 : 5) +
+    (settings.hours?.sat?.closed ? 0 : 1) +
+    (settings.hours?.sun?.closed ? 0 : 1);
+
+  const homeSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: `${SITE_URL}/${lang}`,
+      name: "Matto Bayat",
+      description: dict.meta.description,
+      inLanguage: lang,
+      publisher: {
+        "@id": `${SITE_URL}/#store`,
+      },
+    },
+    ...(featuredProducts.length > 0
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: dict.home.featuredTitle,
+            itemListElement: featuredProducts.map((p, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              url: `${SITE_URL}/${lang}/products/${p.slug}`,
+              name: t(p.name, lang),
+              image: toAbsoluteUrl(p.images?.[0]),
+            })),
+          },
+        ]
+      : []),
+  ];
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }}
+      />
       {/* 1. Hero Section */}
       <section
         style={{
@@ -137,7 +180,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               </div>
               <div>
                 <div style={{ fontSize: "1.8rem", fontWeight: 700, color: "var(--plum)", lineHeight: 1 }}>
-                  7+
+                  {yearsActive}+
                 </div>
                 <div style={{ fontSize: "0.82rem", color: "var(--muted)", marginTop: "4px" }}>
                   {dict.home.stat2}
@@ -145,7 +188,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               </div>
               <div>
                 <div style={{ fontSize: "1.8rem", fontWeight: 700, color: "var(--plum)", lineHeight: 1 }}>
-                  7 / 7
+                  {openDaysCount} / 7
                 </div>
                 <div style={{ fontSize: "0.82rem", color: "var(--muted)", marginTop: "4px" }}>
                   {dict.home.stat3}
@@ -324,14 +367,17 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             }}
           >
             {categories.map((cat, idx) => {
-              const bgImages = [
+              const fallbackBgImages = [
                 "/images/products/tabriz-red.jpg",
                 "/images/products/kilim-anatolia.jpg",
                 "/images/products/heriz-runner.jpg",
                 "/images/products/isfahan-round.jpg",
                 "/images/products/velvet-throws.jpg",
               ];
-              const bg = bgImages[idx % bgImages.length];
+              const categoryProduct = allProducts.find(
+                (p) => p.category_id === cat.id && p.images && p.images.length > 0
+              );
+              const bg = categoryProduct?.images[0] || fallbackBgImages[idx % fallbackBgImages.length];
 
               return (
                 <Link

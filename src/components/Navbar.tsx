@@ -152,7 +152,7 @@ export default function Navbar({
                 marginTop: "2px",
               }}
             >
-              Putkitie 6 · Helsinki
+              {settings.address} · {settings.city}
             </span>
           </div>
         </Link>

@@ -678,7 +678,14 @@ export default function GoogleReviewsAndMap({ settings, lang, dict }: GoogleRevi
                 </a>
 
                 <a
-                  href={whatsappLink(settings.whatsapp, "Hei! Haluaisin tulla käymään myymälässä.")}
+                  href={whatsappLink(
+                    settings.whatsapp,
+                    lang === "fi"
+                      ? "Hei! Haluaisin tulla käymään myymälässä."
+                      : lang === "fa"
+                      ? "سلام! می‌خواستم برای دیدن قالین‌ها به دکان شما بیایم."
+                      : "Hello! I would like to visit your showroom."
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn--whatsapp"

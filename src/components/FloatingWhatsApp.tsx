@@ -16,7 +16,8 @@ export default function FloatingWhatsApp({
   if (pathname.includes("/admin")) return null;
 
   const dict = getDictionary(lang);
-  const rawWa = (settings.whatsapp || "358449715631").replace(/\D/g, "");
+  const rawWa = (settings.whatsapp || settings.phone || "").replace(/\D/g, "");
+  if (!rawWa) return null;
 
   return (
     <a

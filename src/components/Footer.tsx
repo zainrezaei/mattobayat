@@ -66,7 +66,7 @@ export default function Footer({
                   Matto Bayat
                 </div>
                 <div dir="ltr" style={{ fontSize: "0.75rem", color: "var(--gold-600)", fontWeight: 600 }}>
-                  Putkitie 6 · Helsinki
+                  {settings.address} · {settings.city}
                 </div>
               </div>
             </div>
@@ -220,44 +220,50 @@ export default function Footer({
 
               {/* Social links */}
               <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}>
-                <a
-                  href={settings.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="icon-btn"
-                  style={{ width: "36px", height: "36px", backgroundColor: "var(--surface)" }}
-                  aria-label="Instagram"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                    <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
-                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                  </svg>
-                </a>
-                <a
-                  href={settings.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="icon-btn"
-                  style={{ width: "36px", height: "36px", backgroundColor: "var(--surface)" }}
-                  aria-label="Facebook"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-                  </svg>
-                </a>
-                <a
-                  href={settings.tiktok}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="icon-btn"
-                  style={{ width: "36px", height: "36px", backgroundColor: "var(--surface)" }}
-                  aria-label="TikTok"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.29 0 .58.04.85.12V9.4a6.33 6.33 0 00-.85-.06A6.34 6.34 0 003.1 15.68a6.34 6.34 0 009.68 5.37 6.27 6.27 0 002.56-4.99V8.62a8.21 8.21 0 004.25 1.54v-3.47z"/>
-                  </svg>
-                </a>
+                {settings.instagram && (
+                  <a
+                    href={settings.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="icon-btn"
+                    style={{ width: "36px", height: "36px", backgroundColor: "var(--surface)" }}
+                    aria-label="Instagram"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                      <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                    </svg>
+                  </a>
+                )}
+                {settings.facebook && (
+                  <a
+                    href={settings.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="icon-btn"
+                    style={{ width: "36px", height: "36px", backgroundColor: "var(--surface)" }}
+                    aria-label="Facebook"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+                    </svg>
+                  </a>
+                )}
+                {settings.tiktok && (
+                  <a
+                    href={settings.tiktok}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="icon-btn"
+                    style={{ width: "36px", height: "36px", backgroundColor: "var(--surface)" }}
+                    aria-label="TikTok"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.29 0 .58.04.85.12V9.4a6.33 6.33 0 00-.85-.06A6.34 6.34 0 003.1 15.68a6.34 6.34 0 009.68 5.37 6.27 6.27 0 002.56-4.99V8.62a8.21 8.21 0 004.25 1.54v-3.47z"/>
+                    </svg>
+                  </a>
+                )}
               </div>
             </div>
           </div>

@@ -291,7 +291,13 @@ export default function ReservationForm({
                 />
                 <div>
                   <strong>{dict.reservation.pickup}</strong>
-                  <span>{dict.reservation.pickupHint}</span>
+                  <span>
+                    {lang === "fi"
+                      ? `Nouto myymälästä (${settings.address}, ${settings.postal} ${settings.city}) · Ilmainen`
+                      : lang === "fa"
+                      ? `گرفتن از دکان (${settings.address}, ${settings.postal} ${settings.city}) · رایگان`
+                      : `Showroom pickup (${settings.address}, ${settings.postal} ${settings.city}) · Free`}
+                  </span>
                 </div>
               </label>
 
@@ -324,7 +330,13 @@ export default function ReservationForm({
                 required
                 className="textarea"
                 style={{ minHeight: "80px" }}
-                placeholder="Katuosoite, postinumero, kaupunki (Esim. Putkitie 6, 00880 Helsinki)"
+                placeholder={
+                  lang === "fi"
+                    ? `Katuosoite, postinumero, kaupunki (esim. ${settings.address}, ${settings.postal} ${settings.city})`
+                    : lang === "fa"
+                    ? `آدرس کامل، کود پستی و شهر (مثلاً ${settings.address}, ${settings.postal} ${settings.city})`
+                    : `Street address, postal code, city (e.g. ${settings.address}, ${settings.postal} ${settings.city})`
+                }
               />
             </div>
           )}

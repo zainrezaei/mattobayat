@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale } from "@/i18n";
 import { getSettings } from "@/lib/data";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, SITE_URL } from "@/lib/seo";
 import RoomSizeCalculator from "@/components/RoomSizeCalculator";
 import ArrowIcon from "@/components/ArrowIcon";
 
@@ -16,11 +16,13 @@ export async function generateMetadata({
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = getDictionary(lang);
+  const settings = await getSettings();
   return buildPageMetadata({
     lang,
     path: "/guide",
     title: dict.meta.guideTitle,
     description: dict.meta.guideDescription,
+    image: settings.site_images?.guide_care || "/images/site/care.jpg",
   });
 }
 
@@ -31,8 +33,45 @@ export default async function GuidePage({ params }: PageProps<"/[lang]/guide">) 
   const dict = getDictionary(lang);
   const settings = await getSettings();
 
+  const guideSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      name: dict.guide.careTitle,
+      description: dict.meta.guideDescription,
+      step: dict.guide.care.map((tip, index) => ({
+        "@type": "HowToStep",
+        position: index + 1,
+        name: tip.title,
+        text: tip.text,
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: dict.nav.home,
+          item: `${SITE_URL}/${lang}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: dict.nav.guide,
+          item: `${SITE_URL}/${lang}/guide`,
+        },
+      ],
+    },
+  ];
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(guideSchema) }}
+      />
       <h1 className="visually-hidden">{dict.guide.title}</h1>
 
       {/* 1. Interactive Size Calculator */}

@@ -5,7 +5,7 @@ import type { Locale } from "@/lib/types";
 import { getDictionary, hasLocale } from "@/i18n";
 import { getSettings } from "@/lib/data";
 import { isOpenNow, mapsEmbed, mapsLink, telLink, whatsappLink } from "@/lib/utils";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, SITE_URL } from "@/lib/seo";
 import ContactForm from "@/components/ContactForm";
 import ArrowIcon from "@/components/ArrowIcon";
 
@@ -15,11 +15,13 @@ export async function generateMetadata({
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = getDictionary(lang);
+  const settings = await getSettings();
   return buildPageMetadata({
     lang,
     path: "/contact",
     title: dict.meta.contactTitle,
     description: dict.meta.contactDescription,
+    image: settings.site_images?.about_showroom || "/images/site/showroom.jpg",
   });
 }
 
@@ -31,8 +33,45 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
   const settings = await getSettings();
   const isOpen = isOpenNow(settings);
 
+  const contactSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "@id": `${SITE_URL}/${lang}/contact#contactpage`,
+      url: `${SITE_URL}/${lang}/contact`,
+      name: dict.meta.contactTitle,
+      description: dict.meta.contactDescription,
+      inLanguage: lang,
+      mainEntity: {
+        "@id": `${SITE_URL}/#store`,
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: dict.nav.home,
+          item: `${SITE_URL}/${lang}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: dict.nav.contact,
+          item: `${SITE_URL}/${lang}/contact`,
+        },
+      ],
+    },
+  ];
+
   return (
     <div className="section" style={{ paddingTop: "clamp(1.5rem, 3vw, 2.5rem)" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
+      />
       <div className="container">
         <h1 className="visually-hidden">{dict.contact.title}</h1>
 
@@ -66,7 +105,7 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
                 <div>
                   <h2 style={{ fontSize: "1.45rem", color: "var(--plum)", margin: 0, fontWeight: 700 }}>
-                    Matto Bayat Helsinki
+                    Matto Bayat {settings.city}
                   </h2>
                 </div>
 
