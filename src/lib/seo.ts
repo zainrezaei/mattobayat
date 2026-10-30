@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { Locale } from "./types";
 
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://matto-bayat.vercel.app"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://mattobayat.vercel.app"
 ).replace(/\/$/, "");
 
 export function toAbsoluteUrl(urlOrPath?: string | null): string {
