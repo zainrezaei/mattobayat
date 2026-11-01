@@ -26,10 +26,17 @@ export default async function ProductsPage({
   searchParams,
 }: {
   params: Promise<{ lang: string }>;
-  searchParams: Promise<{ category?: string; size?: string }>;
+  searchParams: Promise<{
+    category?: string;
+    size?: string;
+    color?: string;
+    price?: string;
+    sort?: string;
+    q?: string;
+  }>;
 }) {
   const { lang } = await params;
-  const { category, size } = await searchParams;
+  const { category, size, color, price, sort, q } = await searchParams;
   if (!hasLocale(lang as Locale)) notFound();
 
   const locale = lang as Locale;
@@ -95,6 +102,10 @@ export default async function ProductsPage({
           lang={locale}
           initialCategory={category}
           initialSize={size}
+          initialColor={color}
+          initialPrice={price}
+          initialSort={sort}
+          initialQuery={typeof q === "string" ? q.slice(0, 80) : undefined}
         />
       </div>
     </div>

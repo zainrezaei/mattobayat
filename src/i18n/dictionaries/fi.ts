@@ -28,6 +28,7 @@ const fi = {
     close: "Sulje",
     language: "Kieli",
     skip: "Siirry sisältöön",
+    breadcrumb: "Murupolku",
   },
   common: {
     viewAll: "Näytä kaikki",
@@ -47,6 +48,7 @@ const fi = {
     new: "Uutuus",
     sale: "Tarjous",
     loading: "Ladataan…",
+    featured: "Valikoitu",
   },
   hours: {
     title: "Aukioloajat",
@@ -128,6 +130,7 @@ const fi = {
     results: "tuotetta",
     noResults: "Yksikään tuote ei vastaa valintojasi.",
     showResults: "Näytä tulokset",
+    clearSearch: "Tyhjennä haku",
   },
   product: {
     addToReservation: "Lisää varaukseen",
@@ -147,6 +150,15 @@ const fi = {
     visitToSee: "Tule katsomaan mattoa paikan päälle (Putkitie 6, Helsinki) – tai kysy mahdollisuutta sovittaa mattoa kotonasi.",
     related: "Saatat pitää myös näistä",
     notFound: "Tuotetta ei löytynyt",
+    viewReservation: "Varauksessa – näytä lista",
+    soldOutNote: "Tämä matto on myyty. Kysy meiltä vastaavaa – saamme usein samankaltaisia.",
+    galleryOpen: "Avaa suuri kuva",
+    galleryPrev: "Edellinen kuva",
+    galleryNext: "Seuraava kuva",
+    galleryPrevShort: "Edellinen",
+    galleryNextShort: "Seuraava",
+    galleryThumb: "Näytä kuva {n}",
+    galleryDialog: "Kuvagalleria",
   },
   cart: {
     title: "Varauslista",
@@ -160,6 +172,8 @@ const fi = {
     continue: "Jatka selailua",
     items: "tuotetta",
     open: "Avaa varauslista",
+    decrease: "Vähennä määrää",
+    increase: "Lisää määrää",
   },
   reservation: {
     title: "Tee varaus",
@@ -287,6 +301,11 @@ const fi = {
     title: "Sivua ei löytynyt",
     text: "Etsimääsi sivua ei ole olemassa tai se on siirretty.",
     home: "Takaisin etusivulle",
+  },
+  error: {
+    title: "Jokin meni pieleen",
+    text: "Sivun lataaminen epäonnistui. Yritä uudelleen tai ota meihin yhteyttä puhelimitse.",
+    retry: "Yritä uudelleen",
   },
   admin: {
     title: "Ylläpito",

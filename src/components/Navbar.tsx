@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Locale, Settings } from "@/lib/types";
@@ -14,6 +14,12 @@ const LANGUAGES: { code: Locale; label: string; name: string }[] = [
   { code: "fa", label: "دری", name: "دری" },
 ];
 
+// Re-evaluate the "open now" pill once a minute.
+function subscribeMinute(cb: () => void) {
+  const timer = setInterval(cb, 60000);
+  return () => clearInterval(timer);
+}
+
 export default function Navbar({
   lang,
   settings,
@@ -26,13 +32,27 @@ export default function Navbar({
   const { openCart, totalCount } = useCart();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [openState, setOpenState] = useState(false);
+  const getOpenState = useCallback(() => isOpenNow(settings), [settings]);
+  // Server snapshot is `false` so SSR and first client render always match.
+  const openState = useSyncExternalStore(subscribeMinute, getOpenState, () => false);
 
+  // Close the mobile menu whenever the route changes (adjusting state during
+  // render instead of in an effect avoids an extra commit).
+  const [menuPath, setMenuPath] = useState(pathname);
+  if (menuPath !== pathname) {
+    setMenuPath(pathname);
+    setMobileOpen(false);
+  }
+
+  // Escape closes the mobile menu
   useEffect(() => {
-    setOpenState(isOpenNow(settings));
-    const timer = setInterval(() => setOpenState(isOpenNow(settings)), 60000);
-    return () => clearInterval(timer);
-  }, [settings]);
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -166,6 +186,7 @@ export default function Navbar({
             alignItems: "center",
           }}
           className="desktop-nav"
+          aria-label={dict.nav.menu}
         >
           {navLinks.map((link) => {
             const isActive =
@@ -176,6 +197,7 @@ export default function Navbar({
               <Link
                 key={link.href}
                 href={link.href}
+                aria-current={isActive ? "page" : undefined}
                 style={{
                   fontSize: "0.95rem",
                   fontWeight: isActive ? 700 : 500,
@@ -251,6 +273,8 @@ export default function Navbar({
           {/* Language Switcher */}
           <div
             className="header-lang-switcher"
+            role="group"
+            aria-label={dict.nav.language}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -267,6 +291,9 @@ export default function Navbar({
                 <Link
                   key={item.code}
                   href={getLocaleUrl(item.code)}
+                  hrefLang={item.code}
+                  lang={item.code}
+                  aria-current={active ? "true" : undefined}
                   style={{
                     padding: "0.25rem 0.55rem",
                     borderRadius: "999px",
@@ -287,9 +314,11 @@ export default function Navbar({
 
           {/* Cart / Reservation button */}
           <button
+            type="button"
             onClick={openCart}
             className="icon-btn"
-            aria-label={dict.cart.open}
+            aria-label={totalCount > 0 ? `${dict.cart.open} (${totalCount})` : dict.cart.open}
+            aria-haspopup="dialog"
             style={{
               backgroundColor: "var(--plum-50)",
               color: "var(--plum)",
@@ -302,6 +331,7 @@ export default function Navbar({
             </svg>
             {totalCount > 0 && (
               <span
+                aria-hidden="true"
                 style={{
                   position: "absolute",
                   top: "2px",
@@ -325,10 +355,13 @@ export default function Navbar({
 
           {/* Mobile burger toggle */}
           <button
+            type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
             className="icon-btn"
             id="mobile-burger"
-            aria-label={dict.nav.menu}
+            aria-label={mobileOpen ? dict.nav.close : dict.nav.menu}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
             style={{ display: "none" }}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -351,7 +384,9 @@ export default function Navbar({
 
       {/* Mobile Drawer Menu */}
       {mobileOpen && (
-        <div
+        <nav
+          id="mobile-menu"
+          aria-label={dict.nav.menu}
           style={{
             position: "fixed",
             top: "var(--header-h)",
@@ -442,7 +477,7 @@ export default function Navbar({
               <span>{settings.phone}</span>
             </a>
           </div>
-        </div>
+        </nav>
       )}
 
       {/* Media query styling for responsive navbar */}

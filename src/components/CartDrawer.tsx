@@ -15,7 +15,8 @@ export default function CartDrawer({
 }) {
   const { items, isOpen, closeCart, updateQty, removeItem, totalPrice, totalCount } = useCart();
   const dict = getDictionary(lang);
-  const drawerRef = useRef<HTMLDivElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   // Close on ESC
   useEffect(() => {
@@ -25,6 +26,19 @@ export default function CartDrawer({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, closeCart]);
+
+  // Move focus into the drawer when it opens and hand it back to the
+  // element that opened it (e.g. the cart button) when it closes.
+  useEffect(() => {
+    if (!isOpen) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeBtnRef.current?.focus({ preventScroll: true });
+    return () => {
+      if (previouslyFocused && document.contains(previouslyFocused)) {
+        previouslyFocused.focus({ preventScroll: true });
+      }
+    };
+  }, [isOpen]);
 
   // Prevent body scrolling when open
   useEffect(() => {
@@ -62,6 +76,8 @@ export default function CartDrawer({
         role="dialog"
         aria-modal="true"
         aria-label={dict.cart.title}
+        aria-hidden={!isOpen}
+        inert={!isOpen}
         style={{
           position: "fixed",
           top: 0,
@@ -97,6 +113,8 @@ export default function CartDrawer({
             </span>
           </div>
           <button
+            ref={closeBtnRef}
+            type="button"
             onClick={closeCart}
             aria-label={dict.nav.close}
             className="icon-btn"
@@ -256,7 +274,8 @@ export default function CartDrawer({
                           fontSize: "1.05rem",
                           color: "var(--ink-soft)",
                         }}
-                        aria-label="Decrease quantity"
+                        type="button"
+                        aria-label={`${dict.cart.decrease}: ${item.name}`}
                       >
                         −
                       </button>
@@ -281,14 +300,17 @@ export default function CartDrawer({
                           fontSize: "1.05rem",
                           color: "var(--ink-soft)",
                         }}
-                        aria-label="Increase quantity"
+                        type="button"
+                        aria-label={`${dict.cart.increase}: ${item.name}`}
                       >
                         +
                       </button>
                     </div>
 
                     <button
+                      type="button"
                       onClick={() => removeItem(item.product_id)}
+                      aria-label={`${dict.cart.remove}: ${item.name}`}
                       style={{
                         fontSize: "0.78rem",
                         color: "var(--danger)",
@@ -352,6 +374,7 @@ export default function CartDrawer({
             </Link>
 
             <button
+              type="button"
               onClick={closeCart}
               className="btn btn--block btn--ghost btn--sm"
               style={{ marginTop: "0.5rem" }}

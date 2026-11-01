@@ -30,6 +30,7 @@ const fa: Dictionary = {
     close: "بستن",
     language: "زبان",
     skip: "رفتن به محتوا",
+    breadcrumb: "مسیر صفحه",
   },
   common: {
     viewAll: "دیدن همه",
@@ -49,6 +50,7 @@ const fa: Dictionary = {
     new: "جدید",
     sale: "تخفیف",
     loading: "لطفاً صبر کنید…",
+    featured: "ویژه",
   },
   hours: {
     title: "ساعات کاری دکان",
@@ -130,6 +132,7 @@ const fa: Dictionary = {
     results: "قلم جنس",
     noResults: "با این مشخصات کدام قالین پیدا نشد.",
     showResults: "نشان دادن قالین‌ها",
+    clearSearch: "پاک کردن جستجو",
   },
   product: {
     addToReservation: "انتخاب و قید کردن",
@@ -149,6 +152,15 @@ const fa: Dictionary = {
     visitToSee: "این قالین را از نزدیک در دکان (Putkitie 6, 00880 Helsinki) ببینید – یا برای امتحان کردن در خانه از ما پرسان کنید.",
     related: "شاید این قالین‌ها هم خوشتان بیاید",
     notFound: "این جنس پیدا نشد",
+    viewReservation: "در سبد سفارش – دیدن لست",
+    soldOutNote: "این قالین فروخته شده است. از ما قالین مشابه را بپرسید – اکثراً نمونه‌های مشابه داریم.",
+    galleryOpen: "بزرگ‌نمایی تصویر",
+    galleryPrev: "تصویر قبلی",
+    galleryNext: "تصویر بعدی",
+    galleryPrevShort: "قبلی",
+    galleryNextShort: "بعدی",
+    galleryThumb: "نمایش تصویر {n}",
+    galleryDialog: "گالری تصاویر",
   },
   cart: {
     title: "لست سفارش شما",
@@ -162,6 +174,8 @@ const fa: Dictionary = {
     continue: "ادامه دیدن قالین‌ها",
     items: "قلم",
     open: "باز کردن لست سفارش",
+    decrease: "کم کردن تعداد",
+    increase: "زیاد کردن تعداد",
   },
   reservation: {
     title: "ثبت کردن سفارش (قید کردن قالین)",
@@ -289,6 +303,11 @@ const fa: Dictionary = {
     title: "صفحه پیدا نشد",
     text: "صفحه‌ای که دنبالش هستید موجود نیست.",
     home: "برگشت به صفحه اصلی",
+  },
+  error: {
+    title: "مشکلی پیش آمد",
+    text: "این صفحه باز نشد. لطفاً دوباره کوشش کنید یا به ما زنگ بزنید.",
+    retry: "دوباره کوشش کنید",
   },
   admin: {
     title: "مدیریت سایت",

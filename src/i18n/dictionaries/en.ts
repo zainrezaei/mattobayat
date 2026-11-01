@@ -30,6 +30,7 @@ const en: Dictionary = {
     close: "Close",
     language: "Language",
     skip: "Skip to content",
+    breadcrumb: "Breadcrumb",
   },
   common: {
     viewAll: "View all",
@@ -49,6 +50,7 @@ const en: Dictionary = {
     new: "New",
     sale: "Sale",
     loading: "Loading…",
+    featured: "Featured",
   },
   hours: {
     title: "Opening hours",
@@ -130,6 +132,7 @@ const en: Dictionary = {
     results: "products",
     noResults: "No products match your filters.",
     showResults: "Show results",
+    clearSearch: "Clear search",
   },
   product: {
     addToReservation: "Add to reservation",
@@ -149,6 +152,15 @@ const en: Dictionary = {
     visitToSee: "See it in person at Putkitie 6, Helsinki – or ask us about trying it at home.",
     related: "You may also like",
     notFound: "Product not found",
+    viewReservation: "In reservation – view list",
+    soldOutNote: "This rug has been sold. Ask us for a similar one – we often have comparable pieces.",
+    galleryOpen: "Open large image",
+    galleryPrev: "Previous image",
+    galleryNext: "Next image",
+    galleryPrevShort: "Previous",
+    galleryNextShort: "Next",
+    galleryThumb: "Show image {n}",
+    galleryDialog: "Image gallery",
   },
   cart: {
     title: "Reservation list",
@@ -162,6 +174,8 @@ const en: Dictionary = {
     continue: "Keep browsing",
     items: "items",
     open: "Open reservation list",
+    decrease: "Decrease quantity",
+    increase: "Increase quantity",
   },
   reservation: {
     title: "Make a reservation",
@@ -289,6 +303,11 @@ const en: Dictionary = {
     title: "Page not found",
     text: "The page you are looking for doesn't exist or has been moved.",
     home: "Back to home",
+  },
+  error: {
+    title: "Something went wrong",
+    text: "We couldn't load this page. Please try again, or give us a call.",
+    retry: "Try again",
   },
   admin: {
     title: "Admin",
